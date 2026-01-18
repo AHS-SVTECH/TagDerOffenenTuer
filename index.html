@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AHS Smart Terminal</title>
+    <title>AHS Interactive Kiosk</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -11,465 +12,446 @@
         :root {
             --primary: #007aff;
             --secondary: #5856d6;
-            --accent: #ff2d55;
-            --bg-grad: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            --glass: rgba(255, 255, 255, 0.9);
-            --shadow: 0 15px 35px rgba(0,0,0,0.1);
-            --anim-speed: 0.4s;
+            --verified: #1d9bf0; /* Twitter/Insta Blue */
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.6);
+            --shadow-soft: 0 10px 40px rgba(0,0,0,0.08);
+            
+            /* Untis Farben */
+            --u-green: #2ecc71; /* Events/Änderung */
+            --u-red: #e74c3c;   /* Entfall */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; user-select: none; }
 
         body {
-            background: #eef2f3;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             height: 100vh;
             overflow: hidden;
-            display: flex; flex-direction: column;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Hintergrund Animation */
-        .bg-anim {
+        /* --- BACKGROUND ANIMATION --- */
+        .ambient-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            opacity: 0.15;
+            background: 
+                radial-gradient(circle at 10% 10%, rgba(0, 122, 255, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(88, 86, 214, 0.15) 0%, transparent 40%);
+            animation: breathe 10s infinite alternate;
         }
-        @keyframes gradientBG { 0% {background-position: 0% 50%;} 50% {background-position: 100% 50%;} 100% {background-position: 0% 50%;} }
+        @keyframes breathe { 0% { opacity: 0.5; transform: scale(1); } 100% { opacity: 1; transform: scale(1.1); } }
 
         /* --- HEADER --- */
         header {
-            padding: 1.5rem 3rem;
+            flex: 0 0 auto;
+            padding: 1rem 2rem;
             display: flex; justify-content: space-between; align-items: center;
-            background: rgba(255,255,255,0.8); backdrop-filter: blur(10px);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-            z-index: 100;
+            background: rgba(255,255,255,0.7); backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255,255,255,0.5);
+            z-index: 50;
         }
-        .brand img { height: 60px; margin-right: 20px; }
-        .brand h1 { font-size: 1.8rem; font-weight: 800; color: #333; }
+
+        .brand { display: flex; align-items: center; gap: 15px; }
+        .brand img { height: 50px; }
+        .brand h1 { font-size: 1.5rem; color: #333; font-weight: 800; letter-spacing: -0.5px; }
         
-        /* Language Switcher */
-        .lang-switch { display: flex; gap: 10px; background: #f0f0f0; padding: 5px; border-radius: 50px; }
+        .lang-switch { background: rgba(0,0,0,0.05); padding: 5px; border-radius: 50px; display: flex; gap: 5px; }
         .lang-btn {
-            border: none; background: transparent; padding: 10px 20px; border-radius: 40px;
-            font-weight: bold; cursor: pointer; transition: 0.3s; opacity: 0.6;
+            border: none; background: transparent; padding: 8px 16px; border-radius: 40px;
+            font-weight: 700; color: #666; cursor: pointer; transition: 0.3s;
         }
-        .lang-btn.active { background: white; shadow: 0 2px 10px rgba(0,0,0,0.1); opacity: 1; color: var(--primary); transform: scale(1.05); }
+        .lang-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 
-        /* --- GRID LAYOUT --- */
+        /* --- MAIN GRID (RESPONSIVE) --- */
         main {
-            flex: 1; padding: 2rem 3rem;
+            flex: 1;
+            padding: 2rem;
             display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 3 Spalten */
-            grid-template-rows: auto auto; 
-            gap: 2rem;
+            /* Automatische Anpassung: Mindestens 300px breit, so viele wie passen */
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-auto-rows: minmax(200px, auto);
+            gap: 1.5rem;
             overflow-y: auto;
+            align-content: center; /* Zentriert Inhalte vertikal bei großen Screens */
         }
 
-        /* Card Design */
+        /* CARD STYLING */
         .card {
-            background: var(--glass);
-            border-radius: 25px;
+            background: var(--glass-bg);
+            border: var(--glass-border);
+            border-radius: 24px;
             padding: 2rem;
             text-align: center;
-            transition: all var(--anim-speed);
+            box-shadow: var(--shadow-soft);
             cursor: pointer;
-            box-shadow: var(--shadow);
-            position: relative; overflow: hidden;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            border: 2px solid transparent;
         }
-        .card:hover { transform: translateY(-10px); border-color: var(--primary); }
-        .card img { height: 80px; margin-bottom: 20px; object-fit: contain; transition: 0.5s; }
-        .card:hover img { transform: scale(1.15) rotate(3deg); }
-        .card h3 { font-size: 1.6rem; margin-bottom: 10px; color: #222; }
-        .card p { color: #666; font-size: 1rem; line-height: 1.4; }
 
-        /* Special Cards */
-        .card-fabi {
-            grid-column: span 2; /* Macht die Karte breit */
-            background: linear-gradient(135deg, #fff 0%, #f0f4ff 100%);
-            align-items: flex-start; text-align: left; flex-direction: row; padding-left: 3rem;
+        /* Hover Effekt (manuell) */
+        .card:active { transform: scale(0.96); }
+        
+        /* Auto-Animation Klasse (wird per JS hinzugefügt) */
+        .card.attract-pulse { animation: mildPulse 1s ease; }
+        .card.attract-shake { animation: mildShake 0.8s ease; }
+
+        .card img { height: 70px; margin-bottom: 15px; object-fit: contain; }
+        .card h3 { font-size: 1.4rem; margin-bottom: 8px; color: #222; }
+        .card p { font-size: 0.95rem; color: #666; line-height: 1.4; }
+
+        /* Breite Karte für Fabi & Leon */
+        .card-wide {
+            grid-column: span 2; /* Nimmt 2 Spalten ein, wenn Platz ist */
+            background: linear-gradient(120deg, #ffffff 0%, #f0f7ff 100%);
+            flex-direction: row; text-align: left; padding-left: 3rem;
         }
-        .fabi-info { flex: 1; }
-        .fabi-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
-        .tag { background: #e0eaff; color: var(--primary); padding: 5px 10px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; }
+        /* Fallback für kleine Screens: doch nur 1 Spalte */
+        @media (max-width: 800px) { .card-wide { grid-column: span 1; flex-direction: column; text-align: center; padding: 2rem; } }
 
-        .card-social { grid-column: span 1; background: #111; color: white; }
-        .card-social h3 { color: white; }
-        .card-social p { color: #aaa; }
+        .verified-badge { color: var(--verified); margin-left: 8px; font-size: 1.2rem; }
 
-        /* --- MODALS --- */
-        .modal-overlay {
+        .tag-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+        .tag { background: rgba(0,122,255,0.1); color: var(--primary); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+
+        /* --- MODALS (VOLLBILD) --- */
+        .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); backdrop-filter: blur(15px);
-            z-index: 1000;
-            display: none; justify-content: center; align-items: center;
-            opacity: 0; transition: opacity 0.5s;
+            background: rgba(240, 242, 245, 0.95); backdrop-filter: blur(10px);
+            z-index: 100;
+            display: none; flex-direction: column;
+            opacity: 0; transition: opacity 0.4s;
         }
-        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal.open { display: flex; opacity: 1; }
 
-        .modal-window {
-            background: #fff; width: 90%; max-width: 1100px; height: 85%;
-            border-radius: 30px;
-            display: flex; flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 50px 100px rgba(0,0,0,0.3);
-            animation: zoomUp 0.4s ease;
-        }
-
-        .m-header {
-            padding: 20px 40px; background: #f9f9f9; border-bottom: 1px solid #ddd;
+        .modal-header {
+            padding: 1rem 2rem; background: white; border-bottom: 1px solid #ddd;
             display: flex; justify-content: space-between; align-items: center;
         }
         .close-btn {
-            background: var(--accent); color: white; border: none; padding: 10px 25px;
-            border-radius: 30px; font-size: 1rem; cursor: pointer; font-weight: bold;
+            background: #ff3b30; color: white; border: none; padding: 10px 20px;
+            border-radius: 50px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px;
         }
-        
-        .m-body { flex: 1; padding: 40px; overflow-y: auto; }
+        .close-btn:hover { background: #d32f2f; }
 
-        /* Untis Table Styling */
-        .untis-sim { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
-        .u-row { background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .u-cell { padding: 15px; border-top: 1px solid #eee; border-bottom: 1px solid #eee; vertical-align: middle; }
-        .u-cell:first-child { border-left: 1px solid #eee; border-radius: 10px 0 0 10px; font-weight: bold; color: #888; }
-        .u-cell:last-child { border-right: 1px solid #eee; border-radius: 0 10px 10px 0; }
-        
-        .status-badge { padding: 5px 12px; border-radius: 8px; color: white; font-weight: bold; font-size: 0.9rem; display: inline-block; }
-        .s-change { background: #2ecc71; } /* Grün */
-        .s-cancel { background: #e74c3c; text-decoration: line-through; opacity: 0.7; } /* Rot */
-        .s-event { background: #2ecc71; } /* Auch Grün für Events */
-        
-        /* QR Code Grid */
-        .qr-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; text-align: center; }
-        .qr-item { background: #f4f4f4; padding: 20px; border-radius: 15px; }
-        .qr-item img { width: 100%; max-width: 150px; border-radius: 10px; mix-blend-mode: multiply; }
-        .qr-btn { background: #333; color: white; padding: 10px; margin-top: 10px; display: block; border-radius: 10px; text-decoration: none; font-size: 0.8rem;}
+        .modal-content { flex: 1; overflow-y: auto; padding: 2rem; display: flex; justify-content: center; }
 
-        /* Fabi Leon Modal */
-        .dev-profile { display: flex; gap: 40px; align-items: center; }
-        .dev-img { width: 200px; height: 200px; border-radius: 50%; object-fit: cover; border: 5px solid var(--primary); }
+        /* IFRAME CONTAINER (Full Size) */
+        .iframe-full { width: 100%; height: 100%; border: none; border-radius: 12px; background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
 
-        @keyframes zoomUp { from { transform: scale(0.9) translateY(50px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+        /* UNTIS TABLE */
+        .untis-box { width: 100%; max-width: 900px; background: white; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
+        .untis-row { display: flex; border-bottom: 1px solid #eee; padding: 15px; align-items: center; }
+        .u-time { width: 70px; font-weight: bold; color: #888; font-size: 0.9rem; }
+        .u-info { flex: 1; }
+        .u-status { padding: 5px 10px; border-radius: 6px; color: white; font-size: 0.8rem; font-weight: bold; }
+        
+        .st-green { background: var(--u-green); }
+        .st-red { background: var(--u-red); text-decoration: line-through; opacity: 0.6; }
+
+        /* TIMEOUT ALERT */
+        .timeout-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 2000;
+            display: none; justify-content: center; align-items: center; text-align: center; color: white;
+            flex-direction: column;
+        }
+        .timeout-overlay.visible { display: flex; animation: fadeIn 0.3s; }
+
+        @keyframes mildPulse { 0% {transform: scale(1);} 50% {transform: scale(1.03); box-shadow: 0 20px 50px rgba(0,122,255,0.3);} 100% {transform: scale(1);} }
+        @keyframes mildShake { 0% {transform: rotate(0deg);} 25% {transform: rotate(2deg);} 75% {transform: rotate(-2deg);} 100% {transform: rotate(0deg);} }
+        @keyframes fadeIn { from {opacity:0} to {opacity:1} }
+
     </style>
 </head>
 <body>
 
-    <div class="bg-anim"></div>
+    <div class="ambient-bg"></div>
 
     <header>
-        <div class="brand" style="display: flex; align-items: center;">
+        <div class="brand">
             <img src="https://www.anton-hansen-schule.de/fileadmin/anton_hansen/lay/logo_ahs.png" alt="AHS">
             <div>
-                <h1>AHS OTTWEILER</h1>
-                <p style="color: #666;" data-i18n="header_sub">Interaktives Informations-Terminal</p>
+                <h1>Tag der offenen Tür</h1>
+                <small data-text="subtitle">Interactive Whiteboard Terminal</small>
             </div>
         </div>
         <div class="lang-switch">
-            <button class="lang-btn active" onclick="setLang('de')">DE</button>
-            <button class="lang-btn" onclick="setLang('en')">EN</button>
-            <button class="lang-btn" onclick="setLang('fr')">FR</button>
+            <button class="lang-btn active" onclick="setLanguage('de')">DE</button>
+            <button class="lang-btn" onclick="setLanguage('en')">EN</button>
+            <button class="lang-btn" onclick="setLanguage('fr')">FR</button>
         </div>
     </header>
 
-    <main>
+    <main id="card-grid">
         <div class="card" onclick="openModal('untis')">
-            <img src="../images/Untis-Logo.svg" alt="Untis" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2693/2693507.png'">
-            <h3 data-i18n="untis_title">WebUntis</h3>
-            <p data-i18n="untis_desc">Der digitale Stundenplan. Keine Zettelwirtschaft mehr. Immer aktuell auf deinem Handy.</p>
+            <img src="../images/Untis-Logo.svg" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2693/2693507.png'">
+            <h3 data-text="untis_t">WebUntis</h3>
+            <p data-text="untis_d">Digitaler Stundenplan.</p>
         </div>
 
         <div class="card" onclick="openModal('sdui')">
-            <img src="../images/Sduilogo.png" alt="Sdui" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3059/3059997.png'">
-            <h3 data-i18n="sdui_title">Sdui Messenger</h3>
-            <p data-i18n="sdui_desc">Sichere Kommunikation zwischen Eltern, Lehrern und Schülern. DSGVO-konform.</p>
+            <img src="../images/Sduilogo.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3059/3059997.png'">
+            <h3 data-text="sdui_t">Sdui</h3>
+            <p data-text="sdui_d">Unser Messenger.</p>
         </div>
 
         <div class="card" onclick="openModal('taskcards')">
-            <img src="../images/taskcardslogo.png" alt="TaskCards" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3065/3065780.png'">
-            <h3 data-i18n="tc_title">TaskCards</h3>
-            <p data-i18n="tc_desc">Die digitale Pinnwand für Unterrichtsmaterial, Wochenpläne und kreative Projekte.</p>
+            <img src="../images/taskcardslogo.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3065/3065780.png'">
+            <h3 data-text="tc_t">TaskCards</h3>
+            <p data-text="tc_d">Digitale Pinnwände.</p>
         </div>
 
-        <div class="card card-fabi" onclick="openModal('fabi')">
-            <div class="fabi-info">
-                <h3 data-i18n="fabi_title">Fabi & Leon</h3>
-                <p data-i18n="fabi_desc">Von Schülern für Schüler. Wir programmieren, engagieren uns in der SV und gestalten Schule mit.</p>
-                <div class="fabi-tags">
+        <div class="card" onclick="openModal('web-school')">
+            <img src="https://www.anton-hansen-schule.de/fileadmin/anton_hansen/lay/logo_ahs.png">
+            <h3 data-text="web_s_t">Schul-Homepage</h3>
+            <p data-text="web_s_d">www.anton-hansen-schule.de</p>
+        </div>
+
+        <div class="card card-wide" onclick="openModal('web-fabi')">
+            <div style="flex:1;">
+                <h3>Fabi & Leon <i class="fa-solid fa-circle-check verified-badge"></i></h3>
+                <p data-text="fabi_d">Development, SV & Social Media.</p>
+                <div class="tag-container">
                     <span class="tag">Stellv. Schülersprecher</span>
-                    <span class="tag">SV-Tech Team</span>
-                    <span class="tag">Schule ohne Rassismus</span>
+                    <span class="tag">Tech-Team</span>
                     <span class="tag">Regionalkonferenz</span>
                 </div>
             </div>
-            <img src="www.fabiundleon.de/images/Logo.png" style="height: 120px; border-radius: 15px;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4712/4712109.png'">
+            <img src="www.fabiundleon.de/images/Logo.png" style="height: 100px; border-radius: 10px;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4712/4712109.png'">
         </div>
 
-        <div class="card card-social" onclick="openModal('social')">
-            <img src="../images/InstaLogo.png" style="filter: brightness(100);" alt="Social">
-            <h3 data-i18n="social_title">Social Media</h3>
-            <p data-i18n="social_desc">YouTube, Instagram, Spotify & Homepage. Scanne die Codes für zuhause.</p>
+        <div class="card" onclick="openModal('social')">
+            <img src="../images/InstaLogo.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1384/1384063.png'">
+            <h3 data-text="soc_t">Social Media</h3>
+            <p data-text="soc_d">QR-Codes scannen.</p>
         </div>
     </main>
 
-    <div id="modal-untis" class="modal-overlay">
-        <div class="modal-window">
-            <div class="m-header">
-                <h2 data-i18n="m_untis_head">📅 WebUntis: Dein Live-Stundenplan</h2>
-                <button class="close-btn" onclick="closeAll()">X</button>
-            </div>
-            <div class="m-body">
-                <p style="margin-bottom: 20px; color: #555;" data-i18n="m_untis_intro">So sieht es in der App aus: Änderungen sind sofort sichtbar. Eltern wissen Bescheid, Schüler stehen nicht vor verschlossenen Türen.</p>
+    <div id="modal-untis" class="modal">
+        <div class="modal-header">
+            <h2 data-text="untis_head">📅 WebUntis Simulation</h2>
+            <button class="close-btn" onclick="closeAll()">Schließen</button>
+        </div>
+        <div class="modal-content">
+            <div class="untis-box">
+                <div class="untis-row" style="background:#f9f9f9;"><b>Zeit</b><b style="flex:1; margin-left:15px;">Fach / Info</b><b>Status</b></div>
                 
-                <table class="untis-sim">
-                    <tr class="u-row">
-                        <td class="u-cell">07:55</td>
-                        <td class="u-cell" style="text-decoration: line-through;">
-                            <b style="font-size: 1.1rem;">Mathematik</b><br>
-                            <span style="color: #666;">Herr Müller | R 202</span>
-                        </td>
-                        <td class="u-cell"><span class="status-badge s-cancel" data-i18n="st_cancelled">Entfall</span></td>
-                    </tr>
-                    <tr class="u-row">
-                        <td class="u-cell">08:40</td>
-                        <td class="u-cell">
-                            <b style="font-size: 1.1rem;">Englisch</b><br>
-                            <span style="color: #666;">Fr. Meyer (statt Hr. Kunz)</span>
-                        </td>
-                        <td class="u-cell"><span class="status-badge s-change" data-i18n="st_subst">Vertretung</span></td>
-                    </tr>
-                    <tr class="u-row">
-                        <td class="u-cell">09:45</td>
-                        <td class="u-cell">
-                            <b style="font-size: 1.1rem;">SV-Sitzung</b><br>
-                            <span style="color: #666;">Aula</span>
-                        </td>
-                        <td class="u-cell"><span class="status-badge s-event" data-i18n="st_event">Veranstaltung</span></td>
-                    </tr>
-                    <tr class="u-row">
-                        <td class="u-cell">10:35</td>
-                        <td class="u-cell">
-                            <b style="font-size: 1.1rem;">Deutsch</b><br>
-                            <span style="color: #666;">Frau Schmidt | R 105</span>
-                        </td>
-                        <td class="u-cell"><span style="color: #888;">Regulär</span></td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-sdui" class="modal-overlay">
-        <div class="modal-window">
-            <div class="m-header">
-                <h2 data-i18n="m_sdui_head">💬 Sdui: Datenschutz leicht gemacht</h2>
-                <button class="close-btn" onclick="closeAll()">X</button>
-            </div>
-            <div class="m-body" style="text-align: center;">
-                <p data-i18n="m_sdui_text">Sdui ersetzt WhatsApp Gruppen und Telefonketten. Es ist unser offizielles Kommunikationsmittel.</p>
-                <br>
-                <iframe width="100%" height="450" style="border-radius: 15px; max-width: 800px;" src="https://www.youtube.com/embed/npTVuzEj42o?rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-taskcards" class="modal-overlay">
-        <div class="modal-window">
-            <div class="m-header">
-                <h2>TaskCards</h2>
-                <button class="close-btn" onclick="closeAll()">X</button>
-            </div>
-            <div class="m-body" style="padding: 0;">
-                <iframe src="https://lk-nk.taskcards.app/#/board/f4c46a53-4fc9-4146-9dcb-6eb3d81da2a4/view?token=90d399d5-4e3b-4ef3-a763-40cf6c18c262" style="width:100%; height:100%; border:none;"></iframe>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-fabi" class="modal-overlay">
-        <div class="modal-window" style="max-width: 800px;">
-            <div class="m-header">
-                <h2>Fabi & Leon</h2>
-                <button class="close-btn" onclick="closeAll()">X</button>
-            </div>
-            <div class="m-body">
-                <div class="dev-profile">
-                    <img src="../images/FabiUndLeonProfile.jpg" class="dev-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4712/4712109.png'">
-                    <div>
-                        <h2 style="color: var(--primary);">Engagiert für die AHS.</h2>
-                        <p style="margin-top: 10px; line-height: 1.6;">Wir sind stolz, Teil dieser Schulgemeinschaft zu sein. Neben unseren Ämtern in der Schülervertretung (SV) und der Schulregionalkonferenz kümmern wir uns um technische Projekte wie dieses Terminal.</p>
-                        <br>
-                        <button onclick="window.open('https://www.fabiundleon.de')" style="padding: 15px 30px; background: var(--primary); color: white; border: none; border-radius: 50px; font-weight: bold; cursor: pointer;">Unsere Homepage besuchen</button>
-                    </div>
+                <div class="untis-row">
+                    <div class="u-time">07:55</div>
+                    <div class="u-info" style="text-decoration: line-through;">Mathe (Herr Müller) - R204</div>
+                    <div class="u-status st-red">Entfall</div>
                 </div>
-                <hr style="margin: 30px 0; border: 0; border-top: 1px solid #eee;">
-                <h3 style="text-align: center; margin-bottom: 20px;">Scanne unsere Social Media Links</h3>
-                <div style="text-align: center;">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://www.fabiundleon.de/Social-Media/" style="width: 200px; border-radius: 10px;">
-                    <p style="margin-top: 10px; font-weight: bold;">www.fabiundleon.de/Social-Media/</p>
+
+                <div class="untis-row">
+                    <div class="u-time">08:40</div>
+                    <div class="u-info">Englisch (Vertretung Fr. Klein) - R105</div>
+                    <div class="u-status st-green">Vertretung</div>
+                </div>
+
+                <div class="untis-row">
+                    <div class="u-time">09:45</div>
+                    <div class="u-info">SV-Sitzung (Aula)</div>
+                    <div class="u-status st-green">Veranstaltung</div>
+                </div>
+
+                <div class="untis-row">
+                    <div class="u-time">10:35</div>
+                    <div class="u-info">Deutsch - Regulär</div>
+                    <div class="u-status" style="background:#ccc; color:#333;">Normal</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="modal-social" class="modal-overlay">
-        <div class="modal-window">
-            <div class="m-header">
-                <h2 data-i18n="m_social_head">Social Media & Links</h2>
-                <button class="close-btn" onclick="closeAll()">X</button>
+    <div id="modal-sdui" class="modal">
+        <div class="modal-header">
+            <h2>Sdui Video</h2>
+            <button class="close-btn" onclick="closeAll()">Schließen</button>
+        </div>
+        <div class="modal-content">
+            <iframe width="100%" height="100%" style="max-width: 900px; max-height: 500px; border-radius:15px;" src="https://www.youtube.com/embed/npTVuzEj42o?enablejsapi=1" frameborder="0" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <div id="modal-taskcards" class="modal">
+        <div class="modal-header">
+            <h2>TaskCards</h2>
+            <button class="close-btn" onclick="closeAll()">Schließen</button>
+        </div>
+        <div class="modal-content" style="padding:0;">
+            <iframe class="iframe-full" src="https://lk-nk.taskcards.app/#/board/f4c46a53-4fc9-4146-9dcb-6eb3d81da2a4/view?token=90d399d5-4e3b-4ef3-a763-40cf6c18c262"></iframe>
+        </div>
+    </div>
+
+    <div id="modal-web-school" class="modal">
+        <div class="modal-header">
+            <h2>www.anton-hansen-schule.de</h2>
+            <button class="close-btn" onclick="closeAll()">Schließen</button>
+        </div>
+        <div class="modal-content" style="padding:0;">
+            <iframe class="iframe-full" src="https://www.anton-hansen-schule.de"></iframe>
+        </div>
+    </div>
+
+    <div id="modal-web-fabi" class="modal">
+        <div class="modal-header">
+            <h2>Fabi & Leon <i class="fa-solid fa-circle-check verified-badge"></i></h2>
+            <button class="close-btn" onclick="closeAll()">Schließen</button>
+        </div>
+        <div class="modal-content" style="padding:0;">
+            <iframe class="iframe-full" src="https://www.fabiundleon.de"></iframe>
+        </div>
+    </div>
+
+    <div id="modal-social" class="modal">
+        <div class="modal-header">
+            <h2>Scan & Go</h2>
+            <button class="close-btn" onclick="closeAll()">Schließen</button>
+        </div>
+        <div class="modal-content" style="flex-direction: row; flex-wrap: wrap; gap: 30px; align-items: center;">
+            <div style="text-align:center;">
+                <img src="../images/InstaQR.jpg" style="width:200px; border-radius:10px;" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Instagram'">
+                <h3>Instagram</h3>
             </div>
-            <div class="m-body">
-                <p style="text-align: center; margin-bottom: 30px;" data-i18n="m_social_intro">Nimm die Schule mit nach Hause. Einfach mit dem Handy scannen.</p>
-                <div class="qr-grid">
-                    <div class="qr-item">
-                        <img src="../images/SchuleQR.jpg" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?data=https://youtube.com/ahs-ottweiler'">
-                        <h3>YouTube</h3>
-                        <p>Schulfilme & Projekte</p>
-                    </div>
-                    <div class="qr-item">
-                        <img src="../images/InstaQR.jpg" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?data=https://instagram.com/ahs-ottweiler'">
-                        <h3>Instagram</h3>
-                        <p>Aktuelle News & Fotos</p>
-                    </div>
-                    <div class="qr-item">
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?data=https://open.spotify.com/show/ahs-podcast" alt="Spotify">
-                        <h3>Spotify Podcast</h3>
-                        <p>Hör mal rein!</p>
-                    </div>
-                </div>
-                <div style="text-align: center; margin-top: 30px;">
-                    <button onclick="window.open('https://www.anton-hansen-schule.de')" style="padding: 15px 40px; background: #333; color: white; border: none; border-radius: 50px; font-weight: bold; cursor: pointer;">Zur Schul-Webseite</button>
-                </div>
+            <div style="text-align:center;">
+                <img src="../images/SchuleQR.jpg" style="width:200px; border-radius:10px;" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Youtube'">
+                <h3>YouTube</h3>
+            </div>
+             <div style="text-align:center;">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://www.fabiundleon.de/Social-Media/" style="width:200px; border-radius:10px;">
+                <h3>Fabi & Leon</h3>
             </div>
         </div>
+    </div>
+
+    <div id="timeout-alert" class="timeout-overlay">
+        <h1 style="font-size: 3rem; margin-bottom: 20px;">👋</h1>
+        <h2>Bist du noch da?</h2>
+        <p>Der Bildschirm schließt sich gleich.</p>
+        <button onclick="resetIdleTimer()" style="margin-top: 30px; padding: 15px 40px; font-size: 1.2rem; border:none; border-radius: 50px; background: white; color: black; font-weight: bold; cursor: pointer;">Ja, weitermachen</button>
     </div>
 
     <script>
-        // --- TRANSLATION DATABASE ---
-        const translations = {
+        // --- TEXT DATA ---
+        const texts = {
             de: {
-                header_sub: "Interaktives Informations-Terminal",
-                untis_title: "WebUntis",
-                untis_desc: "Der digitale Stundenplan. Keine Zettelwirtschaft mehr. Immer aktuell auf deinem Handy.",
-                sdui_title: "Sdui Messenger",
-                sdui_desc: "Sichere Kommunikation zwischen Eltern, Lehrern und Schülern. Datenschutzkonform.",
-                tc_title: "TaskCards",
-                tc_desc: "Die digitale Pinnwand für Unterrichtsmaterial, Wochenpläne und kreative Projekte.",
-                fabi_title: "Fabi & Leon",
-                fabi_desc: "Von Schülern für Schüler. Wir programmieren, engagieren uns in der SV und gestalten Schule mit.",
-                social_title: "Social Media",
-                social_desc: "YouTube, Instagram, Spotify & Homepage. Scanne die Codes für zuhause.",
-                m_untis_head: "📅 WebUntis: Dein Live-Stundenplan",
-                m_untis_intro: "So sieht es in der App aus: Änderungen sind sofort sichtbar. Grün = Veranstaltung/Vertretung, Rot = Entfall.",
-                st_cancelled: "Entfall",
-                st_subst: "Vertretung",
-                st_event: "Veranstaltung",
-                m_sdui_head: "💬 Sdui: Datenschutz leicht gemacht",
-                m_sdui_text: "Sdui ist unser offizieller Messenger. Keine privaten Nummern mehr.",
-                m_social_head: "Social Media & Links",
-                m_social_intro: "Nimm die Schule mit nach Hause. Einfach scannen."
+                subtitle: "Interaktives Terminal",
+                untis_t: "WebUntis", untis_d: "Stundenplan Live",
+                sdui_t: "Sdui", sdui_d: "Messenger & Co.",
+                tc_t: "TaskCards", tc_d: "Digitale Pinnwand",
+                web_s_t: "Homepage", web_s_d: "Schul-Website",
+                fabi_d: "Entwicklung & SV",
+                soc_t: "Social Media", soc_d: "Zum Mitnehmen",
+                untis_head: "📅 WebUntis Simulation"
             },
             en: {
-                header_sub: "Interactive Information Terminal",
-                untis_title: "WebUntis",
-                untis_desc: "The digital timetable. No more paper chaos. Always up to date on your phone.",
-                sdui_title: "Sdui Messenger",
-                sdui_desc: "Secure communication between parents, teachers, and students. GDPR compliant.",
-                tc_title: "TaskCards",
-                tc_desc: "The digital pinboard for teaching materials, weekly plans, and creative projects.",
-                fabi_title: "Fabi & Leon",
-                fabi_desc: "Students for students. We code, engage in the student council, and shape our school.",
-                social_title: "Social Media",
-                social_desc: "YouTube, Instagram, Spotify & Homepage. Scan the codes to take home.",
-                m_untis_head: "📅 WebUntis: Live Timetable",
-                m_untis_intro: "This is how the app looks: Changes are visible instantly. Green = Event/Subst, Red = Cancelled.",
-                st_cancelled: "Cancelled",
-                st_subst: "Substitution",
-                st_event: "Event",
-                m_sdui_head: "💬 Sdui: Privacy made easy",
-                m_sdui_text: "Sdui is our official messenger tool. No more private phone numbers.",
-                m_social_head: "Social Media & Links",
-                m_social_intro: "Take the school home with you. Just scan."
+                subtitle: "Interactive Terminal",
+                untis_t: "WebUntis", untis_d: "Live Timetable",
+                sdui_t: "Sdui", sdui_d: "Messenger App",
+                tc_t: "TaskCards", tc_d: "Digital Board",
+                web_s_t: "Homepage", web_s_d: "School Website",
+                fabi_d: "Devs & Student Council",
+                soc_t: "Social Media", soc_d: "Scan to go",
+                untis_head: "📅 Timetable Demo"
             },
             fr: {
-                header_sub: "Terminal d'Information Interactif",
-                untis_title: "WebUntis",
-                untis_desc: "L'emploi du temps numérique. Toujours à jour sur votre portable.",
-                sdui_title: "Messagerie Sdui",
-                sdui_desc: "Communication sécurisée entre parents, enseignants et élèves.",
-                tc_title: "TaskCards",
-                tc_desc: "Le tableau d'affichage numérique pour le matériel pédagogique et les projets.",
-                fabi_title: "Fabi & Leon",
-                fabi_desc: "Par les élèves, pour les élèves. Nous programmons et nous engageons au conseil des élèves.",
-                social_title: "Réseaux Sociaux",
-                social_desc: "YouTube, Instagram, Spotify & Site Web. Scannez les codes.",
-                m_untis_head: "📅 WebUntis: Emploi du temps en direct",
-                m_untis_intro: "Voici l'application : Les changements sont visibles immédiatement. Vert = Événement, Rouge = Annulé.",
-                st_cancelled: "Annulé",
-                st_subst: "Remplacement",
-                st_event: "Événement",
-                m_sdui_head: "💬 Sdui: La confidentialité facile",
-                m_sdui_text: "Sdui est notre outil de messagerie officiel.",
-                m_social_head: "Réseaux Sociaux & Liens",
-                m_social_intro: "Emportez l'école avec vous. Scannez simplement."
+                subtitle: "Terminal Interactif",
+                untis_t: "WebUntis", untis_d: "Emploi du temps",
+                sdui_t: "Sdui", sdui_d: "Messagerie",
+                tc_t: "TaskCards", tc_d: "Tableau numérique",
+                web_s_t: "Site Web", web_s_d: "Site de l'école",
+                fabi_d: "Dév & Conseil des élèves",
+                soc_t: "Réseaux Sociaux", soc_d: "Scannez-moi",
+                untis_head: "📅 Simulation Horaire"
             }
         };
 
-        // --- LOGIC ---
+        // --- STATE & TIMERS ---
         let currentLang = 'de';
-        let idleTimer;
-        const IDLE_LIMIT = 60000; // 60 Sekunden Inaktivität
+        let idleTime = 0;
+        let isModalOpen = false;
+        
+        // Attract Mode Loop
+        setInterval(() => {
+            // Nur wenn KEIN Fenster offen ist, Animationen abspielen
+            if (!isModalOpen) {
+                const cards = document.querySelectorAll('.card');
+                const randomCard = cards[Math.floor(Math.random() * cards.length)];
+                
+                // Zufällige Animation wählen
+                const anim = Math.random() > 0.5 ? 'attract-pulse' : 'attract-shake';
+                
+                randomCard.classList.add(anim);
+                setTimeout(() => randomCard.classList.remove(anim), 1000);
+            }
+        }, 4000); // Alle 4 Sekunden wackelt was
 
-        function setLang(lang) {
-            currentLang = lang;
-            
-            // Update Buttons
-            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
-
-            // Update Text
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if(translations[lang][key]) {
-                    el.innerText = translations[lang][key];
+        // --- IDLE CHECKER (Läuft jede Sekunde) ---
+        setInterval(() => {
+            if (isModalOpen) {
+                idleTime++;
+                // Warnung bei 60s
+                if (idleTime === 60) {
+                    document.getElementById('timeout-alert').classList.add('visible');
                 }
-            });
-            resetTimer();
+                // Reset bei 75s
+                if (idleTime >= 75) {
+                    resetSystem();
+                }
+            } else {
+                // Wenn kein Fenster offen ist: Zähler immer auf 0 halten (kein Timeout auf Startseite!)
+                idleTime = 0; 
+            }
+        }, 1000);
+
+        function resetSystem() {
+            closeAll();
+            setLanguage('de');
+            document.getElementById('timeout-alert').classList.remove('visible');
+            idleTime = 0;
         }
 
+        function resetIdleTimer() {
+            idleTime = 0;
+            document.getElementById('timeout-alert').classList.remove('visible');
+        }
+
+        // --- MODAL LOGIC ---
         function openModal(id) {
-            document.getElementById('modal-' + id).classList.add('active');
-            resetTimer();
+            document.getElementById('modal-' + id).classList.add('open');
+            isModalOpen = true;
+            resetIdleTimer();
         }
 
         function closeAll() {
-            document.querySelectorAll('.modal-overlay').forEach(el => el.classList.remove('active'));
-            // Iframes reloaden um Video zu stoppen
+            document.querySelectorAll('.modal').forEach(el => el.classList.remove('open'));
+            isModalOpen = false;
+            
+            // IFRAMES RESET (Damit Video stoppt)
             document.querySelectorAll('iframe').forEach(iframe => {
-                const src = iframe.src;
-                iframe.src = src;
+                const url = iframe.src;
+                iframe.src = url;
             });
-            resetTimer();
         }
 
-        // --- IDLE TIMER RESET ---
-        function resetTimer() {
-            clearTimeout(idleTimer);
-            idleTimer = setTimeout(() => {
-                console.log("System Idle - Resetting...");
-                closeAll(); // Schließt alle Fenster
-                setLang('de'); // Reset auf Deutsch
-                window.scrollTo(0,0);
-            }, IDLE_LIMIT);
+        // --- LANGUAGE LOGIC ---
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector(`button[onclick="setLanguage('${lang}')"]`).classList.add('active');
+
+            document.querySelectorAll('[data-text]').forEach(el => {
+                const key = el.getAttribute('data-text');
+                if (texts[lang][key]) el.innerText = texts[lang][key];
+            });
         }
 
-        // Global Event Listeners
-        window.onload = () => {
-            document.body.addEventListener('click', resetTimer);
-            document.body.addEventListener('touchstart', resetTimer);
-            document.body.addEventListener('mousemove', resetTimer);
-            resetTimer();
-        };
+        // Interaktion tracken
+        ['click', 'touchstart', 'mousemove'].forEach(evt => 
+            window.addEventListener(evt, resetIdleTimer)
+        );
 
     </script>
 </body>
