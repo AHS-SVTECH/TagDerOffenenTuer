@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -111,6 +111,75 @@
             display: none;
             color: red;
         }
+
+        /* --- NEUES DESIGN FÜR TECHNIKER BUTTON --- */
+        .tech-wrapper {
+            padding: 0 30px 20px 30px;
+            text-align: center;
+            border-top: 1px solid #eee;
+            margin-top: 10px;
+        }
+        
+        #techBtn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        #techBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        #techBtn:active {
+            transform: translateY(0);
+        }
+
+        #techFeedback {
+            display: none; /* Am Anfang ausgeblendet */
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #d4edda;
+            color: #155724;
+            border-radius: 8px;
+            border: 1px solid #c3e6cb;
+            animation: slideUp 0.5s ease-out;
+        }
+        
+        #techFeedback h3 {
+            margin: 0 0 5px 0;
+            font-size: 18px;
+        }
+        
+        #techFeedback p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .pulse-icon {
+            display: inline-block;
+            margin-right: 5px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
     </style>
   </head>
   <body>
@@ -133,6 +202,18 @@
                         <div style="clear: both;"></div>
                     </div>
                 </div>
+
+                <div class="tech-wrapper">
+                    <button id="techBtn" type="button">
+                        🔧 Techniker anfordern (Test)
+                    </button>
+
+                    <div id="techFeedback">
+                        <h3><span class="pulse-icon">✅</span> Techniker ist unterwegs!</h3>
+                        <p>Die Anforderung wurde gesendet.</p>
+                    </div>
+                </div>
+
                 <div id="securecontext" class="error">
                     <p>
                         Sorry, but password protection only works over a secure connection. Please load this page via HTTPS.
@@ -146,9 +227,7 @@
             </div>
         </div>
     </div>
-    <div id="attribution">
-        Protected by <a href="https://pagecrypt.lupine.dev/">PageCrypt</a>
-    </div>
+
     <script>
     (function() {
 
@@ -294,6 +373,29 @@
             }
         }
     })();
+
+              // --- TECHNIKER BUTTON LOGIK ---
+        document.getElementById('techBtn').onclick = function() {
+            var btn = document.getElementById('techBtn');
+            var feedback = document.getElementById('techFeedback');
+            var url = "https://api.callmebot.com/whatsapp.php?phone=+4915679581535&text=This+is+a+test&apikey=3687194";
+
+            // Button ausblenden
+            btn.style.display = 'none';
+
+            // API im Hintergrund aufrufen (ohne Seite zu verlassen)
+            fetch(url, { mode: 'no-cors' })
+                .then(function() {
+                    // Feedback anzeigen
+                    feedback.style.display = 'block';
+                })
+                .catch(function(err) {
+                    // Auch bei Fehler anzeigen (da no-cors oft opaque ist)
+                    console.log(err);
+                    feedback.style.display = 'block'; 
+                });
+        };
+
     </script>
   </body>
 </html>
