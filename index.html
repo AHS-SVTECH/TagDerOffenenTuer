@@ -3,122 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AHS Interactive Kiosk</title>
+    <title>AHS Interactive Terminal</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         :root {
             --primary: #007aff;
             --secondary: #5856d6;
-            --verified: #1d9bf0; /* Twitter/Insta Blue */
-            --glass-bg: rgba(255, 255, 255, 0.85);
-            --glass-border: 1px solid rgba(255, 255, 255, 0.6);
-            --shadow-soft: 0 10px 40px rgba(0,0,0,0.08);
+            --verified: #1d9bf0;
+            --bg-grad: linear-gradient(135deg, #f0f2f5 0%, #d9e2ec 100%);
+            --glass: rgba(255, 255, 255, 0.9);
+            --shadow: 0 15px 40px rgba(0,0,0,0.08);
             
             /* Untis Farben */
-            --u-green: #2ecc71; /* Events/Änderung */
-            --u-red: #e74c3c;   /* Entfall */
+            --u-orange: #ff9500;
+            --u-green: #2ecc71; 
+            --u-red: #e74c3c;
+            --u-blue: #3498db;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; user-select: none; }
 
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: var(--bg-grad);
             height: 100vh;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            display: flex; flex-direction: column;
         }
 
         /* --- BACKGROUND ANIMATION --- */
-        .ambient-bg {
+        .ambient {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-            background: 
-                radial-gradient(circle at 10% 10%, rgba(0, 122, 255, 0.1) 0%, transparent 40%),
-                radial-gradient(circle at 90% 90%, rgba(88, 86, 214, 0.15) 0%, transparent 40%);
-            animation: breathe 10s infinite alternate;
+            background: radial-gradient(circle at 50% 50%, rgba(0,122,255,0.05), transparent 60%);
+            animation: pulseBg 8s infinite alternate;
         }
-        @keyframes breathe { 0% { opacity: 0.5; transform: scale(1); } 100% { opacity: 1; transform: scale(1.1); } }
+        @keyframes pulseBg { 0% { transform: scale(1); } 100% { transform: scale(1.2); } }
 
         /* --- HEADER --- */
         header {
-            flex: 0 0 auto;
             padding: 1rem 2rem;
             display: flex; justify-content: space-between; align-items: center;
-            background: rgba(255,255,255,0.7); backdrop-filter: blur(15px);
+            background: rgba(255,255,255,0.8); backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(255,255,255,0.5);
             z-index: 50;
         }
-
         .brand { display: flex; align-items: center; gap: 15px; }
-        .brand img { height: 50px; }
-        .brand h1 { font-size: 1.5rem; color: #333; font-weight: 800; letter-spacing: -0.5px; }
+        .brand img { height: 55px; }
+        .brand h1 { font-size: 1.6rem; color: #222; font-weight: 800; }
         
-        .lang-switch { background: rgba(0,0,0,0.05); padding: 5px; border-radius: 50px; display: flex; gap: 5px; }
+        .lang-switch { display: flex; gap: 5px; background: rgba(0,0,0,0.05); padding: 5px; border-radius: 50px; }
         .lang-btn {
-            border: none; background: transparent; padding: 8px 16px; border-radius: 40px;
+            border: none; background: transparent; padding: 8px 18px; border-radius: 40px;
             font-weight: 700; color: #666; cursor: pointer; transition: 0.3s;
         }
-        .lang-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .lang-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
 
-        /* --- MAIN GRID (RESPONSIVE) --- */
+        /* --- MAIN GRID --- */
         main {
-            flex: 1;
-            padding: 2rem;
+            flex: 1; padding: 2rem;
             display: grid;
-            /* Automatische Anpassung: Mindestens 300px breit, so viele wie passen */
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            grid-auto-rows: minmax(200px, auto);
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 1.5rem;
             overflow-y: auto;
-            align-content: center; /* Zentriert Inhalte vertikal bei großen Screens */
+            align-content: center;
         }
 
-        /* CARD STYLING */
+        /* CARD */
         .card {
-            background: var(--glass-bg);
-            border: var(--glass-border);
-            border-radius: 24px;
+            background: var(--glass);
+            border-radius: 25px;
             padding: 2rem;
             text-align: center;
-            box-shadow: var(--shadow-soft);
+            box-shadow: var(--shadow);
             cursor: pointer;
             transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             position: relative;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border: 2px solid transparent;
         }
-
-        /* Hover Effekt (manuell) */
+        .card:hover { transform: translateY(-8px); border-color: rgba(0,122,255,0.3); }
         .card:active { transform: scale(0.96); }
-        
-        /* Auto-Animation Klasse (wird per JS hinzugefügt) */
-        .card.attract-pulse { animation: mildPulse 1s ease; }
-        .card.attract-shake { animation: mildShake 0.8s ease; }
+
+        .card.pulse-anim { animation: subtleBounce 1s ease; }
 
         .card img { height: 70px; margin-bottom: 15px; object-fit: contain; }
         .card h3 { font-size: 1.4rem; margin-bottom: 8px; color: #222; }
         .card p { font-size: 0.95rem; color: #666; line-height: 1.4; }
 
-        /* Breite Karte für Fabi & Leon */
-        .card-wide {
-            grid-column: span 2; /* Nimmt 2 Spalten ein, wenn Platz ist */
-            background: linear-gradient(120deg, #ffffff 0%, #f0f7ff 100%);
-            flex-direction: row; text-align: left; padding-left: 3rem;
+        /* Fabi & Leon Card Special */
+        .card-fabi {
+            grid-column: span 2; /* 2 Spalten breit */
+            background: linear-gradient(120deg, #fff 0%, #f0f7ff 100%);
+            flex-direction: row; text-align: left; padding: 0 3rem;
         }
-        /* Fallback für kleine Screens: doch nur 1 Spalte */
-        @media (max-width: 800px) { .card-wide { grid-column: span 1; flex-direction: column; text-align: center; padding: 2rem; } }
+        @media(max-width: 900px) { .card-fabi { grid-column: span 1; flex-direction: column; text-align: center; padding: 2rem; } }
 
-        .verified-badge { color: var(--verified); margin-left: 8px; font-size: 1.2rem; }
+        .tag { background: rgba(0,122,255,0.1); color: var(--primary); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; display: inline-block; margin: 5px 2px; }
 
-        .tag-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-        .tag { background: rgba(0,122,255,0.1); color: var(--primary); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
-
-        /* --- MODALS (VOLLBILD) --- */
+        /* --- MODALS --- */
         .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(240, 242, 245, 0.95); backdrop-filter: blur(10px);
+            background: rgba(240, 242, 245, 0.95); backdrop-filter: blur(15px);
             z-index: 100;
             display: none; flex-direction: column;
             opacity: 0; transition: opacity 0.4s;
@@ -133,133 +120,257 @@
             background: #ff3b30; color: white; border: none; padding: 10px 20px;
             border-radius: 50px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px;
         }
-        .close-btn:hover { background: #d32f2f; }
 
-        .modal-content { flex: 1; overflow-y: auto; padding: 2rem; display: flex; justify-content: center; }
+        .modal-content { 
+            flex: 1; overflow-y: auto; padding: 2rem; 
+            display: flex; flex-direction: column; align-items: center;
+        }
 
-        /* IFRAME CONTAINER (Full Size) */
-        .iframe-full { width: 100%; height: 100%; border: none; border-radius: 12px; background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        /* EXPLANATION TEXT BOXES inside Modal */
+        .explain-box {
+            background: white; padding: 20px; border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 25px;
+            max-width: 900px; width: 100%; text-align: left;
+            border-left: 5px solid var(--primary);
+        }
+        .explain-box h3 { margin-bottom: 10px; color: var(--primary); font-size: 1.3rem; }
+        .explain-box p { color: #444; line-height: 1.6; margin-bottom: 10px; }
 
-        /* UNTIS TABLE */
-        .untis-box { width: 100%; max-width: 900px; background: white; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
-        .untis-row { display: flex; border-bottom: 1px solid #eee; padding: 15px; align-items: center; }
-        .u-time { width: 70px; font-weight: bold; color: #888; font-size: 0.9rem; }
-        .u-info { flex: 1; }
-        .u-status { padding: 5px 10px; border-radius: 6px; color: white; font-size: 0.8rem; font-weight: bold; }
+        /* FULL WEEK UNTIS TABLE */
+        .untis-container { overflow-x: auto; width: 100%; max-width: 1200px; background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 10px; }
         
-        .st-green { background: var(--u-green); }
-        .st-red { background: var(--u-red); text-decoration: line-through; opacity: 0.6; }
+        .untis-table { width: 100%; border-collapse: collapse; min-width: 800px; }
+        .untis-table th { background: #f8f9fa; padding: 15px; border-bottom: 2px solid #ddd; color: #555; }
+        .untis-table td { padding: 10px; border: 1px solid #eee; vertical-align: top; height: 100px; width: 18%; }
+        
+        .u-time-col { width: 8% !important; font-weight: bold; color: #888; text-align: center; vertical-align: middle !important; background: #fafafa; }
 
-        /* TIMEOUT ALERT */
+        .u-block { padding: 8px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 5px; }
+        .ub-norm { background: #f0f0f0; border-left: 3px solid #ccc; }
+        .ub-green { background: rgba(46, 204, 113, 0.15); border-left: 3px solid var(--u-green); }
+        .ub-red { background: rgba(231, 76, 60, 0.15); border-left: 3px solid var(--u-red); }
+        
+        .ub-subj { font-weight: 800; display: block; }
+        .ub-info { font-size: 0.75rem; color: #666; }
+        .st-badge { display: inline-block; font-size: 0.7rem; color: white; padding: 2px 6px; border-radius: 4px; margin-top: 4px; }
+
+        /* TIMEOUT */
         .timeout-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); z-index: 2000;
-            display: none; justify-content: center; align-items: center; text-align: center; color: white;
-            flex-direction: column;
+            background: rgba(0,0,0,0.85); z-index: 2000;
+            display: none; flex-direction: column; justify-content: center; align-items: center; color: white;
+            text-align: center;
         }
         .timeout-overlay.visible { display: flex; animation: fadeIn 0.3s; }
 
-        @keyframes mildPulse { 0% {transform: scale(1);} 50% {transform: scale(1.03); box-shadow: 0 20px 50px rgba(0,122,255,0.3);} 100% {transform: scale(1);} }
-        @keyframes mildShake { 0% {transform: rotate(0deg);} 25% {transform: rotate(2deg);} 75% {transform: rotate(-2deg);} 100% {transform: rotate(0deg);} }
+        /* Social Grid */
+        .social-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; width: 100%; max-width: 900px; }
+        .social-item { background: white; padding: 20px; border-radius: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .social-item img { width: 100%; max-width: 150px; border-radius: 10px; mix-blend-mode: multiply; }
+
+        @keyframes subtleBounce { 0% {transform: scale(1);} 50% {transform: scale(1.03);} 100% {transform: scale(1);} }
         @keyframes fadeIn { from {opacity:0} to {opacity:1} }
 
     </style>
 </head>
 <body>
 
-    <div class="ambient-bg"></div>
+    <div class="ambient"></div>
 
     <header>
         <div class="brand">
             <img src="https://www.anton-hansen-schule.de/fileadmin/anton_hansen/lay/logo_ahs.png" alt="AHS">
             <div>
                 <h1>Tag der offenen Tür</h1>
-                <small data-text="subtitle">Interactive Whiteboard Terminal</small>
+                <small data-txt="sub">Interaktives Whiteboard System</small>
             </div>
         </div>
         <div class="lang-switch">
-            <button class="lang-btn active" onclick="setLanguage('de')">DE</button>
-            <button class="lang-btn" onclick="setLanguage('en')">EN</button>
-            <button class="lang-btn" onclick="setLanguage('fr')">FR</button>
+            <button class="lang-btn active" onclick="setLang('de')">DE</button>
+            <button class="lang-btn" onclick="setLang('en')">EN</button>
+            <button class="lang-btn" onclick="setLang('fr')">FR</button>
         </div>
     </header>
 
-    <main id="card-grid">
+    <main id="main-grid">
         <div class="card" onclick="openModal('untis')">
             <img src="../images/Untis-Logo.svg" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2693/2693507.png'">
-            <h3 data-text="untis_t">WebUntis</h3>
-            <p data-text="untis_d">Digitaler Stundenplan.</p>
-        </div>
-
-        <div class="card" onclick="openModal('sdui')">
-            <img src="../images/Sduilogo.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3059/3059997.png'">
-            <h3 data-text="sdui_t">Sdui</h3>
-            <p data-text="sdui_d">Unser Messenger.</p>
+            <h3 data-txt="untis_t">WebUntis</h3>
+            <p data-txt="untis_d">Digitales Klassenbuch & Stundenplan.</p>
         </div>
 
         <div class="card" onclick="openModal('taskcards')">
             <img src="../images/taskcardslogo.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3065/3065780.png'">
-            <h3 data-text="tc_t">TaskCards</h3>
-            <p data-text="tc_d">Digitale Pinnwände.</p>
+            <h3 data-txt="tc_t">TaskCards</h3>
+            <p data-txt="tc_d">Lernzeit & Digitale Aufgaben.</p>
         </div>
 
-        <div class="card" onclick="openModal('web-school')">
-            <img src="https://www.anton-hansen-schule.de/fileadmin/anton_hansen/lay/logo_ahs.png">
-            <h3 data-text="web_s_t">Schul-Homepage</h3>
-            <p data-text="web_s_d">www.anton-hansen-schule.de</p>
+        <div class="card" onclick="openModal('sdui')">
+            <img src="../images/Sduilogo.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3059/3059997.png'">
+            <h3 data-txt="sdui_t">Sdui</h3>
+            <p data-txt="sdui_d">Sichere Kommunikation.</p>
         </div>
 
-        <div class="card card-wide" onclick="openModal('web-fabi')">
+        <div class="card card-fabi" onclick="openModal('fabi')">
             <div style="flex:1;">
-                <h3>Fabi & Leon <i class="fa-solid fa-circle-check verified-badge"></i></h3>
-                <p data-text="fabi_d">Development, SV & Social Media.</p>
-                <div class="tag-container">
+                <h3>Fabi & Leon <i class="fa-solid fa-circle-check" style="color:var(--verified);"></i></h3>
+                <p data-txt="fabi_d">Content Creator, Podcast & SV.</p>
+                <div style="margin-top:10px;">
                     <span class="tag">Stellv. Schülersprecher</span>
-                    <span class="tag">Tech-Team</span>
-                    <span class="tag">Regionalkonferenz</span>
+                    <span class="tag">Social Media Team</span>
+                    <span class="tag">Schule ohne Rassismus</span>
                 </div>
             </div>
-            <img src="www.fabiundleon.de/images/Logo.png" style="height: 100px; border-radius: 10px;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4712/4712109.png'">
+            <img src="https://www.fabiundleon.de/images/Logo_rounded.png" style="height: 100px; border-radius: 15px;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4712/4712109.png'">
         </div>
 
         <div class="card" onclick="openModal('social')">
             <img src="../images/InstaLogo.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1384/1384063.png'">
-            <h3 data-text="soc_t">Social Media</h3>
-            <p data-text="soc_d">QR-Codes scannen.</p>
+            <h3 data-txt="soc_t">Social Media</h3>
+            <p data-txt="soc_d">YouTube, Spotify & News.</p>
+        </div>
+        
+        <div class="card" onclick="openModal('website')">
+            <img src="https://www.anton-hansen-schule.de/fileadmin/anton_hansen/lay/logo_ahs.png">
+            <h3 data-txt="web_t">Homepage</h3>
+            <p data-txt="web_d">www.anton-hansen-schule.de</p>
         </div>
     </main>
 
     <div id="modal-untis" class="modal">
         <div class="modal-header">
-            <h2 data-text="untis_head">📅 WebUntis Simulation</h2>
+            <h2>📅 WebUntis Demo</h2>
             <button class="close-btn" onclick="closeAll()">Schließen</button>
         </div>
         <div class="modal-content">
-            <div class="untis-box">
-                <div class="untis-row" style="background:#f9f9f9;"><b>Zeit</b><b style="flex:1; margin-left:15px;">Fach / Info</b><b>Status</b></div>
+            <div class="explain-box">
+                <h3 data-txt="untis_exp_h">Was ist WebUntis?</h3>
+                <p data-txt="untis_exp_t1">WebUntis ist unser <b>digitales Klassenbuch</b>. Hier sehen Schüler, Eltern und Lehrer den aktuellen Stundenplan in Echtzeit.</p>
+                <p data-txt="untis_exp_t2">Keine Zettelwirtschaft mehr! Wenn ein Lehrer krank ist, erscheint die Stunde rot (Entfall) oder grün (Vertretung). Auch Hausaufgaben können hier eingesehen werden.</p>
+                <p style="font-size:0.8rem; color:#888;">👇 Unten siehst du eine beispielhafte Woche.</p>
+            </div>
+
+            <div class="untis-container">
+                <table class="untis-table">
+                    <thead>
+                        <tr>
+                            <th class="u-time-col">Zeit</th>
+                            <th>Montag</th>
+                            <th>Dienstag</th>
+                            <th>Mittwoch</th>
+                            <th>Donnerstag</th>
+                            <th>Freitag</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="u-time-col">07:55</td>
+                            <td><div class="u-block ub-norm"><span class="ub-subj">Mathe</span><span class="ub-info">R202 | Hr. Müller</span></div></td>
+                            <td><div class="u-block ub-norm"><span class="ub-subj">Deutsch</span><span class="ub-info">R105 | Fr. Schmidt</span></div></td>
+                            <td><div class="u-block ub-green"><span class="ub-subj">Sport</span><span class="ub-info">Halle | Vertretung</span><span class="st-badge" style="background:var(--u-green);">Vertretung</span></div></td>
+                            <td><div class="u-block ub-norm"><span class="ub-subj">Englisch</span><span class="ub-info">R303 | Mr. Jones</span></div></td>
+                            <td><div class="u-block ub-norm"><span class="ub-subj">GL</span><span class="ub-info">R102 | Fr. Geschichte</span></div></td>
+                        </tr>
+                        <tr>
+                            <td class="u-time-col">08:40</td>
+                            <td><div class="u-block ub-norm"><span class="ub-subj">Mathe</span><span class="ub-info">R202 | Hr. Müller</span></div></td>
+                            <td><div class="u-block ub-norm"><span class="ub-subj">Deutsch</span><span class="ub-info">R105 | Fr. Schmidt</span></div></td>
+                            <td><div class="u-block ub-norm"><span class="ub-subj">Sport</span><span class="ub-info">Halle | Hr. Fit</span></div></td>
+                            <td><div class="u-block ub-red"><span class="ub-subj" style="text-decoration:line-through">Kunst</span><span class="ub-info">Entfall</span><span class="st-badge" style="background:var(--u-red);">Entfall</span></div></td>
+                            <td><div class="u-block ub-norm"><span class="ub-subj">GL</span><span class="ub-info">R102 | Fr. Geschichte</span></div></td>
+                        </tr>
+                        <tr>
+                            <td class="u-time-col">09:45</td>
+                            <td><div class="u-block ub-green"><span class="ub-subj">SV-Sitzung</span><span class="ub-info">Aula | Alle Klassenspr.</span><span class="st-badge" style="background:var(--u-green);">Event</span></div></td>
+                            <td><div class="u-block ub-norm"><span class="ub-subj">Bio</span><span class="ub-info">Saal 2 | Hr. Natur</span></div></td>
+                            <td><div class="u-block ub-norm"><span class="ub-subj">Reli</span><span class="ub-info">R004 | Fr. Kirche</span></div></td>
+                            <td><div class="u-block ub-norm"><span class="ub-subj">Chemie</span><span class="ub-info">Saal 1 | Hr. Knall</span></div></td>
+                            <td><div class="u-block ub-norm"><span class="ub-subj">Tutor</span><span class="ub-info">R105 | Klassenlehrer</span></div></td>
+                        </tr>
+                        <tr>
+                            <td class="u-time-col">10:35</td>
+                            <td><div class="u-block ub-norm"><span class="ub-subj">Englisch</span><span class="ub-info">R303 | Mr. Jones</span></div></td>
+                            <td><div class="u-block ub-norm"><span class="ub-subj">Bio</span><span class="ub-info">Saal 2 | Hr. Natur</span></div></td>
+                            <td><div class="u-block ub-norm"><span class="ub-subj">Reli</span><span class="ub-info">R004 | Fr. Kirche</span></div></td>
+                            <td><div class="u-block ub-norm"><span class="ub-subj">Chemie</span><span class="ub-info">Saal 1 | Hr. Knall</span></div></td>
+                            <td><div class="u-block ub-green"><span class="ub-subj">Wandertag</span><span class="ub-info">Wald | Klasse 9a</span><span class="st-badge" style="background:var(--u-green);">Event</span></div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-taskcards" class="modal">
+        <div class="modal-header">
+            <h2>TaskCards & Lernzeit</h2>
+            <button class="close-btn" onclick="closeAll()">Schließen</button>
+        </div>
+        <div class="modal-content">
+            <div class="explain-box">
+                <h3 data-txt="tc_exp_h">Lernzeit & Wochenplan</h3>
+                <p data-txt="tc_exp_t1">An der AHS haben wir die <b>Lernzeit</b>. Das sind spezielle Stunden, in denen Schüler selbstständig Aufgaben erledigen.</p>
+                <p data-txt="tc_exp_t2">Diese Aufgaben erscheinen jeden <b>Montag</b> digital auf TaskCards. Es ist wie eine digitale Pinnwand. Lehrer laden Arbeitsblätter, Videos oder Links hoch, und Schüler können sie zu Hause oder in der Schule bearbeiten.</p>
+            </div>
+            <iframe src="https://lk-nk.taskcards.app/#/board/f4c46a53-4fc9-4146-9dcb-6eb3d81da2a4/view?token=90d399d5-4e3b-4ef3-a763-40cf6c18c262" style="width:100%; height:600px; border:none; border-radius:10px;"></iframe>
+        </div>
+    </div>
+
+    <div id="modal-fabi" class="modal">
+        <div class="modal-header">
+            <h2>Fabi & Leon <i class="fa-solid fa-circle-check" style="color:var(--verified);"></i></h2>
+            <button class="close-btn" onclick="closeAll()">Schließen</button>
+        </div>
+        <div class="modal-content" style="align-items: center;">
+            <div class="explain-box">
+                <h3>Wer sind Fabi & Leon?</h3>
+                <p>Wir sind Schüler der AHS, stellvertretende Schülersprecher und engagieren uns in der SV (Schülervertretung) sowie der Schulregionalkonferenz.</p>
+                <p>Als <b>Content Creator</b> produzieren wir Videos für den Schul-YouTube-Kanal und managen den Spotify-Podcast der Schule. Wir haben auch dieses Info-Terminal programmiert!</p>
+            </div>
+            
+            <div style="display:flex; flex-wrap:wrap; gap:30px; justify-content:center; margin-top:20px;">
+                <div style="text-align:center;">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://www.fabiundleon.de/Social-Media/" style="width:200px; border-radius:15px; border:1px solid #ddd;">
+                    <p style="margin-top:10px; font-weight:bold;">Alle Social Media Links</p>
+                    <small>Scanne für Insta, YouTube & mehr</small>
+                </div>
                 
-                <div class="untis-row">
-                    <div class="u-time">07:55</div>
-                    <div class="u-info" style="text-decoration: line-through;">Mathe (Herr Müller) - R204</div>
-                    <div class="u-status st-red">Entfall</div>
+                <div style="text-align:center;">
+                    <img src="https://www.fabiundleon.de/images/Logo_rounded.png" style="width:200px; border-radius:15px;">
+                    <p style="margin-top:10px;"><b>www.fabiundleon.de</b></p>
+                    <button onclick="window.open('https://www.fabiundleon.de')" style="margin-top:5px; padding:10px 20px; background:var(--primary); color:white; border:none; border-radius:20px; cursor:pointer;">Webseite öffnen</button>
                 </div>
+            </div>
+        </div>
+    </div>
 
-                <div class="untis-row">
-                    <div class="u-time">08:40</div>
-                    <div class="u-info">Englisch (Vertretung Fr. Klein) - R105</div>
-                    <div class="u-status st-green">Vertretung</div>
+    <div id="modal-social" class="modal">
+        <div class="modal-header">
+            <h2>Schul-News & Social Media</h2>
+            <button class="close-btn" onclick="closeAll()">Schließen</button>
+        </div>
+        <div class="modal-content">
+            <div class="explain-box">
+                <h3>Immer informiert</h3>
+                <p>Unsere Schule ist modern und digital. Folgen Sie uns auf Instagram für aktuelle Bilder, schauen Sie Videos auf YouTube oder hören Sie unseren Schul-Podcast auf Spotify.</p>
+                <p><b>Aktueller RSS Feed:</b> ahs-rss.fabiundleon.de</p>
+            </div>
+
+            <div class="social-grid">
+                <div class="social-item">
+                    <img src="../images/SchuleQR.jpg" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?data=https://youtube.com/ahs'">
+                    <h3>YouTube</h3>
+                    <p>Schulfilme & Projekte</p>
                 </div>
-
-                <div class="untis-row">
-                    <div class="u-time">09:45</div>
-                    <div class="u-info">SV-Sitzung (Aula)</div>
-                    <div class="u-status st-green">Veranstaltung</div>
+                <div class="social-item">
+                    <img src="../images/InstaQR.jpg" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?data=https://instagram.com/ahs'">
+                    <h3>Instagram</h3>
+                    <p>Bilder aus dem Schulalltag</p>
                 </div>
-
-                <div class="untis-row">
-                    <div class="u-time">10:35</div>
-                    <div class="u-info">Deutsch - Regulär</div>
-                    <div class="u-status" style="background:#ccc; color:#333;">Normal</div>
+                <div class="social-item">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?data=https://open.spotify.com/show/1gg6Ky5FUDwSekAQ9IdEdv?si=JuAGbeWQR3yxGVKcvWZ6-A" alt="Spotify">
+                    <h3>Spotify Podcast</h3>
+                    <p>Hier reinhören!</p>
                 </div>
             </div>
         </div>
@@ -267,62 +378,26 @@
 
     <div id="modal-sdui" class="modal">
         <div class="modal-header">
-            <h2>Sdui Video</h2>
+            <h2>Sdui Messenger</h2>
             <button class="close-btn" onclick="closeAll()">Schließen</button>
         </div>
         <div class="modal-content">
-            <iframe width="100%" height="100%" style="max-width: 900px; max-height: 500px; border-radius:15px;" src="https://www.youtube.com/embed/npTVuzEj42o?enablejsapi=1" frameborder="0" allowfullscreen></iframe>
+            <div class="explain-box">
+                <h3>Sichere Kommunikation</h3>
+                <p>Sdui ersetzt WhatsApp-Gruppen und Telefonketten. Es ist unser Datenschutz-konformer Messenger für Eltern, Lehrer und Schüler.</p>
+                <p>Krankmeldungen, Elternbriefe und Infos kommen direkt aufs Handy. Übersetzt in alle Sprachen!</p>
+            </div>
+            <iframe width="100%" height="450" style="border-radius:15px; max-width:800px;" src="https://www.youtube.com/embed/npTVuzEj42o?enablejsapi=1" frameborder="0" allowfullscreen></iframe>
         </div>
     </div>
 
-    <div id="modal-taskcards" class="modal">
+    <div id="modal-website" class="modal">
         <div class="modal-header">
-            <h2>TaskCards</h2>
+            <h2>Schul-Webseite</h2>
             <button class="close-btn" onclick="closeAll()">Schließen</button>
         </div>
         <div class="modal-content" style="padding:0;">
-            <iframe class="iframe-full" src="https://lk-nk.taskcards.app/#/board/f4c46a53-4fc9-4146-9dcb-6eb3d81da2a4/view?token=90d399d5-4e3b-4ef3-a763-40cf6c18c262"></iframe>
-        </div>
-    </div>
-
-    <div id="modal-web-school" class="modal">
-        <div class="modal-header">
-            <h2>www.anton-hansen-schule.de</h2>
-            <button class="close-btn" onclick="closeAll()">Schließen</button>
-        </div>
-        <div class="modal-content" style="padding:0;">
-            <iframe class="iframe-full" src="https://www.anton-hansen-schule.de"></iframe>
-        </div>
-    </div>
-
-    <div id="modal-web-fabi" class="modal">
-        <div class="modal-header">
-            <h2>Fabi & Leon <i class="fa-solid fa-circle-check verified-badge"></i></h2>
-            <button class="close-btn" onclick="closeAll()">Schließen</button>
-        </div>
-        <div class="modal-content" style="padding:0;">
-            <iframe class="iframe-full" src="https://www.fabiundleon.de"></iframe>
-        </div>
-    </div>
-
-    <div id="modal-social" class="modal">
-        <div class="modal-header">
-            <h2>Scan & Go</h2>
-            <button class="close-btn" onclick="closeAll()">Schließen</button>
-        </div>
-        <div class="modal-content" style="flex-direction: row; flex-wrap: wrap; gap: 30px; align-items: center;">
-            <div style="text-align:center;">
-                <img src="../images/InstaQR.jpg" style="width:200px; border-radius:10px;" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Instagram'">
-                <h3>Instagram</h3>
-            </div>
-            <div style="text-align:center;">
-                <img src="../images/SchuleQR.jpg" style="width:200px; border-radius:10px;" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Youtube'">
-                <h3>YouTube</h3>
-            </div>
-             <div style="text-align:center;">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://www.fabiundleon.de/Social-Media/" style="width:200px; border-radius:10px;">
-                <h3>Fabi & Leon</h3>
-            </div>
+            <iframe src="https://www.anton-hansen-schule.de" style="width:100%; height:100%; border:none;"></iframe>
         </div>
     </div>
 
@@ -334,81 +409,77 @@
     </div>
 
     <script>
-        // --- TEXT DATA ---
-        const texts = {
+        /* --- TEXT DATA FOR TRANSLATION --- */
+        const textData = {
             de: {
-                subtitle: "Interaktives Terminal",
-                untis_t: "WebUntis", untis_d: "Stundenplan Live",
-                sdui_t: "Sdui", sdui_d: "Messenger & Co.",
-                tc_t: "TaskCards", tc_d: "Digitale Pinnwand",
-                web_s_t: "Homepage", web_s_d: "Schul-Website",
-                fabi_d: "Entwicklung & SV",
-                soc_t: "Social Media", soc_d: "Zum Mitnehmen",
-                untis_head: "📅 WebUntis Simulation"
+                sub: "Interaktives Whiteboard System",
+                untis_t: "WebUntis", untis_d: "Digitales Klassenbuch & Stundenplan.",
+                tc_t: "TaskCards", tc_d: "Lernzeit & Digitale Aufgaben.",
+                sdui_t: "Sdui", sdui_d: "Sichere Kommunikation.",
+                fabi_d: "Content Creator, Podcast & SV.",
+                soc_t: "Social Media", soc_d: "YouTube, Spotify & News.",
+                web_t: "Homepage", web_d: "www.anton-hansen-schule.de",
+                untis_exp_h: "Was ist WebUntis?",
+                untis_exp_t1: "WebUntis ist unser digitales Klassenbuch...",
+                tc_exp_h: "Lernzeit & Wochenplan",
+                tc_exp_t1: "An der AHS haben wir die Lernzeit..."
             },
             en: {
-                subtitle: "Interactive Terminal",
-                untis_t: "WebUntis", untis_d: "Live Timetable",
-                sdui_t: "Sdui", sdui_d: "Messenger App",
-                tc_t: "TaskCards", tc_d: "Digital Board",
-                web_s_t: "Homepage", web_s_d: "School Website",
-                fabi_d: "Devs & Student Council",
-                soc_t: "Social Media", soc_d: "Scan to go",
-                untis_head: "📅 Timetable Demo"
+                sub: "Interactive Whiteboard System",
+                untis_t: "WebUntis", untis_d: "Digital Register & Timetable.",
+                tc_t: "TaskCards", tc_d: "Study Time & Digital Tasks.",
+                sdui_t: "Sdui", sdui_d: "Secure Messaging.",
+                fabi_d: "Content Creators, Podcast & Student Council.",
+                soc_t: "Social Media", soc_d: "YouTube, Spotify & News.",
+                web_t: "Website", web_d: "School Homepage",
+                untis_exp_h: "What is WebUntis?",
+                untis_exp_t1: "WebUntis is our digital class register. Students and parents see the schedule in real-time.",
+                tc_exp_h: "Study Time & Weekly Plan",
+                tc_exp_t1: "We have special study hours where students solve tasks uploaded every Monday."
             },
             fr: {
-                subtitle: "Terminal Interactif",
-                untis_t: "WebUntis", untis_d: "Emploi du temps",
-                sdui_t: "Sdui", sdui_d: "Messagerie",
-                tc_t: "TaskCards", tc_d: "Tableau numérique",
-                web_s_t: "Site Web", web_s_d: "Site de l'école",
-                fabi_d: "Dév & Conseil des élèves",
-                soc_t: "Réseaux Sociaux", soc_d: "Scannez-moi",
-                untis_head: "📅 Simulation Horaire"
+                sub: "Système de Tableau Blanc Interactif",
+                untis_t: "WebUntis", untis_d: "Cahier de textes numérique.",
+                tc_t: "TaskCards", tc_d: "Temps d'étude & Tâches.",
+                sdui_t: "Sdui", sdui_d: "Messagerie sécurisée.",
+                fabi_d: "Créateurs de contenu & Conseil des élèves.",
+                soc_t: "Réseaux Sociaux", soc_d: "YouTube, Spotify & Actu.",
+                web_t: "Site Web", web_d: "Page d'accueil de l'école",
+                untis_exp_h: "Qu'est-ce que WebUntis ?",
+                untis_exp_t1: "WebUntis est notre registre numérique. Les changements sont visibles en temps réel.",
+                tc_exp_h: "Temps d'étude",
+                tc_exp_t1: "Nous avons des heures d'étude où les élèves font des exercices mis en ligne chaque lundi."
             }
         };
 
-        // --- STATE & TIMERS ---
-        let currentLang = 'de';
+        /* --- LOGIC --- */
         let idleTime = 0;
         let isModalOpen = false;
-        
-        // Attract Mode Loop
+
+        // Attract Mode Loop (Animations on Start Screen)
         setInterval(() => {
-            // Nur wenn KEIN Fenster offen ist, Animationen abspielen
             if (!isModalOpen) {
                 const cards = document.querySelectorAll('.card');
                 const randomCard = cards[Math.floor(Math.random() * cards.length)];
-                
-                // Zufällige Animation wählen
-                const anim = Math.random() > 0.5 ? 'attract-pulse' : 'attract-shake';
-                
-                randomCard.classList.add(anim);
-                setTimeout(() => randomCard.classList.remove(anim), 1000);
+                randomCard.classList.add('pulse-anim');
+                setTimeout(() => randomCard.classList.remove('pulse-anim'), 1000);
             }
-        }, 4000); // Alle 4 Sekunden wackelt was
+        }, 3000);
 
-        // --- IDLE CHECKER (Läuft jede Sekunde) ---
+        // Idle Timer
         setInterval(() => {
             if (isModalOpen) {
                 idleTime++;
-                // Warnung bei 60s
-                if (idleTime === 60) {
-                    document.getElementById('timeout-alert').classList.add('visible');
-                }
-                // Reset bei 75s
-                if (idleTime >= 75) {
-                    resetSystem();
-                }
+                if(idleTime === 60) document.getElementById('timeout-alert').classList.add('visible');
+                if(idleTime >= 75) resetSystem();
             } else {
-                // Wenn kein Fenster offen ist: Zähler immer auf 0 halten (kein Timeout auf Startseite!)
-                idleTime = 0; 
+                idleTime = 0;
             }
         }, 1000);
 
         function resetSystem() {
             closeAll();
-            setLanguage('de');
+            setLang('de');
             document.getElementById('timeout-alert').classList.remove('visible');
             idleTime = 0;
         }
@@ -418,7 +489,6 @@
             document.getElementById('timeout-alert').classList.remove('visible');
         }
 
-        // --- MODAL LOGIC ---
         function openModal(id) {
             document.getElementById('modal-' + id).classList.add('open');
             isModalOpen = true;
@@ -428,30 +498,27 @@
         function closeAll() {
             document.querySelectorAll('.modal').forEach(el => el.classList.remove('open'));
             isModalOpen = false;
-            
-            // IFRAMES RESET (Damit Video stoppt)
+            // Stop Videos
             document.querySelectorAll('iframe').forEach(iframe => {
-                const url = iframe.src;
-                iframe.src = url;
+                const src = iframe.src;
+                iframe.src = src; 
             });
         }
 
-        // --- LANGUAGE LOGIC ---
-        function setLanguage(lang) {
-            currentLang = lang;
+        function setLang(lang) {
             document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-            document.querySelector(`button[onclick="setLanguage('${lang}')"]`).classList.add('active');
-
-            document.querySelectorAll('[data-text]').forEach(el => {
-                const key = el.getAttribute('data-text');
-                if (texts[lang][key]) el.innerText = texts[lang][key];
+            document.querySelector(`button[onclick="setLang('${lang}')"]`).classList.add('active');
+            
+            // Simple text replacement
+            document.querySelectorAll('[data-txt]').forEach(el => {
+                const key = el.getAttribute('data-txt');
+                if(textData[lang][key]) el.innerHTML = textData[lang][key];
             });
+            resetIdleTimer();
         }
 
-        // Interaktion tracken
-        ['click', 'touchstart', 'mousemove'].forEach(evt => 
-            window.addEventListener(evt, resetIdleTimer)
-        );
+        // Interaction Listeners
+        ['click', 'touchstart', 'mousemove'].forEach(evt => window.addEventListener(evt, resetIdleTimer));
 
     </script>
 </body>
