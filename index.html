@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AHS Interactive Terminal</title>
     
+    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -12,18 +13,17 @@
         :root {
             --primary: #007aff;
             --secondary: #5856d6;
-            --neon-blue: #00f2ff; /* Neon für Animationen */
+            --neon-blue: #00f2ff;
             --verified: #1d9bf0;
             --bg-grad: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
             --glass: rgba(255, 255, 255, 0.95);
-            --shadow: 0 20px 50px rgba(0,0,0,0.1);
+            --shadow: 0 15px 40px rgba(0,0,0,0.08);
             
-            /* Untis Farben (Exakt nach Screenshot) */
-            --u-red: #ff3b30;    /* Entfall */
-            --u-orange: #ff9500; /* Info */
-            --u-green: #2ecc71;  /* Event/Vertretung */
-            --u-grey: #bdc3c7;   /* Normal */
-            --u-bg: #fdfdfd;
+            /* Untis Farben */
+            --u-red: #ff3b30;
+            --u-green: #2ecc71;
+            --u-orange: #ff9500;
+            --u-grey: #bdc3c7;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; user-select: none; }
@@ -35,14 +35,6 @@
             display: flex; flex-direction: column;
         }
 
-        /* --- BACKGROUND EFFECTS --- */
-        .ambient {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-            background: radial-gradient(circle at 50% 50%, rgba(0,242,255,0.05), transparent 70%);
-            animation: pulseBg 8s infinite alternate;
-        }
-        @keyframes pulseBg { 0% { transform: scale(1); } 100% { transform: scale(1.2); } }
-
         /* --- HEADER --- */
         header {
             padding: 1rem 2rem;
@@ -53,13 +45,12 @@
             box-shadow: 0 5px 20px rgba(0,0,0,0.05);
         }
         .brand { display: flex; align-items: center; gap: 20px; }
-        .brand img { height: 65px; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1)); }
+        .brand img { height: 60px; object-fit: contain; }
         .brand h1 { font-size: 1.8rem; color: #222; font-weight: 900; letter-spacing: -1px; text-transform: uppercase; }
-        .brand small { display: block; font-weight: 500; color: var(--primary); font-size: 0.9rem; }
         
         .lang-switch { display: flex; gap: 8px; background: rgba(0,0,0,0.05); padding: 5px; border-radius: 50px; }
         .lang-btn {
-            border: none; background: transparent; padding: 10px 25px; border-radius: 40px;
+            border: none; background: transparent; padding: 10px 20px; border-radius: 40px;
             font-weight: 800; color: #888; cursor: pointer; transition: 0.3s; font-size: 1rem;
         }
         .lang-btn.active { background: var(--primary); color: white; box-shadow: 0 5px 15px rgba(0,122,255,0.4); transform: scale(1.05); }
@@ -68,7 +59,7 @@
         main {
             flex: 1; padding: 2rem;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 2rem;
             overflow-y: auto;
             align-content: center;
@@ -77,7 +68,7 @@
         /* CARD DESIGN */
         .card {
             background: var(--glass);
-            border-radius: 30px;
+            border-radius: 25px;
             padding: 2rem;
             text-align: center;
             box-shadow: var(--shadow);
@@ -85,40 +76,37 @@
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             position: relative;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            border: 3px solid transparent; /* Für Neon Effekt */
-            overflow: hidden;
+            border: 3px solid transparent; 
         }
         
-        .card:hover { transform: translateY(-10px) scale(1.02); }
+        .card:hover { transform: translateY(-8px) scale(1.02); }
         .card:active { transform: scale(0.98); }
 
-        /* NEON ANIMATIONS (Attract Mode) */
-        .anim-neon { animation: neonFlash 2s ease; }
-        .anim-shake { animation: shake 0.8s ease; }
-        
-        @keyframes neonFlash {
-            0% { border-color: transparent; box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
-            50% { border-color: var(--neon-blue); box-shadow: 0 0 50px var(--neon-blue), inset 0 0 20px rgba(0, 242, 255, 0.2); }
-            100% { border-color: transparent; box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
-        }
-        @keyframes shake {
-            0%, 100% { transform: rotate(0deg); }
-            25% { transform: rotate(2deg); }
-            75% { transform: rotate(-2deg); }
+        /* Subtile Animation (Attract Mode) */
+        .anim-breathe { animation: breathe 2s ease; }
+        @keyframes breathe {
+            0% { border-color: transparent; box-shadow: var(--shadow); }
+            50% { border-color: var(--neon-blue); box-shadow: 0 0 30px var(--neon-blue); }
+            100% { border-color: transparent; box-shadow: var(--shadow); }
         }
 
-        /* Logo Container */
+        /* Logo Container inside Card */
         .logo-box {
-            height: 100px; width: 100%;
+            height: 90px; width: 100%;
             display: flex; align-items: center; justify-content: center;
             margin-bottom: 20px;
         }
-        .logo-box img { max-height: 100%; max-width: 80%; object-fit: contain; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1)); }
+        .logo-box img { 
+            max-height: 100%; 
+            max-width: 100%; 
+            object-fit: contain; /* WICHTIG: Damit TaskCards Logo passt */
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.05)); 
+        }
 
-        .card h3 { font-size: 1.6rem; margin-bottom: 8px; color: #222; font-weight: 800; }
-        .card p { font-size: 1.1rem; color: #666; line-height: 1.4; }
+        .card h3 { font-size: 1.5rem; margin-bottom: 8px; color: #222; font-weight: 800; }
+        .card p { font-size: 1.05rem; color: #666; line-height: 1.4; }
 
-        /* Fabi & Leon Special */
+        /* Fabi & Leon Special Card */
         .card-fabi {
             grid-column: span 2;
             background: linear-gradient(120deg, #ffffff 0%, #f0f7ff 100%);
@@ -151,64 +139,88 @@
         .close-btn:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(231,76,60,0.4); }
 
         .modal-content { 
-            flex: 1; overflow-y: auto; padding: 3rem; 
+            flex: 1; overflow-y: auto; padding: 2rem; 
             display: flex; flex-direction: column; align-items: center;
         }
 
         /* EXPLAIN BOX */
         .explain-box {
-            background: white; padding: 30px; border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 30px;
+            background: white; padding: 25px; border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 25px;
             max-width: 1000px; width: 100%; text-align: left;
-            border-left: 8px solid var(--primary);
+            border-left: 6px solid var(--primary);
         }
-        .explain-box h3 { margin-bottom: 15px; color: var(--primary); font-size: 1.5rem; }
-        .explain-box p { color: #444; line-height: 1.8; margin-bottom: 15px; font-size: 1.1rem; }
-        .explain-box ul { margin-left: 20px; margin-bottom: 15px; }
-        .explain-box li { margin-bottom: 8px; color: #555; }
+        .explain-box h3 { margin-bottom: 10px; color: var(--primary); font-size: 1.4rem; }
+        .explain-box p { color: #444; line-height: 1.6; margin-bottom: 10px; font-size: 1.05rem; }
 
-        /* UNTIS TABLE (Replicated from Screenshot) */
+        /* UNTIS TABLE STYLING */
         .untis-wrapper { width: 100%; max-width: 1200px; overflow-x: auto; background: white; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); padding: 10px; }
-        .untis-table { width: 100%; border-collapse: separate; border-spacing: 6px; min-width: 900px; }
-        
-        .untis-table th { background: #f1f3f5; color: #555; padding: 15px; font-size: 1.2rem; border-radius: 8px; font-weight: 800; text-align: center; }
-        .untis-table td { vertical-align: top; height: 120px; width: 18%; background: #fff; border-radius: 4px; padding: 0; }
+        .untis-table { width: 100%; border-collapse: separate; border-spacing: 4px; min-width: 900px; }
+        .untis-table th { background: #f1f3f5; color: #555; padding: 15px; font-size: 1.1rem; border-radius: 8px; font-weight: 800; text-align: center; }
+        .untis-table td { vertical-align: top; height: 110px; width: 18%; background: #fff; border-radius: 4px; padding: 0; }
         .td-time { width: 8% !important; background: transparent !important; color: #999; font-weight: bold; text-align: center; vertical-align: top !important; padding-top: 10px !important; font-size: 0.9rem; }
 
-        /* Untis Card Blocks */
         .u-block {
             border-radius: 6px; padding: 8px; margin-bottom: 4px; font-size: 0.9rem;
             display: flex; flex-direction: column; justify-content: center;
             border-left-width: 5px; border-left-style: solid;
-            background: #fdfdfd; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            height: 100%;
+            background: #fdfdfd; box-shadow: 0 1px 3px rgba(0,0,0,0.1); height: 100%;
         }
-        
-        /* Status Colors */
         .st-norm { border-left-color: var(--u-grey); }
         .st-red { border-left-color: var(--u-red); background: #fff5f5; }
         .st-orange { border-left-color: var(--u-orange); background: #fffaf0; }
         .st-green { border-left-color: var(--u-green); background: #f0fff4; }
 
-        .u-subj { font-weight: 800; font-size: 1.1rem; color: #2c3e50; display: block; }
-        .u-info { font-size: 0.85rem; color: #7f8c8d; margin-top: 2px; }
-        .u-room { font-weight: bold; color: #444; font-size: 0.9rem; margin-top: 4px; }
-        
-        /* Cancelled Text style */
-        .txt-canc { text-decoration: line-through; opacity: 0.7; }
+        .u-subj { font-weight: 800; font-size: 1rem; color: #2c3e50; display: block; }
+        .u-info { font-size: 0.8rem; color: #7f8c8d; }
+        .u-room { font-weight: bold; color: #444; font-size: 0.85rem; margin-top: 4px; }
+        .txt-canc { text-decoration: line-through; opacity: 0.6; }
 
-        /* RSS & SOCIAL GRID */
-        .social-layout { display: flex; flex-wrap: wrap; gap: 30px; width: 100%; max-width: 1200px; }
-        .rss-container { flex: 2; min-width: 300px; height: 600px; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 2px solid #eee; }
-        .qr-sidebar { flex: 1; min-width: 250px; display: flex; flex-direction: column; gap: 20px; }
+        /* SOCIAL & RSS LAYOUT (Responsive) */
+        .social-layout { 
+            display: flex; flex-wrap: wrap; gap: 20px; width: 100%; max-width: 1400px; height: 100%; 
+        }
         
-        .qr-card { background: white; padding: 15px; border-radius: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05); cursor: pointer; transition: 0.3s; }
-        .qr-card:hover { transform: translateY(-5px); border: 2px solid var(--primary); }
-        .qr-card img { width: 120px; mix-blend-mode: multiply; }
-        .qr-card h4 { margin-top: 10px; color: #333; }
-        .link-btn { display: block; margin-top: 5px; background: #eee; padding: 5px 10px; border-radius: 20px; font-size: 0.8rem; text-decoration: none; color: #333; font-weight: bold; }
+        /* RSS Links (Groß) */
+        .rss-container { 
+            flex: 2; /* Nimmt 2/3 Platz */
+            min-width: 500px; 
+            background: white; border-radius: 20px; overflow: hidden; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 2px solid #eee;
+            height: 65vh; /* Fixe Höhe für gute Ansicht */
+        }
 
-        /* TIMEOUT OVERLAY */
+        /* QR Rechts (Klein) */
+        .qr-sidebar { 
+            flex: 1; /* Nimmt 1/3 Platz */
+            min-width: 250px; 
+            display: flex; flex-direction: column; gap: 15px; 
+            overflow-y: auto;
+        }
+
+        .qr-card { 
+            background: white; padding: 15px; border-radius: 15px; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05); text-align: center;
+            flex: 1; /* Gleichmäßig verteilen */
+        }
+        .qr-card img { width: 100px; height: 100px; object-fit: contain; margin-bottom: 5px; }
+        .qr-card h4 { margin: 0; font-size: 1rem; color: #333; }
+
+        /* Fabi Leon Split Layout */
+        .fabi-split { display: flex; gap: 30px; width: 100%; max-width: 1000px; flex-wrap: wrap; }
+        .fabi-option { 
+            flex: 1; min-width: 300px; background: white; padding: 30px; border-radius: 20px; 
+            text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); transition: 0.3s;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .fabi-option:hover { transform: translateY(-5px); border: 2px solid var(--primary); }
+        .fabi-btn { 
+            margin-top: 20px; padding: 12px 30px; background: var(--primary); color: white; 
+            border: none; border-radius: 30px; font-weight: bold; font-size: 1.1rem; cursor: pointer; 
+        }
+
+        /* TIMEOUT */
         .timeout-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.9); z-index: 2000;
@@ -216,20 +228,33 @@
             text-align: center;
         }
         .timeout-overlay.visible { display: flex; animation: fadeIn 0.4s; }
-        .timeout-circle { width: 120px; height: 120px; border: 6px solid var(--neon-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 3rem; margin-bottom: 30px; animation: pulse 1s infinite; box-shadow: 0 0 30px var(--neon-blue); }
+        .timeout-circle { 
+            width: 120px; height: 120px; border: 6px solid var(--neon-blue); border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; font-size: 3rem; 
+            margin-bottom: 30px; animation: pulse 1s infinite; box-shadow: 0 0 30px var(--neon-blue); 
+        }
 
         @keyframes fadeIn { from {opacity:0} to {opacity:1} }
         @keyframes pulse { 0% {transform: scale(1);} 50% {transform: scale(1.1);} 100% {transform: scale(1);} }
+
+        /* Media Queries für Handys/Tablets */
+        @media (max-width: 800px) {
+            .social-layout { flex-direction: column; }
+            .rss-container { height: 400px; min-width: 100%; }
+            .qr-sidebar { flex-direction: row; overflow-x: auto; }
+            .qr-card { min-width: 150px; }
+        }
 
     </style>
 </head>
 <body>
 
-    <div class="ambient"></div>
+    <!-- Hintergund -->
+    <div style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1; background: radial-gradient(circle at 50% 50%, rgba(0,122,255,0.05), transparent 70%);"></div>
 
     <header>
         <div class="brand">
-            <img id="logo-header" src="" alt="AHS Logo">
+            <img id="head-logo" src="" alt="Logo">
             <div>
                 <h1 data-i18n="header_title">Tag der offenen Tür</h1>
                 <small data-i18n="header_sub">AHS Interaktives Terminal</small>
@@ -242,123 +267,118 @@
         </div>
     </header>
 
-    <main id="main-grid">
+    <main>
+        <!-- 1. WebUntis -->
         <div class="card" onclick="openModal('untis')">
-            <div class="logo-box"><img id="logo-untis" src="" alt="Untis"></div>
-            <h3 data-i18n="card_untis_title">WebUntis</h3>
-            <p data-i18n="card_untis_desc">Stundenplan & Klassenbuch</p>
+            <div class="logo-box"><img id="icon-untis" src="" alt="Untis"></div>
+            <h3 data-i18n="c_untis">WebUntis</h3>
+            <p data-i18n="d_untis">Stundenplan & Klassenbuch</p>
         </div>
 
+        <!-- 2. TaskCards -->
         <div class="card" onclick="openModal('taskcards')">
-            <div class="logo-box"><img id="logo-taskcards" src="" alt="TaskCards"></div>
-            <h3 data-i18n="card_tc_title">TaskCards</h3>
-            <p data-i18n="card_tc_desc">Lernzeit & Aufgaben</p>
+            <div class="logo-box"><img id="icon-taskcards" src="" alt="TaskCards"></div>
+            <h3 data-i18n="c_tc">TaskCards</h3>
+            <p data-i18n="d_tc">Lernzeit & Aufgaben</p>
         </div>
 
+        <!-- 3. Sdui -->
         <div class="card" onclick="openModal('sdui')">
-            <div class="logo-box"><img id="logo-sdui" src="" alt="Sdui"></div>
-            <h3 data-i18n="card_sdui_title">Sdui</h3>
-            <p data-i18n="card_sdui_desc">Messenger & News</p>
+            <div class="logo-box"><img id="icon-sdui" src="" alt="Sdui"></div>
+            <h3 data-i18n="c_sdui">Sdui</h3>
+            <p data-i18n="d_sdui">Messenger & News</p>
         </div>
 
+        <!-- 4. Fabi & Leon -->
         <div class="card card-fabi" onclick="openModal('fabi')">
             <div style="flex:1;">
                 <h3>Fabi & Leon <i class="fa-solid fa-circle-check" style="color:var(--verified);"></i></h3>
-                <p data-i18n="card_fabi_desc">Content Creator & SV</p>
+                <p data-i18n="d_fabi">Content Creator & SV</p>
                 <div style="margin-top:10px;">
                     <span class="tag" data-i18n="tag_sv">Stellv. Schülersprecher</span>
                     <span class="tag" data-i18n="tag_media">Podcast & YouTube</span>
                 </div>
             </div>
-            <div class="logo-box" style="width: auto; height: 120px;">
-                <img id="logo-fabi" src="" style="border-radius: 15px;">
+            <div class="logo-box" style="width: auto;">
+                <img id="icon-fabi" src="" style="border-radius: 15px;">
             </div>
         </div>
 
+        <!-- 5. Social Media -->
         <div class="card" onclick="openModal('social')">
-            <div class="logo-box"><img id="logo-insta" src="" alt="Social"></div>
-            <h3 data-i18n="card_soc_title">Social Media</h3>
-            <p data-i18n="card_soc_desc">Feed, YouTube, Spotify</p>
+            <div class="logo-box"><img id="icon-insta" src="" alt="Social"></div>
+            <h3 data-i18n="c_soc">Social Media</h3>
+            <p data-i18n="d_soc">Feed, YouTube, Spotify</p>
         </div>
 
-        <div class="card" onclick="openModal('schoolweb')">
-            <div class="logo-box"><img id="logo-school" src="" alt="WWW"></div>
-            <h3 data-i18n="card_web_title">Homepage</h3>
-            <p data-i18n="card_web_desc">anton-hansen-schule.de</p>
+        <!-- 6. Homepage -->
+        <div class="card" onclick="openModal('website')">
+            <div class="logo-box"><img id="icon-school" src="" alt="WWW"></div>
+            <h3 data-i18n="c_web">Homepage</h3>
+            <p data-i18n="d_web">anton-hansen-schule.de</p>
         </div>
     </main>
 
+    <!-- === MODALS === -->
+
+    <!-- UNTIS -->
     <div id="modal-untis" class="modal">
         <div class="modal-header">
-            <h2 data-i18n="modal_untis_head">📅 WebUntis</h2>
+            <h2 data-i18n="m_untis_h">📅 WebUntis</h2>
             <button class="close-btn" onclick="closeAll()"><span data-i18n="btn_close">Schließen</span> <i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="modal-content">
             <div class="explain-box">
-                <h3 data-i18n="untis_exp_h">Dein digitaler Planer</h3>
-                <p data-i18n="untis_exp_t1">Keine Zettelwirtschaft mehr! WebUntis zeigt dir genau, wann du wo sein musst.</p>
-                <p data-i18n="untis_exp_t2">Achte auf die Farben: Rot bedeutet, die Stunde entfällt. Grün sind Veranstaltungen oder Vertretungen.</p>
+                <h3 data-i18n="exp_untis_h">Dein digitaler Planer</h3>
+                <p data-i18n="exp_untis_t">WebUntis zeigt dir immer den aktuellen Plan. Keine Hausaufgaben, dafür Lernzeit (LZ).</p>
+                <p data-i18n="exp_untis_c">Rot = Entfall, Grün = Veranstaltung/Vertretung.</p>
             </div>
-
             <div class="untis-wrapper">
                 <table class="untis-table">
-                    <thead>
-                        <tr>
-                            <th></th> <th>Mo 19.</th>
-                            <th>Di 20.</th>
-                            <th>Mi 21.</th>
-                            <th>Do 22.</th>
-                            <th>Fr 23.</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th></th><th>Mo</th><th>Di</th><th>Mi</th><th>Do</th><th>Fr</th></tr></thead>
                     <tbody>
-                        <tr>
-                            <td class="td-time">07:55</td>
-                            <td><div class="u-block st-red"><span class="u-subj txt-canc">LZ</span><span class="u-info">Entfall</span><span class="u-room txt-canc">2.34</span></div></td>
-                            <td><div class="u-block st-red"><span class="u-subj txt-canc">LZ</span><span class="u-info">Entfall</span><span class="u-room txt-canc">2.34</span></div></td>
-                            <td><div class="u-block st-green"><span class="u-subj">LZ</span><span class="u-info">Vertretung</span><span class="u-room">2.34</span></div></td>
-                            <td><div class="u-block st-norm"><span class="u-subj">LZ</span><span class="u-info">Regulär</span><span class="u-room">2.34</span></div></td>
-                            <td><div class="u-block st-norm"><span class="u-subj">LZ</span><span class="u-info">Regulär</span><span class="u-room">2.34</span></div></td>
+                        <!-- 6 Stunden Dummy Content gemäß Wunsch -->
+                        <tr><td class="td-time">1.</td>
+                            <td><div class="u-block st-red"><span class="u-subj txt-canc">LZ</span><span class="u-info">Entfall</span></div></td>
+                            <td><div class="u-block st-red"><span class="u-subj txt-canc">LZ</span><span class="u-info">Entfall</span></div></td>
+                            <td><div class="u-block st-green"><span class="u-subj">LZ</span><span class="u-info">Vertretung</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">LZ</span><span class="u-info">Regulär</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">LZ</span><span class="u-info">Regulär</span></div></td>
                         </tr>
-                        <tr>
-                            <td class="td-time">08:40</td>
-                            <td><div class="u-block st-norm"><span class="u-subj">EnEA</span><span class="u-info">fish</span><span class="u-room">2.33</span></div></td>
-                            <td><div class="u-block st-norm"><span class="u-subj">Mu</span><span class="u-info">kemp</span><span class="u-room">Musik</span></div></td>
-                            <td><div class="u-block st-norm"><span class="u-subj">DeEA</span><span class="u-info">zimm</span><span class="u-room">2.32</span></div></td>
-                            <td><div class="u-block st-green"><span class="u-subj">Rel</span><span class="u-info">Verlegung</span><span class="u-room">2.32</span></div></td>
-                            <td><div class="u-block st-orange"><span class="u-subj">Bio</span><span class="u-info">Info!</span><span class="u-room">Bio 0.45</span></div></td>
+                        <tr><td class="td-time">2.</td>
+                            <td><div class="u-block st-norm"><span class="u-subj">EnEA</span><span class="u-info">R2.33</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">Mu</span><span class="u-info">Musik</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">DeEA</span><span class="u-info">R2.32</span></div></td>
+                            <td><div class="u-block st-green"><span class="u-subj">Rel</span><span class="u-info">Verlegung</span></div></td>
+                            <td><div class="u-block st-orange"><span class="u-subj">Bio</span><span class="u-info">Info!</span></div></td>
                         </tr>
-                        <tr>
-                            <td class="td-time">09:45</td>
-                            <td><div class="u-block st-red"><span class="u-subj txt-canc">GW</span><span class="u-info">Entfall</span><span class="u-room txt-canc">2.34</span></div></td>
-                            <td><div class="u-block st-orange"><span class="u-subj">BK</span><span class="u-info">Material</span><span class="u-room">2.34</span></div></td>
-                            <td><div class="u-block st-red"><span class="u-subj txt-canc">GW</span><span class="u-info">Entfall</span><span class="u-room txt-canc">2.34</span></div></td>
-                            <td><div class="u-block st-norm"><span class="u-subj">Profil</span><span class="u-info">gies</span><span class="u-room">Holz</span></div></td>
-                            <td><div class="u-block st-norm"><span class="u-subj">PhEA</span><span class="u-info">zims</span><span class="u-room">Phy</span></div></td>
+                        <tr><td class="td-time">3.</td>
+                            <td><div class="u-block st-norm"><span class="u-subj">GW</span><span class="u-info">R2.34</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">BK</span><span class="u-info">R2.34</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">GW</span><span class="u-info">R2.34</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">Pro</span><span class="u-info">Holz</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">PhEA</span><span class="u-info">Phy</span></div></td>
                         </tr>
-                        <tr>
-                            <td class="td-time">10:30</td>
-                            <td><div class="u-block st-orange"><span class="u-subj">Info</span><span class="u-info">PC Raum</span><span class="u-room">1.75</span></div></td>
-                            <td><div class="u-block st-norm"><span class="u-subj">MaEA</span><span class="u-info">zims</span><span class="u-room">2.34</span></div></td>
-                            <td><div class="u-block st-norm"><span class="u-subj">Sp</span><span class="u-info">birr</span><span class="u-room">1.44</span></div></td>
-                            <td><div class="u-block st-norm"><span class="u-subj">Profil</span><span class="u-info">gies</span><span class="u-room">Holz</span></div></td>
-                            <td><div class="u-block st-norm"><span class="u-subj">MaEA</span><span class="u-info">zims</span><span class="u-room">2.34</span></div></td>
+                        <tr><td class="td-time">4.</td>
+                            <td><div class="u-block st-norm"><span class="u-subj">Info</span><span class="u-info">PC</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">MaEA</span><span class="u-info">R2.34</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">Sp</span><span class="u-info">Halle</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">Pro</span><span class="u-info">Holz</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">MaEA</span><span class="u-info">R2.34</span></div></td>
                         </tr>
-                        <tr>
-                            <td class="td-time">11:35</td>
-                            <td><div class="u-block st-norm"><span class="u-subj">DeEA</span><span class="u-info">zimm</span><span class="u-room">2.32</span></div></td>
-                            <td><div class="u-block st-norm"><span class="u-subj">ChEA</span><span class="u-info">scyl</span><span class="u-room">Chemi</span></div></td>
-                            <td><div class="u-block st-norm"><span class="u-subj">Sp</span><span class="u-info">birr</span><span class="u-room">1.44</span></div></td>
-                            <td><div class="u-block st-norm"><span class="u-subj">EnEA</span><span class="u-info">fish</span><span class="u-room">2.33</span></div></td>
-                            <td><div class="u-block st-norm"><span class="u-subj">ChEA</span><span class="u-info">scyl</span><span class="u-room">Chemi</span></div></td>
+                        <tr><td class="td-time">5.</td>
+                            <td><div class="u-block st-norm"><span class="u-subj">DeEA</span><span class="u-info">R2.32</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">ChEA</span><span class="u-info">Chem</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">Sp</span><span class="u-info">Halle</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">EnEA</span><span class="u-info">R2.33</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">ChEA</span><span class="u-info">Chem</span></div></td>
                         </tr>
-                        <tr>
-                            <td class="td-time">12:20</td>
-                            <td><div class="u-block st-red"><span class="u-subj txt-canc">LZ</span><span class="u-info">Entfall</span><span class="u-room txt-canc">2.34</span></div></td>
-                            <td><div class="u-block st-red"><span class="u-subj txt-canc">LZ</span><span class="u-info">Entfall</span><span class="u-room txt-canc">2.34</span></div></td>
-                            <td><div class="u-block st-red"><span class="u-subj txt-canc">LZ</span><span class="u-info">Entfall</span><span class="u-room txt-canc">2.34</span></div></td>
-                            <td><div class="u-block st-red"><span class="u-subj txt-canc">LZ</span><span class="u-info">Entfall</span><span class="u-room txt-canc">2.34</span></div></td>
-                            <td><div class="u-block st-green"><span class="u-subj">LZ</span><span class="u-info">Vertretung</span><span class="u-room">2.34</span></div></td>
+                        <tr><td class="td-time">6.</td>
+                            <td><div class="u-block st-red"><span class="u-subj txt-canc">LZ</span><span class="u-info">Entfall</span></div></td>
+                            <td><div class="u-block st-red"><span class="u-subj txt-canc">LZ</span><span class="u-info">Entfall</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">LZ</span><span class="u-info">Regulär</span></div></td>
+                            <td><div class="u-block st-red"><span class="u-subj txt-canc">LZ</span><span class="u-info">Entfall</span></div></td>
+                            <td><div class="u-block st-green"><span class="u-subj">LZ</span><span class="u-info">Vertretung</span></div></td>
                         </tr>
                     </tbody>
                 </table>
@@ -366,41 +386,39 @@
         </div>
     </div>
 
+    <!-- TASKCARDS -->
     <div id="modal-taskcards" class="modal">
         <div class="modal-header">
-            <h2 data-i18n="modal_tc_head">📌 TaskCards</h2>
+            <h2 data-i18n="m_tc_h">📌 TaskCards</h2>
             <button class="close-btn" onclick="closeAll()"><span data-i18n="btn_close">Schließen</span> <i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="modal-content">
             <div class="explain-box">
-                <h3 data-i18n="tc_exp_h">Unsere Lernzeit</h3>
-                <p data-i18n="tc_exp_t1">An der AHS gibt es keine klassischen Hausaufgaben. Stattdessen nutzen wir die Lernzeit (LZ).</p>
-                <p data-i18n="tc_exp_t2">Aufgaben für die Woche findest du jeden Montag digital auf TaskCards oder im OSS. TaskCards ist wie eine digitale Pinnwand.</p>
+                <h3 data-i18n="exp_tc_h">Lernzeit</h3>
+                <p data-i18n="exp_tc_t">Keine Hausaufgaben! Aufgaben stehen montags auf TaskCards.</p>
             </div>
             <iframe id="frame-taskcards" src="" style="width:100%; height:600px; border:none; border-radius:15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);"></iframe>
         </div>
     </div>
 
+    <!-- SDUI -->
     <div id="modal-sdui" class="modal">
         <div class="modal-header">
-            <h2 data-i18n="modal_sdui_head">💬 Sdui Messenger</h2>
+            <h2 data-i18n="m_sdui_h">💬 Sdui</h2>
             <button class="close-btn" onclick="closeAll()"><span data-i18n="btn_close">Schließen</span> <i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="modal-content">
             <div class="explain-box">
-                <h3 data-i18n="sdui_exp_h">Direkter Draht zur Schule</h3>
-                <p data-i18n="sdui_exp_t1">Sdui ist unser sicherer Messenger für Eltern, Schüler und Lehrer. Er ersetzt WhatsApp-Gruppen.</p>
-                <ul>
-                    <li data-i18n="sdui_li_1">Übersetzt Nachrichten automatisch.</li>
-                    <li data-i18n="sdui_li_2">Keine privaten Handynummern nötig.</li>
-                </ul>
+                <h3 data-i18n="exp_sdui_h">Kommunikation</h3>
+                <p data-i18n="exp_sdui_t">Ersetzt WhatsApp. Übersetzt Nachrichten automatisch.</p>
             </div>
-            <div style="width:100%; max-width:900px; height:500px; border-radius:15px; overflow:hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+            <div style="width:100%; max-width:900px; height:500px; border-radius:15px; overflow:hidden;">
                 <iframe id="frame-sdui" width="100%" height="100%" src="" frameborder="0" allowfullscreen></iframe>
             </div>
         </div>
     </div>
 
+    <!-- FABI & LEON -->
     <div id="modal-fabi" class="modal">
         <div class="modal-header">
             <h2>Fabi & Leon <i class="fa-solid fa-circle-check" style="color:var(--verified);"></i></h2>
@@ -408,273 +426,233 @@
         </div>
         <div class="modal-content">
             <div class="explain-box">
-                <h3 data-i18n="fabi_head">Über uns</h3>
-                <p data-i18n="fabi_text">Wir sind Fabi & Leon, Content Creator der Schule. Wir produzieren den Podcast und die YouTube-Videos der AHS und engagieren uns in der SV.</p>
+                <h3 data-i18n="fabi_about_h">Über uns</h3>
+                <p data-i18n="fabi_about_t">Content Creator der Schule & SV-Mitglieder.</p>
             </div>
             
-            <div style="text-align:center; margin-top:30px;">
-                <div style="background:white; padding:20px; display:inline-block; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.1);">
-                    <img id="qr-fabi" src="" style="width:200px; height:200px; object-fit:cover;">
-                    <br>
-                    <a id="link-fabi" href="#" target="_blank" class="link-btn" style="margin-top:10px; display:inline-block;">Seite öffnen</a>
-                 </div>
+            <div class="fabi-split">
+                <!-- OPTION 1: WEBSITE ÖFFNEN -->
+                <div class="fabi-option">
+                    <i class="fa-solid fa-globe" style="font-size:3rem; color:var(--primary); margin-bottom:10px;"></i>
+                    <h3 data-i18n="fabi_opt1_h">Homepage</h3>
+                    <p data-i18n="fabi_opt1_t">Webseite hier öffnen (Schließt bei Inaktivität)</p>
+                    <button class="fabi-btn" onclick="openFabiWeb()" data-i18n="btn_open">Öffnen</button>
+                </div>
+                
+                <!-- OPTION 2: QR CODE -->
+                <div class="fabi-option">
+                    <i class="fa-solid fa-qrcode" style="font-size:3rem; color:var(--secondary); margin-bottom:10px;"></i>
+                    <h3 data-i18n="fabi_opt2_h">Social Media</h3>
+                    <p data-i18n="fabi_opt2_t">Scanne für Insta, YouTube & Co.</p>
+                    <img id="qr-fabi" src="" style="width:150px; height:150px; margin-top:10px;">
+                </div>
+            </div>
+            
+            <!-- Hidden Iframe Container for FabiWeb -->
+            <div id="fabi-web-container" style="display:none; width:100%; height:600px; margin-top:30px; border-radius:15px; overflow:hidden;">
+                <iframe id="frame-fabi" src="" style="width:100%; height:100%; border:none;"></iframe>
             </div>
         </div>
     </div>
 
-    <div id="modal-schoolweb" class="modal">
+    <!-- HOMEPAGE -->
+    <div id="modal-website" class="modal">
         <div class="modal-header">
-            <h2 data-i18n="modal_web_head">www.anton-hansen-schule.de</h2>
+            <h2 data-i18n="m_web_h">Homepage</h2>
             <button class="close-btn" onclick="closeAll()"><span data-i18n="btn_close">Schließen</span> <i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="modal-content" style="padding:0;">
-             <iframe id="frame-school" src="" style="width:100%; height:100%; border:none;"></iframe>
+            <iframe id="frame-school" src="" style="width:100%; height:100%; border:none;"></iframe>
         </div>
     </div>
 
+    <!-- SOCIAL MEDIA & RSS -->
     <div id="modal-social" class="modal">
         <div class="modal-header">
-            <h2 data-i18n="modal_soc_head">Social Media & RSS</h2>
+            <h2 data-i18n="m_soc_h">Social Media & News</h2>
             <button class="close-btn" onclick="closeAll()"><span data-i18n="btn_close">Schließen</span> <i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="modal-content">
             <div class="social-layout">
+                <!-- RSS Container (Groß) -->
                 <div class="rss-container">
                     <iframe id="frame-rss" src="" style="width:100%; height:100%; border:none;"></iframe>
                 </div>
-
+                <!-- QR Codes (Rechts) -->
                 <div class="qr-sidebar">
-                    <div class="qr-card" onclick="openLink(imgConfig.link_youtube)">
-                        <img id="qr-youtube" src="" alt="YouTube">
+                    <div class="qr-card">
+                        <img id="qr-youtube" src="" alt="YT">
                         <h4>YouTube</h4>
-                        <span class="link-btn">Zum Kanal</span>
                     </div>
-                    <div class="qr-card" onclick="openLink(imgConfig.link_spotify)">
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?data=https://open.spotify.com/show/ahs-podcast" alt="Spotify" style="border-radius:50%;">
-                        <h4>Spotify</h4>
-                        <span class="link-btn">Podcast hören</span>
-                    </div>
-                    <div class="qr-card" onclick="openLink(imgConfig.link_insta)">
+                    <div class="qr-card">
                         <img id="qr-insta" src="" alt="Insta">
                         <h4>Instagram</h4>
-                        <span class="link-btn">AHS News</span>
+                    </div>
+                    <div class="qr-card">
+                        <!-- Spotify Placeholder -->
+                         <img src="https://api.qrserver.com/v1/create-qr-code/?data=Spotify" alt="Spotify">
+                        <h4>Spotify</h4>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- TIMEOUT ALERT -->
     <div id="timeout-alert" class="timeout-overlay">
         <div class="timeout-circle">👋</div>
-        <h2 data-i18n="timeout_title">Bist du noch da?</h2>
-        <p data-i18n="timeout_desc">Der Bildschirm wird gleich zurückgesetzt.</p>
-        <button onclick="resetIdleTimer()" style="margin-top:20px; padding:15px 40px; border:none; border-radius:50px; background:white; color:black; font-weight:bold; font-size:1.2rem; cursor:pointer;">JA</button>
+        <h2 data-i18n="time_h">Bist du noch da?</h2>
+        <p data-i18n="time_t">Der Bildschirm wird gleich zurückgesetzt.</p>
+        <button onclick="resetIdleTimer()" style="margin-top:20px; padding:15px 40px; border:none; border-radius:50px; background:white; color:black; font-weight:bold; font-size:1.2rem; cursor:pointer;" data-i18n="btn_yes">JA</button>
     </div>
 
     <script>
-        /* =========================================
-           1. KONFIGURATION (Hier Bilder ändern!)
-           ========================================= */
-        const imgConfig = {
+        /* =========================================================
+           1. KONFIGURATION (PLATZHALTER & LINKS)
+           HIER ÄNDERN!
+           =========================================================
+        */
+        const config = {
+            // Placeholder Images (lokal oder URL)
             logo_ahs: "https://www.anton-hansen-schule.de/fileadmin/anton_hansen/lay/logo_ahs.png",
             
-            // Icons für die Kacheln
-            icon_untis: "../images/Untis-Logo.svg",
-            icon_taskcards: "../images/taskcardslogo.png",
-            icon_sdui: "../images/Sduilogo.png",
-            icon_insta: "../images/InstaLogo.png",
+            // Icons für Karten (Startseite) - Nutze Platzhalter wenn Datei fehlt
+            icon_untis: "https://via.placeholder.com/150/0000FF/808080?text=Untis+Icon", 
+            icon_taskcards: "https://via.placeholder.com/150/0000FF/808080?text=TaskCards+Icon",
+            icon_sdui: "https://via.placeholder.com/150/0000FF/808080?text=Sdui+Icon",
+            icon_insta: "https://via.placeholder.com/150/0000FF/808080?text=Social+Icon",
+            icon_school: "https://via.placeholder.com/150/0000FF/808080?text=Web+Icon",
             
             // Fabi & Leon
             logo_fabi_rounded: "https://www.fabiundleon.de/images/Logo_rounded.png",
             
-            // QR Codes
-            qr_insta: "../images/InstaQR.jpg",
-            qr_youtube: "../images/SchuleQR.jpg",
-            qr_fabi: "../images/FabiUndLeonQR.jpg", // Zeigt auf /Social-Media/
+            // QR Codes (Bilder)
+            qr_insta: "https://via.placeholder.com/300?text=QR+Insta",
+            qr_youtube: "https://via.placeholder.com/300?text=QR+YouTube",
+            qr_fabi: "https://via.placeholder.com/300?text=QR+Fabi+Social", 
 
-            // Links (für Iframes & Buttons)
+            // Links (Embeds)
             link_taskcards: "https://lk-nk.taskcards.app/#/board/f4c46a53-4fc9-4146-9dcb-6eb3d81da2a4/view?token=90d399d5-4e3b-4ef3-a763-40cf6c18c262",
             link_sdui_video: "https://www.youtube.com/embed/npTVuzEj42o?enablejsapi=1&rel=0",
             link_school_site: "https://www.anton-hansen-schule.de",
-            link_rss_feed: "https://ahs-rss.fabiundleon.de", // Hier wird die Liste der Videos geladen
-            
-            link_youtube: "https://youtube.com/ahs", // Echter Link hier
-            link_spotify: "https://spotify.com/ahs", // Echter Link hier
-            link_insta: "https://instagram.com/ahs", // Echter Link hier
-            link_fabi: "https://www.fabiundleon.de/Social-Media/"
+            link_fabi_site: "https://www.fabiundleon.de",
+            link_rss: "https://ahs-rss.fabiundleon.de"
         };
 
-        /* =========================================
-           2. ÜBERSETZUNGEN (Vollständig)
-           ========================================= */
+        /* =========================================================
+           2. ÜBERSETZUNGEN (JEDES WORT)
+           ========================================================= */
         const translations = {
             de: {
                 header_title: "Tag der offenen Tür",
                 header_sub: "AHS Interaktives Terminal",
-                card_untis_title: "WebUntis",
-                card_untis_desc: "Stundenplan & Klassenbuch",
-                card_tc_title: "TaskCards",
-                card_tc_desc: "Lernzeit & Aufgaben",
-                card_sdui_title: "Sdui",
-                card_sdui_desc: "Messenger & News",
-                card_fabi_desc: "Content Creator & SV",
-                tag_sv: "Stellv. Schülersprecher",
-                tag_media: "Podcast & YouTube",
-                card_soc_title: "Social Media",
-                card_soc_desc: "Feed, YouTube, Spotify",
-                card_web_title: "Homepage",
-                card_web_desc: "anton-hansen-schule.de",
-                
-                modal_untis_head: "📅 WebUntis",
-                untis_exp_h: "Dein digitaler Planer",
-                untis_exp_t1: "Keine Zettelwirtschaft mehr! WebUntis zeigt dir genau, wann du wo sein musst.",
-                untis_exp_t2: "Achte auf die Farben: Rot bedeutet, die Stunde entfällt. Grün sind Veranstaltungen oder Vertretungen.",
-                
-                modal_tc_head: "📌 TaskCards",
-                tc_exp_h: "Unsere Lernzeit",
-                tc_exp_t1: "An der AHS gibt es keine klassischen Hausaufgaben. Stattdessen nutzen wir die Lernzeit (LZ).",
-                tc_exp_t2: "Aufgaben für die Woche findest du jeden Montag digital auf TaskCards oder im OSS. TaskCards ist wie eine digitale Pinnwand.",
-                
-                modal_sdui_head: "💬 Sdui Messenger",
-                sdui_exp_h: "Direkter Draht zur Schule",
-                sdui_exp_t1: "Sdui ist unser sicherer Messenger für Eltern, Schüler und Lehrer. Er ersetzt WhatsApp-Gruppen.",
-                sdui_li_1: "Übersetzt Nachrichten automatisch.",
-                sdui_li_2: "Keine privaten Handynummern nötig.",
-
-                fabi_head: "Über uns",
-                fabi_text: "Wir sind Fabi & Leon, Content Creator der Schule. Wir produzieren den Podcast und die YouTube-Videos der AHS und engagieren uns in der SV.",
-
-                modal_web_head: "Schul-Webseite",
-                modal_soc_head: "Social Media & RSS",
-                
-                timeout_title: "Bist du noch da?",
-                timeout_desc: "Der Bildschirm wird gleich zurückgesetzt.",
-                btn_close: "Schließen"
+                c_untis: "WebUntis", d_untis: "Stundenplan & Klassenbuch",
+                c_tc: "TaskCards", d_tc: "Lernzeit & Aufgaben",
+                c_sdui: "Sdui", d_sdui: "Messenger & News",
+                d_fabi: "Content Creator & SV",
+                tag_sv: "Stellv. Schülersprecher", tag_media: "Podcast & YouTube",
+                c_soc: "Social Media", d_soc: "Feed, YouTube, Spotify",
+                c_web: "Homepage", d_web: "anton-hansen-schule.de",
+                m_untis_h: "📅 WebUntis", exp_untis_h: "Dein digitaler Planer",
+                exp_untis_t: "Keine Zettelwirtschaft mehr! WebUntis zeigt dir genau, wann du wo sein musst.",
+                exp_untis_c: "Rot = Entfall, Grün = Veranstaltung/Vertretung.",
+                m_tc_h: "📌 TaskCards", exp_tc_h: "Lernzeit (LZ)",
+                exp_tc_t: "Keine klassischen Hausaufgaben! Aufgaben findest du digital.",
+                m_sdui_h: "💬 Sdui", exp_sdui_h: "Kommunikation",
+                exp_sdui_t: "Ersetzt WhatsApp. Übersetzt Nachrichten automatisch.",
+                fabi_about_h: "Über uns", fabi_about_t: "Wir sind Content Creator und SV.",
+                fabi_opt1_h: "Webseite", fabi_opt1_t: "Seite hier öffnen",
+                fabi_opt2_h: "Social Media", fabi_opt2_t: "Scanne den Code",
+                btn_open: "Öffnen",
+                m_web_h: "Homepage",
+                m_soc_h: "Social Media & RSS",
+                time_h: "Bist du noch da?", time_t: "Reset in Kürze.", btn_yes: "Ja", btn_close: "Schließen"
             },
             en: {
                 header_title: "Open House Day",
                 header_sub: "AHS Interactive Terminal",
-                card_untis_title: "WebUntis",
-                card_untis_desc: "Timetable & Register",
-                card_tc_title: "TaskCards",
-                card_tc_desc: "Study Time & Tasks",
-                card_sdui_title: "Sdui",
-                card_sdui_desc: "Messenger & News",
-                card_fabi_desc: "Content Creators & Council",
-                tag_sv: "Deputy Head Students",
-                tag_media: "Podcast & YouTube",
-                card_soc_title: "Social Media",
-                card_soc_desc: "Feed, YouTube, Spotify",
-                card_web_title: "Website",
-                card_web_desc: "anton-hansen-schule.de",
-                
-                modal_untis_head: "📅 WebUntis",
-                untis_exp_h: "Your Digital Planner",
-                untis_exp_t1: "No more paper chaos! WebUntis shows you exactly when and where you need to be.",
-                untis_exp_t2: "Watch the colors: Red means cancelled. Green means events or substitutions.",
-                
-                modal_tc_head: "📌 TaskCards",
-                tc_exp_h: "Study Time (LZ)",
-                tc_exp_t1: "At AHS, we don't have traditional homework. Instead, we use Study Time (LZ).",
-                tc_exp_t2: "Tasks for the week are uploaded every Monday on TaskCards or OSS. It's like a digital pinboard.",
-                
-                modal_sdui_head: "💬 Sdui Messenger",
-                sdui_exp_h: "Direct Line to School",
-                sdui_exp_t1: "Sdui is our secure messenger for parents, students, and teachers. It replaces WhatsApp groups.",
-                sdui_li_1: "Translates messages automatically.",
-                sdui_li_2: "No private phone numbers needed.",
-
-                fabi_head: "About Us",
-                fabi_text: "We are Fabi & Leon, the school's Content Creators. We produce the podcast and YouTube videos and serve on the Student Council.",
-
-                modal_web_head: "School Website",
-                modal_soc_head: "Social Media & RSS",
-                
-                timeout_title: "Are you still there?",
-                timeout_desc: "Screen will reset shortly.",
-                btn_close: "Close"
+                c_untis: "WebUntis", d_untis: "Timetable & Register",
+                c_tc: "TaskCards", d_tc: "Study Time & Tasks",
+                c_sdui: "Sdui", d_sdui: "Messenger & News",
+                d_fabi: "Content Creators & SV",
+                tag_sv: "Deputy Head Students", tag_media: "Podcast & YouTube",
+                c_soc: "Social Media", d_soc: "Feed, YouTube, Spotify",
+                c_web: "Website", d_web: "anton-hansen-schule.de",
+                m_untis_h: "📅 WebUntis", exp_untis_h: "Digital Planner",
+                exp_untis_t: "No more paper! See exactly where you need to be.",
+                exp_untis_c: "Red = Cancelled, Green = Event/Substitution.",
+                m_tc_h: "📌 TaskCards", exp_tc_h: "Study Time (LZ)",
+                exp_tc_t: "No traditional homework! Tasks are digital.",
+                m_sdui_h: "💬 Sdui", exp_sdui_h: "Communication",
+                exp_sdui_t: "Replaces WhatsApp. Translates automatically.",
+                fabi_about_h: "About Us", fabi_about_t: "We are Content Creators & SV.",
+                fabi_opt1_h: "Website", fabi_opt1_t: "Open site here",
+                fabi_opt2_h: "Social Media", fabi_opt2_t: "Scan the code",
+                btn_open: "Open",
+                m_web_h: "Website",
+                m_soc_h: "Social Media & RSS",
+                time_h: "Are you still there?", time_t: "Resetting shortly.", btn_yes: "Yes", btn_close: "Close"
             },
             fr: {
-                header_title: "Journée Portes Ouvertes",
-                header_sub: "Terminal Interactif AHS",
-                card_untis_title: "WebUntis",
-                card_untis_desc: "Emploi du temps",
-                card_tc_title: "TaskCards",
-                card_tc_desc: "Temps d'étude",
-                card_sdui_title: "Sdui",
-                card_sdui_desc: "Messagerie & Infos",
-                card_fabi_desc: "Créateurs & Conseil",
-                tag_sv: "Délégués Adjoints",
-                tag_media: "Podcast & YouTube",
-                card_soc_title: "Réseaux Sociaux",
-                card_soc_desc: "Flux, YouTube, Spotify",
-                card_web_title: "Site Web",
-                card_web_desc: "anton-hansen-schule.de",
-                
-                modal_untis_head: "📅 WebUntis",
-                untis_exp_h: "Votre Planificateur Numérique",
-                untis_exp_t1: "Fini le chaos des papiers ! WebUntis vous montre exactement où aller.",
-                untis_exp_t2: "Attention aux couleurs : Rouge signifie annulé. Vert signifie événements ou remplacements.",
-                
-                modal_tc_head: "📌 TaskCards",
-                tc_exp_h: "Temps d'étude (LZ)",
-                tc_exp_t1: "À l'AHS, pas de devoirs classiques. Nous utilisons le Temps d'étude (LZ).",
-                tc_exp_t2: "Les tâches de la semaine sont mises en ligne chaque lundi sur TaskCards. C'est un tableau numérique.",
-                
-                modal_sdui_head: "💬 Messagerie Sdui",
-                sdui_exp_h: "Ligne directe avec l'école",
-                sdui_exp_t1: "Sdui est notre messagerie sécurisée. Elle remplace les groupes WhatsApp.",
-                sdui_li_1: "Traduit automatiquement les messages.",
-                sdui_li_2: "Pas de numéros privés nécessaires.",
-
-                fabi_head: "À propos de nous",
-                fabi_text: "Nous sommes Fabi & Leon, créateurs de contenu de l'école. Nous produisons le podcast et les vidéos YouTube.",
-
-                modal_web_head: "Site de l'école",
-                modal_soc_head: "Réseaux Sociaux & RSS",
-                
-                timeout_title: "Êtes-vous toujours là ?",
-                timeout_desc: "L'écran va se réinitialiser.",
-                btn_close: "Fermer"
+                header_title: "Portes Ouvertes",
+                header_sub: "Terminal Interactif",
+                c_untis: "WebUntis", d_untis: "Emploi du temps",
+                c_tc: "TaskCards", d_tc: "Temps d'étude",
+                c_sdui: "Sdui", d_sdui: "Messagerie",
+                d_fabi: "Créateurs & Conseil",
+                tag_sv: "Délégués Adjoints", tag_media: "Podcast & YouTube",
+                c_soc: "Réseaux Sociaux", d_soc: "Flux, YouTube, Spotify",
+                c_web: "Site Web", d_web: "anton-hansen-schule.de",
+                m_untis_h: "📅 WebUntis", exp_untis_h: "Agenda Numérique",
+                exp_untis_t: "Fini le papier ! Voyez où vous devez être.",
+                exp_untis_c: "Rouge = Annulé, Vert = Événement.",
+                m_tc_h: "📌 TaskCards", exp_tc_h: "Temps d'étude",
+                exp_tc_t: "Pas de devoirs classiques ! Tâches numériques.",
+                m_sdui_h: "💬 Sdui", exp_sdui_h: "Communication",
+                exp_sdui_t: "Remplace WhatsApp. Traduction auto.",
+                fabi_about_h: "À propos", fabi_about_t: "Créateurs & Conseil.",
+                fabi_opt1_h: "Site Web", fabi_opt1_t: "Ouvrir ici",
+                fabi_opt2_h: "Réseaux Sociaux", fabi_opt2_t: "Scannez le code",
+                btn_open: "Ouvrir",
+                m_web_h: "Site Web",
+                m_soc_h: "Réseaux & RSS",
+                time_h: "Vous êtes là ?", time_t: "Réinitialisation.", btn_yes: "Oui", btn_close: "Fermer"
             }
         };
 
-        /* =========================================
-           3. INIT & LOGIC
-           ========================================= */
+        /* =========================================================
+           3. LOGIC & INIT
+           ========================================================= */
         
-        // Bilder Init
-        document.getElementById('logo-header').src = imgConfig.logo_ahs;
-        document.getElementById('logo-untis').src = imgConfig.icon_untis;
-        document.getElementById('logo-taskcards').src = imgConfig.icon_taskcards;
-        document.getElementById('logo-sdui').src = imgConfig.icon_sdui;
-        document.getElementById('logo-insta').src = imgConfig.icon_insta;
-        document.getElementById('logo-school').src = imgConfig.logo_ahs;
-        document.getElementById('logo-fabi').src = imgConfig.logo_fabi_rounded;
+        // 1. Bilder laden
+        document.getElementById('head-logo').src = config.logo_ahs;
+        document.getElementById('icon-untis').src = config.icon_untis;
+        document.getElementById('icon-taskcards').src = config.icon_taskcards;
+        document.getElementById('icon-sdui').src = config.icon_sdui;
+        document.getElementById('icon-insta').src = config.icon_insta;
+        document.getElementById('icon-school').src = config.icon_school;
+        document.getElementById('icon-fabi').src = config.logo_fabi_rounded;
         
-        document.getElementById('qr-insta').src = imgConfig.qr_insta;
-        document.getElementById('qr-youtube').src = imgConfig.qr_youtube;
-        document.getElementById('qr-fabi').src = imgConfig.qr_fabi;
-        document.getElementById('link-fabi').href = imgConfig.link_fabi;
+        document.getElementById('qr-insta').src = config.qr_insta;
+        document.getElementById('qr-youtube').src = config.qr_youtube;
+        document.getElementById('qr-fabi').src = config.qr_fabi;
 
-        // State
+        // 2. State
         let idleTime = 0;
         let isModalOpen = false;
         let currentLang = 'de';
 
-        /* --- ATTRACT MODE (NEON BLINKEN) --- */
+        // 3. Attract Animation (Subtiler, alle 6s)
         setInterval(() => {
             if (!isModalOpen) {
                 const cards = document.querySelectorAll('.card');
                 const randomCard = cards[Math.floor(Math.random() * cards.length)];
-                
-                // Neon Flash Animation hinzufügen
-                randomCard.classList.add('anim-neon');
-                setTimeout(() => randomCard.classList.remove('anim-neon'), 2000);
+                randomCard.classList.add('anim-breathe');
+                setTimeout(() => randomCard.classList.remove('anim-breathe'), 2000);
             }
-        }, 3000); // Alle 3 Sek blinkt was
+        }, 6000);
 
-        /* --- IDLE TIMER --- */
+        // 4. Idle Timer (NUR WENN MODAL OFFEN)
         setInterval(() => {
             if (isModalOpen) {
                 idleTime++;
@@ -693,24 +671,25 @@
         function resetSystem() {
             closeAll();
             setLang('de');
-            resetIdleTimer();
         }
 
-        function openLink(url) {
-            window.open(url, '_blank');
-        }
-
-        /* --- MODAL CONTROL --- */
+        // 5. Modal Logic
         function openModal(id) {
             resetIdleTimer();
             isModalOpen = true;
             document.getElementById('modal-' + id).classList.add('open');
             
-            // Lazy Load Iframes
-            if(id === 'taskcards') document.getElementById('frame-taskcards').src = imgConfig.link_taskcards;
-            if(id === 'sdui') document.getElementById('frame-sdui').src = imgConfig.link_sdui_video;
-            if(id === 'schoolweb') document.getElementById('frame-school').src = imgConfig.link_school_site;
-            if(id === 'social') document.getElementById('frame-rss').src = imgConfig.link_rss_feed;
+            // Lazy Load
+            if(id === 'taskcards') document.getElementById('frame-taskcards').src = config.link_taskcards;
+            if(id === 'sdui') document.getElementById('frame-sdui').src = config.link_sdui_video;
+            if(id === 'website') document.getElementById('frame-school').src = config.link_school_site;
+            if(id === 'social') document.getElementById('frame-rss').src = config.link_rss;
+        }
+        
+        function openFabiWeb() {
+             document.getElementById('fabi-web-container').style.display = 'block';
+             document.getElementById('frame-fabi').src = config.link_fabi_site;
+             resetIdleTimer();
         }
 
         function closeAll() {
@@ -718,27 +697,23 @@
             document.querySelectorAll('.modal').forEach(el => el.classList.remove('open'));
             resetIdleTimer();
             
-            // Iframes unload to stop video/audio
-            document.getElementById('frame-taskcards').src = "";
-            document.getElementById('frame-sdui').src = "";
-            document.getElementById('frame-school').src = "";
-            document.getElementById('frame-rss').src = "";
+            // Clear Iframes
+            const iframes = ['frame-taskcards', 'frame-sdui', 'frame-school', 'frame-rss', 'frame-fabi'];
+            iframes.forEach(id => document.getElementById(id).src = "");
+            document.getElementById('fabi-web-container').style.display = 'none';
         }
 
-        /* --- LANGUAGE CONTROL --- */
+        // 6. Language Logic
         function setLang(lang) {
             currentLang = lang;
-            resetIdleTimer();
-            
-            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
             document.querySelector(`button[onclick="setLang('${lang}')"]`).classList.add('active');
 
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
-                if(translations[lang][key]) {
-                    el.innerText = translations[lang][key];
-                }
+                if(translations[lang][key]) el.innerText = translations[lang][key];
             });
+            resetIdleTimer();
         }
 
         ['click', 'touchstart', 'mousemove'].forEach(evt => window.addEventListener(evt, resetIdleTimer));
