@@ -3,495 +3,447 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AHS Ottweiler - Open Day Kiosk</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+    <title>AHS Interactive Terminal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #f6f8fd 0%, #eef2f5 100%);
+            /* Modern Colors */
             --primary: #007aff;
             --secondary: #5856d6;
             --accent: #ff2d55;
-            --text-dark: #1c1c1e;
-            --card-bg: rgba(255, 255, 255, 0.85);
-            --glass-border: 1px solid rgba(255, 255, 255, 0.5);
-            --shadow: 0 15px 35px rgba(0,0,0,0.08);
+            --bg-color: #f2f6fa;
+            --text-dark: #1d1d1f;
+            --white-glass: rgba(255, 255, 255, 0.85);
             
-            /* Untis Farben */
-            --untis-orange: #ff9500;
-            --untis-purple: #af52de;
-            --untis-red: #ff3b30;
-            --untis-blue: #007aff;
+            /* Untis Specific Colors (Dein Wunsch) */
+            --untis-green: #2ecc71; /* Veranstaltung / Änderung */
+            --untis-red: #e74c3c;   /* Entfall */
+            --untis-std: #ffffff;   /* Normal */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; user-select: none; }
 
         body {
-            background: var(--bg-gradient);
-            color: var(--text-dark);
+            background: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
             height: 100vh;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            color: var(--text-dark);
+            position: relative;
+        }
+
+        /* --- BACKGROUND ANIMATION --- */
+        .bg-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            animation: float 10s infinite ease-in-out;
+            opacity: 0.6;
+        }
+        .blob-1 { top: -10%; left: -10%; width: 500px; height: 500px; background: #a1c4fd; animation-delay: 0s; }
+        .blob-2 { bottom: -10%; right: -10%; width: 600px; height: 600px; background: #c2e9fb; animation-delay: 2s; }
+        .blob-3 { top: 40%; left: 40%; width: 400px; height: 400px; background: #e0c3fc; animation-delay: 4s; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0, 0) scale(1); }
         }
 
         /* --- HEADER --- */
         header {
-            padding: 1.5rem 2.5rem;
+            position: relative;
+            z-index: 10;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 1.5rem 3rem;
             background: rgba(255,255,255,0.6);
             backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-            z-index: 10;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.05);
+            animation: slideDown 1s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
-        .brand { display: flex; align-items: center; gap: 20px; }
-        .logo { height: 60px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
+        .logo-area { display: flex; align-items: center; gap: 20px; }
+        .school-logo { height: 60px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
+        .header-text h1 { font-size: 1.8rem; font-weight: 800; background: linear-gradient(90deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        .title-group h1 { font-size: 1.8rem; font-weight: 700; letter-spacing: -0.5px; }
-        .title-group p { font-size: 0.9rem; color: #666; font-weight: 500; }
-
-        /* Der geheime Button */
-        .status-pill {
-            padding: 10px 20px;
-            background: #eefdf3;
-            color: #2ecc71;
-            border-radius: 50px;
-            font-weight: 600;
-            border: 1px solid #b8eccc;
-            cursor: pointer;
+        .lang-btn {
+            background: white; border: 1px solid #ddd; padding: 10px 20px;
+            border-radius: 50px; font-weight: bold; cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            display: flex; gap: 10px; align-items: center;
             transition: 0.3s;
         }
-        .status-pill:active { transform: scale(0.95); }
+        .lang-btn:active { transform: scale(0.95); }
 
-        /* --- MAIN GRID --- */
+        /* --- MAIN DASHBOARD --- */
         main {
-            flex: 1;
-            padding: 3rem;
+            position: relative; z-index: 5;
+            padding: 2rem 3rem;
+            height: calc(100vh - 100px);
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(12, 1fr);
+            grid-template-rows: repeat(2, 1fr); /* 2 Reihen */
             gap: 2rem;
-            align-content: center;
-            overflow-y: auto;
         }
 
-        .card {
-            background: var(--card-bg);
-            border: var(--glass-border);
-            border-radius: 28px;
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        /* Kacheln Design */
+        .tile {
+            background: var(--white-glass);
+            border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.8);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
             text-align: center;
-            box-shadow: var(--shadow);
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            padding: 20px;
             cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.12);
-            background: #fff;
-        }
-
-        .card-icon {
-            width: 80px; height: 80px;
-            margin-bottom: 1.5rem;
-            object-fit: contain;
-            transition: transform 0.4s;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative; overflow: hidden;
         }
         
-        .card:hover .card-icon { transform: scale(1.1) rotate(5deg); }
+        .tile:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 30px 60px rgba(0,122,255,0.2); border-color: var(--primary); }
+        .tile img { height: 80px; margin-bottom: 20px; transition: 0.5s; object-fit: contain; }
+        .tile:hover img { transform: scale(1.2) rotate(5deg); }
+        .tile h3 { font-size: 1.5rem; margin-bottom: 5px; color: var(--text-dark); }
+        .tile p { font-size: 0.9rem; color: #666; }
 
-        .card h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
-        .card p { color: #888; font-size: 1rem; line-height: 1.4; }
-
-        /* Special Card: Fabi & Leon */
-        .card.devs {
-            border: 2px solid transparent;
-            background: linear-gradient(#fff, #fff) padding-box,
-                        linear-gradient(45deg, var(--primary), var(--secondary)) border-box;
+        /* Grid Placement */
+        .tile-untis { grid-column: span 4; animation: popIn 0.6s 0.1s backwards; }
+        .tile-sdui { grid-column: span 4; animation: popIn 0.6s 0.2s backwards; }
+        .tile-taskcards { grid-column: span 4; animation: popIn 0.6s 0.3s backwards; }
+        
+        .tile-homepage { grid-column: span 3; animation: popIn 0.6s 0.4s backwards; }
+        
+        /* SPECIAL TILE: FABI & LEON */
+        .tile-fabi {
+            grid-column: span 9; 
+            background: linear-gradient(135deg, #ffffff 0%, #f0f8ff 100%);
+            flex-direction: row; justify-content: space-between; padding: 0 4rem;
+            border: 2px solid var(--primary);
+            animation: popIn 0.6s 0.5s backwards;
         }
-        .badge {
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 5px 12px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            text-transform: uppercase;
+        .fabi-content { text-align: left; }
+        .fabi-roles { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
+        .role-badge { 
+            background: rgba(0,122,255,0.1); color: var(--primary); 
+            padding: 5px 12px; border-radius: 8px; font-weight: 700; font-size: 0.8rem; 
         }
+        .fabi-logo { height: 120px !important; border-radius: 20px; }
 
-        /* --- MODALS --- */
-        .modal-overlay {
+        /* --- MODALS (Windows) --- */
+        .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(246, 248, 253, 0.8);
-            backdrop-filter: blur(15px);
-            z-index: 2000;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 0.4s;
+            background: rgba(240, 244, 248, 0.9); backdrop-filter: blur(20px);
+            z-index: 100;
+            display: none; flex-direction: column;
+            opacity: 0; transition: opacity 0.5s;
         }
-        .modal-overlay.active { display: flex; opacity: 1; }
-
-        .modal-content {
-            background: #fff;
-            width: 90%; height: 90%;
-            border-radius: 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            animation: slideUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
+        .modal.active { display: flex; opacity: 1; }
 
         .modal-header {
-            padding: 1.5rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #eee;
-            background: #fff;
+            padding: 20px 40px; background: white; border-bottom: 1px solid #eee;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
         }
-        .modal-header h2 { font-size: 1.8rem; display: flex; align-items: center; gap: 10px; }
-        
         .close-btn {
-            background: #f0f0f0;
-            border: none;
-            width: 45px; height: 45px;
-            border-radius: 50%;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: 0.2s;
-            display: flex; align-items: center; justify-content: center;
+            background: #ffecf0; color: var(--accent); border: none;
+            padding: 10px 25px; border-radius: 30px; font-weight: bold; font-size: 1.1rem;
+            cursor: pointer; display: flex; align-items: center; gap: 10px;
+            transition: 0.3s;
         }
-        .close-btn:hover { background: var(--accent); color: white; transform: rotate(90deg); }
+        .close-btn:hover { background: var(--accent); color: white; transform: scale(1.05); }
 
-        .modal-body { flex: 1; padding: 0; overflow-y: auto; background: #fafafa; }
-        
-        /* Iframe Container */
-        .iframe-container { width: 100%; height: 100%; border: none; }
+        .modal-body { flex: 1; padding: 40px; overflow-y: auto; display: flex; justify-content: center; }
 
-        /* --- UNTIS SIMULATION STYLES --- */
-        .untis-wrapper { padding: 2rem; max-width: 1000px; margin: 0 auto; }
-        .untis-table {
-            width: 100%; border-collapse: separate; border-spacing: 0 10px;
+        /* --- UNTIS SIMULATION --- */
+        .untis-container {
+            background: white; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            width: 90%; max-width: 1000px; overflow: hidden;
         }
-        .untis-row {
-            background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-            transition: transform 0.2s;
+        .untis-top { background: #ff7e00; color: white; padding: 20px; font-weight: bold; font-size: 1.2rem; display: flex; justify-content: space-between; }
+        
+        .untis-grid {
+            display: grid; grid-template-columns: 80px repeat(5, 1fr);
+            width: 100%; border-collapse: collapse;
         }
-        .untis-row:hover { transform: scale(1.01); }
-        .untis-cell { padding: 15px 20px; vertical-align: middle; border-top: 1px solid #eee; border-bottom: 1px solid #eee; }
-        .untis-cell:first-child { border-left: 1px solid #eee; border-radius: 15px 0 0 15px; font-weight: bold; color: #888; }
-        .untis-cell:last-child { border-right: 1px solid #eee; border-radius: 0 15px 15px 0; }
+        .u-head { background: #f8f9fa; padding: 15px; font-weight: bold; text-align: center; border-bottom: 2px solid #eee; color: #555; }
+        .u-time { padding: 15px; text-align: center; font-weight: bold; color: #888; border-right: 1px solid #eee; display: flex; flex-direction: column; justify-content: center; font-size: 0.9rem;}
         
-        .u-subject { font-weight: 700; font-size: 1.2rem; display: block; }
-        .u-teacher { font-size: 0.9rem; color: #666; }
-        .u-room { font-weight: bold; }
-        
-        /* Untis Status Styles */
-        .status-tag { padding: 5px 10px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; color: white; display: inline-block; }
-        .st-vertretung { background: var(--untis-orange); }
-        .st-entfall { background: var(--untis-red); text-decoration: line-through; opacity: 0.7; }
-        .st-raum { background: var(--untis-blue); }
-        .st-event { background: var(--untis-purple); }
-        
-        /* --- SECRET CONSOLE --- */
-        #secret-console {
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 200px;
-            background: rgba(10, 10, 15, 0.95);
-            color: #00ff00; font-family: monospace;
-            padding: 20px; z-index: 9999;
-            transform: translateY(100%);
-            transition: transform 0.3s ease-in-out;
-            border-top: 2px solid var(--primary);
-            overflow-y: auto;
+        .u-cell {
+            padding: 10px; border: 1px solid #f0f0f0; min-height: 100px;
+            display: flex; flex-direction: column; justify-content: center;
+            transition: 0.2s; cursor: pointer;
         }
-        #secret-console.visible { transform: translateY(0); }
+        .u-cell:hover { transform: scale(1.02); z-index: 2; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        
+        /* Untis Colors */
+        .u-norm { background: var(--untis-std); }
+        .u-change { background: rgba(46, 204, 113, 0.15); border-left: 4px solid var(--untis-green); } /* Grün = Änderung/Event */
+        .u-cancel { background: rgba(231, 76, 60, 0.15); border-left: 4px solid var(--untis-red); text-decoration: line-through; opacity: 0.8; } /* Rot = Entfall */
 
-        /* --- SCREENSAVER --- */
-        #screensaver {
+        .sub-name { font-weight: 800; font-size: 1.1rem; display: block; }
+        .sub-room { font-size: 0.9rem; color: #666; }
+        .sub-info { font-size: 0.75rem; color: var(--secondary); font-weight: bold; text-transform: uppercase; margin-top: 5px; }
+
+        /* --- SDUI VIDEO --- */
+        .video-wrapper {
+            width: 80%; max-width: 900px; aspect-ratio: 16/9;
+            border-radius: 20px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        }
+        iframe { width: 100%; height: 100%; border: none; }
+
+        /* --- TIMEOUT OVERLAY --- */
+        #timeout-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #fff; z-index: 5000;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            opacity: 0; pointer-events: none; transition: opacity 1s;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
+            z-index: 5000; display: none; justify-content: center; align-items: center; flex-direction: column;
+            color: white; text-align: center;
         }
-        #screensaver.active { opacity: 1; pointer-events: auto; }
-        .pulse-logo { width: 150px; animation: pulse 3s infinite; }
-        
-        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.8; } 100% { transform: scale(1); opacity: 1; } }
-        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .timeout-box { animation: pulseWarning 2s infinite; }
+        .continue-btn {
+            margin-top: 30px; padding: 15px 40px; font-size: 1.5rem;
+            background: var(--untis-green); color: white; border: none; border-radius: 50px;
+            cursor: pointer; font-weight: bold; box-shadow: 0 0 30px rgba(46, 204, 113, 0.5);
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes slideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes pulseWarning { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
     </style>
 </head>
 <body>
 
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+    <div class="bg-blob blob-3"></div>
+
     <header>
-        <div class="brand">
-            <img src="https://www.anton-hansen-schule.de/fileadmin/anton_hansen/lay/logo_ahs.png" alt="AHS Logo" class="logo">
-            <div class="title-group">
-                <h1>Tag der offenen Tür</h1>
-                <p>Anton-Hansen-Schule Ottweiler</p>
+        <div class="logo-area">
+            <img src="https://www.anton-hansen-schule.de/fileadmin/anton_hansen/lay/logo_ahs.png" alt="AHS Logo" class="school-logo">
+            <div class="header-text">
+                <p style="font-size: 0.9rem; font-weight: 500; color: #666;">Willkommen am</p>
+                <h1>TAG DER OFFENEN TÜR</h1>
             </div>
         </div>
-        <div class="status-pill" id="secret-trigger" onclick="handleSecretClick()">
-            <i class="fa-solid fa-circle-check"></i> System Online
-        </div>
+        <button class="lang-btn" onclick="alert('Demo: Hier würde die Sprache wechseln!')">
+            <i class="fa-solid fa-globe"></i> DE / EN / FR
+        </button>
     </header>
 
     <main>
-        <div class="card" onclick="openModal('modal-taskcards')">
-            <img src="../images/taskcardslogo.png" class="card-icon" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3065/3065780.png'">
+        <div class="tile tile-untis" onclick="openModal('modal-untis')">
+            <img src="../images/Sduilogo.png" alt="WebUntis" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2693/2693507.png'">
+            <h3>WebUntis</h3>
+            <p>Dein digitaler Stundenplan.<br>Live & Aktuell.</p>
+        </div>
+
+        <div class="tile tile-sdui" onclick="openModal('modal-sdui')">
+            <img src="https://support.sdui.de/hc/theming_assets/01HZP6W8G2X2Q1G52G17Z3K3R5" alt="Sdui" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3059/3059997.png'">
+            <h3>Sdui</h3>
+            <p>Kommunikation einfach gemacht.<br>Video ansehen.</p>
+        </div>
+
+        <div class="tile tile-taskcards" onclick="openModal('modal-taskcards')">
+            <img src="../images/taskcardslogo.png" alt="TaskCards" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3065/3065780.png'">
             <h3>TaskCards</h3>
-            <p>Interaktive Pinnwände & Unterrichtsmaterial</p>
+            <p>Die digitale Pinnwand.<br>Hier ausprobieren!</p>
         </div>
 
-        <div class="card" onclick="openModal('modal-untis')">
-            <img src="../images/Sduilogo.png" class="card-icon" onerror="this.src='https://cdn-icons-png.flaticon.com/512/732/732200.png'">
-            <h3>Sdui & WebUntis</h3>
-            <p>Messenger, Stundenplan & Vertretungen</p>
+        <div class="tile tile-homepage" onclick="openModal('modal-homepage')">
+            <img src="https://www.anton-hansen-schule.de/fileadmin/anton_hansen/lay/logo_ahs.png" alt="WWW">
+            <h3>Homepage</h3>
+            <p>www.anton-hansen-schule.de</p>
         </div>
 
-        <div class="card" onclick="openModal('modal-videos')">
-            <img src="../images/SmC-Logo.jpeg" class="card-icon" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1384/1384060.png'">
-            <h3>Videos & Media</h3>
-            <p>Schulvideos zum Mitnehmen (QR)</p>
-        </div>
-
-        <div class="card devs" onclick="openModal('modal-devs')">
-            <div class="badge">Created by</div>
-            <img src="../images/FabiUndLeonProfile.jpg" class="card-icon" style="border-radius: 50%;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4712/4712109.png'">
-            <h3>Fabi & Leon</h3>
-            <p>Stellv. Schülersprecher & Developers</p>
+        <div class="tile tile-fabi" onclick="window.open('https://www.fabiundleon.de', '_blank')">
+            <div class="fabi-content">
+                <h4 style="color: var(--primary); text-transform: uppercase; letter-spacing: 1px;">Development & SV</h4>
+                <h2 style="font-size: 2.5rem; margin: 10px 0;">Fabi & Leon</h2>
+                <p>Wir engagieren uns für unsere Schule.</p>
+                
+                <div class="fabi-roles">
+                    <span class="role-badge">Stellv. Schülersprecher</span>
+                    <span class="role-badge">Stellv. Stufensprecher 8-10</span>
+                    <span class="role-badge">Schulregionalkonferenz</span>
+                    <span class="role-badge">SV-Tech Team</span>
+                    <span class="role-badge">Schule ohne Rassismus</span>
+                </div>
+            </div>
+            <img src="www.fabiundleon.de/images/Logo.png" class="fabi-logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4712/4712109.png'">
         </div>
     </main>
 
-    <div id="modal-taskcards" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2><i class="fa-solid fa-clipboard-list" style="color: var(--primary);"></i> TaskCards Live-View</h2>
-                <button class="close-btn" onclick="closeModal('modal-taskcards')">&times;</button>
-            </div>
-            <div class="modal-body" style="overflow: hidden;">
-                <iframe src="https://lk-nk.taskcards.app/#/board/f4c46a53-4fc9-4146-9dcb-6eb3d81da2a4/view?token=90d399d5-4e3b-4ef3-a763-40cf6c18c262" 
-                        class="iframe-container" 
-                        title="TaskCards Board"></iframe>
-            </div>
+    <div id="modal-untis" class="modal">
+        <div class="modal-header">
+            <h2>📅 WebUntis Demo (Klasse 9a)</h2>
+            <button class="close-btn" onclick="closeAll()"><i class="fa-solid fa-xmark"></i> Schließen</button>
         </div>
-    </div>
+        <div class="modal-body">
+            <div class="untis-container">
+                <div class="untis-top">
+                    <span><i class="fa-solid fa-school"></i> KW 4 - Januar</span>
+                    <span>Leon Schug </span>
+                </div>
+                <div class="untis-grid">
+                    <div class="u-head">Std</div>
+                    <div class="u-head">Mo 19.</div>
+                    <div class="u-head">Di 20.</div>
+                    <div class="u-head">Mi 21.</div>
+                    <div class="u-head">Do 22.</div>
+                    <div class="u-head">Fr 23.</div>
 
-    <div id="modal-untis" class="modal-overlay">
-        <div class="modal-content" style="max-width: 900px; height: auto; max-height: 90vh;">
-            <div class="modal-header">
-                <h2><i class="fa-solid fa-calendar-days" style="color: var(--untis-orange);"></i> WebUntis (Demo)</h2>
-                <button class="close-btn" onclick="closeModal('modal-untis')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="untis-wrapper">
-                    <p style="margin-bottom: 20px; color: #666;">So sieht der digitale Vertretungsplan (Monitor) für Schüler aus:</p>
-                    
-                    <table class="untis-table">
-                        <tr class="untis-row">
-                            <td class="untis-cell">1. Std<br>07:55</td>
-                            <td class="untis-cell">
-                                <span class="u-subject">Mathematik</span>
-                                <span class="u-teacher">Herr Müller</span>
-                            </td>
-                            <td class="untis-cell"><span class="u-room">R 204</span></td>
-                            <td class="untis-cell"><span class="status-tag" style="background: #e0e0e0; color: #555;">Regulär</span></td>
-                        </tr>
-
-                        <tr class="untis-row">
-                            <td class="untis-cell">2. Std<br>08:40</td>
-                            <td class="untis-cell">
-                                <span class="u-subject">Englisch</span>
-                                <span class="u-teacher">Fr. Schneider (statt Hr. Klein)</span>
-                            </td>
-                            <td class="untis-cell"><span class="u-room">R 301</span></td>
-                            <td class="untis-cell"><span class="status-tag st-vertretung">Vertretung</span></td>
-                        </tr>
-
-                        <tr class="untis-row" style="opacity: 0.7;">
-                            <td class="untis-cell">3. Std<br>09:45</td>
-                            <td class="untis-cell" style="text-decoration: line-through;">
-                                <span class="u-subject">Sport</span>
-                                <span class="u-teacher">Herr Sportmann</span>
-                            </td>
-                            <td class="untis-cell" style="text-decoration: line-through;">Turnhalle</td>
-                            <td class="untis-cell"><span class="status-tag st-entfall">Entfall</span></td>
-                        </tr>
-
-                        <tr class="untis-row">
-                            <td class="untis-cell">4. Std<br>10:35</td>
-                            <td class="untis-cell">
-                                <span class="u-subject">Geschichte</span>
-                                <span class="u-teacher">Fr. Geschichte</span>
-                            </td>
-                            <td class="untis-cell">
-                                <span class="u-room" style="color: var(--untis-blue); text-decoration: underline;">R 105</span>
-                                <br><small style="color:red; text-decoration: line-through;">R 002</small>
-                            </td>
-                            <td class="untis-cell"><span class="status-tag st-raum">Raumänderung</span></td>
-                        </tr>
-
-                        <tr class="untis-row">
-                            <td class="untis-cell">5. Std<br>11:30</td>
-                            <td class="untis-cell">
-                                <span class="u-subject">SV-Sitzung</span>
-                                <span class="u-teacher">Alle Klassensprecher</span>
-                            </td>
-                            <td class="untis-cell"><span class="u-room">Aula</span></td>
-                            <td class="untis-cell"><span class="status-tag st-event">Veranstaltung</span></td>
-                        </tr>
-                    </table>
-
-                    <div style="margin-top: 30px; background: #fff8e1; border-left: 5px solid #ffc107; padding: 15px; border-radius: 5px;">
-                        <i class="fa-solid fa-circle-info"></i> <strong>Sdui Info:</strong> Über die Sdui-App erhalten Schüler und Eltern diese Infos per Push-Benachrichtigung direkt aufs Handy!
+                    <div class="u-time">07:55<br>-<br>08:40</div>
+                    <div class="u-cell u-cancel"> <span class="sub-name">LZ</span>
+                        <span class="sub-room"><s>2.34</s></span>
+                        <span class="sub-info">Entfall</span>
                     </div>
+                    <div class="u-cell u-cancel"> <span class="sub-name">LZ</span>
+                        <span class="sub-room"><s>2.34</s></span>
+                        <span class="sub-info">Entfall</span>
+                    </div>
+                    <div class="u-cell u-change" style="grid-row: span 3;"> <span class="sub-name">Veranst.</span>
+                        <span class="sub-room">Aula</span>
+                        <span class="sub-info">Projekt 10a</span>
+                    </div>
+                    <div class="u-cell u-change" style="grid-row: span 3;"> <span class="sub-name">Veranst.</span>
+                        <span class="sub-room">Aula</span>
+                        <span class="sub-info">Projekt 10a</span>
+                    </div>
+                    <div class="u-cell u-change" style="grid-row: span 3;"> <span class="sub-name">Veranst.</span>
+                        <span class="sub-room">Aula</span>
+                        <span class="sub-info">Projekt 10a</span>
+                    </div>
+
+                    <div class="u-time">08:40<br>-<br>09:25</div>
+                    <div class="u-cell u-norm">
+                        <span class="sub-name">EnEA</span>
+                        <span class="sub-room">2.33</span>
+                    </div>
+                    <div class="u-cell u-norm" style="border-left: 4px solid #333;">
+                        <span class="sub-name">Musik</span>
+                        <span class="sub-room">MuSaal</span>
+                    </div>
+                    <div class="u-time">09:45<br>-<br>10:30</div>
+                    <div class="u-cell u-change"> <span class="sub-name">GW</span>
+                        <span class="sub-room">2.34</span>
+                        <span class="sub-info">Vertretung</span>
+                    </div>
+                    <div class="u-cell u-norm" style="border-left: 4px solid orange;">
+                        <span class="sub-name">BK</span>
+                        <span class="sub-room">2.34</span>
+                    </div>
+                </div>
+                <div style="padding: 15px; background: #eee; font-size: 0.8rem; text-align: center;">
+                    <span style="color: var(--untis-green); font-weight: bold;">■ Grün = Veranstaltung / Änderung</span> | 
+                    <span style="color: var(--untis-red); font-weight: bold; text-decoration: line-through;">■ Rot = Entfall</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="modal-devs" class="modal-overlay">
-        <div class="modal-content" style="max-width: 600px; height: auto;">
-            <div class="modal-header">
-                <h2>Fabi & Leon</h2>
-                <button class="close-btn" onclick="closeModal('modal-devs')">&times;</button>
-            </div>
-            <div class="modal-body" style="text-align: center; padding: 3rem;">
-                <img src="../images/FabiUndLeonProfile.jpg" style="width: 150px; border-radius: 50%; border: 4px solid var(--primary); margin-bottom: 20px;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4712/4712109.png'">
-                <h3>Wir engagieren uns für unsere Schule!</h3>
-                <p style="color: var(--primary); font-weight: bold; margin-bottom: 20px;">Stellvertretende Schülersprecher</p>
-                <p>Diese interaktive Info-Stele wurde von uns programmiert, um den Tag der offenen Tür digitaler zu gestalten.</p>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px;">
-                    <div style="background: #f0f0f0; padding: 15px; border-radius: 15px; cursor: pointer;" onclick="window.open('https://www.fabiundleon.de/Videos')">
-                        <i class="fa-solid fa-video" style="font-size: 2rem; color: var(--secondary); margin-bottom: 10px;"></i>
-                        <h4>Unsere Videos</h4>
-                    </div>
-                    <div style="background: #f0f0f0; padding: 15px; border-radius: 15px; cursor: pointer;" onclick="window.open('https://www.fabiundleon.de/Social-Media')">
-                        <i class="fa-solid fa-thumbs-up" style="font-size: 2rem; color: var(--primary); margin-bottom: 10px;"></i>
-                        <h4>Social Media</h4>
-                    </div>
-                </div>
+    <div id="modal-sdui" class="modal">
+        <div class="modal-header">
+            <h2>🎥 Sdui erklärt</h2>
+            <button class="close-btn" onclick="closeAll()">Schließen</button>
+        </div>
+        <div class="modal-body" style="align-items: center;">
+            <div class="video-wrapper">
+                <iframe src="https://www.youtube.com/embed/npTVuzEj42o?autoplay=0&rel=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
         </div>
     </div>
 
-    <div id="modal-videos" class="modal-overlay">
-        <div class="modal-content" style="max-width: 500px; height: auto; text-align: center;">
-            <div class="modal-header">
-                <h2>Videos scannen</h2>
-                <button class="close-btn" onclick="closeModal('modal-videos')">&times;</button>
-            </div>
-            <div class="modal-body" style="padding: 2rem;">
-                <img src="../images/QR-Code-Videos.png" style="width: 100%; max-width: 300px; border-radius: 10px;" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://www.anton-hansen-schule.de'">
-                <p style="margin-top: 20px;">Scanne den Code, um unsere neuesten Schulvideos auf dein Handy zu laden.</p>
-                <p style="font-size: 0.8rem; color: #999; margin-top: 10px;">Fenster schließt automatisch bei Inaktivität.</p>
-            </div>
+    <div id="modal-homepage" class="modal">
+        <div class="modal-header" style="background: var(--primary); color: white;">
+            <h2>🌐 Offizielle Webseite</h2>
+            <div style="font-size: 0.9rem; opacity: 0.9;">Schließt automatisch bei Inaktivität...</div>
+            <button class="close-btn" onclick="closeAll()" style="color: var(--primary); background: white;">Zurück zum Menü</button>
+        </div>
+        <div style="flex: 1; width: 100%; height: 100%;">
+            <iframe src="https://www.anton-hansen-schule.de" style="width: 100%; height: 100%; border: none;"></iframe>
         </div>
     </div>
 
-    <div id="screensaver">
-        <img src="https://www.anton-hansen-schule.de/fileadmin/anton_hansen/lay/logo_ahs.png" class="pulse-logo">
-        <h2 style="margin-top: 20px; font-weight: 300;">Willkommen an der AHS Ottweiler</h2>
-        <p>Bitte berühren Sie den Bildschirm</p>
+    <div id="modal-taskcards" class="modal">
+        <div class="modal-header">
+            <h2>📌 TaskCards</h2>
+            <button class="close-btn" onclick="closeAll()">Schließen</button>
+        </div>
+        <div style="flex: 1;">
+            <iframe src="https://lk-nk.taskcards.app/#/board/f4c46a53-4fc9-4146-9dcb-6eb3d81da2a4/view?token=90d399d5-4e3b-4ef3-a763-40cf6c18c262" style="width: 100%; height: 100%; border: none;"></iframe>
+        </div>
     </div>
 
-    <div id="secret-console">
-        <div>> AHS_SYSTEM_ROOT: Access Granted.</div>
-        <div>> User: Developer (Fabi & Leon)</div>
-        <div>> Listening for events...</div>
-        <div id="console-log"></div>
+    <div id="timeout-overlay">
+        <div class="timeout-box">
+            <h1 style="font-size: 4rem;">👋</h1>
+            <h2>Bist du noch da?</h2>
+            <p style="opacity: 0.8; margin-top: 10px;">Der Bildschirm kehrt gleich zur Startseite zurück.</p>
+            <button class="continue-btn" onclick="resetTimer()">Ja, ich bin noch da!</button>
+        </div>
     </div>
 
     <script>
-        // --- CONFIG ---
-        const INACTIVITY_LIMIT_MS = 120000; // 2 Minuten Inaktivität = Screensaver
+        // --- INACTIVITY LOGIC ---
+        let idleTime = 0;
+        const TIME_TO_WARNING = 60; // Sekunden bis Warnung (z.B. 60)
+        const TIME_TO_RESET = 75;   // Sekunden bis Reset (z.B. 15 Sek nach Warnung)
         
-        // --- STATE ---
-        let idleTimer;
-        let secretClicks = 0;
-        let secretTimer;
+        // Timer hochzählen
+        setInterval(timerIncrement, 1000);
 
-        // --- CORE FUNCTIONS ---
+        function timerIncrement() {
+            idleTime++;
+            if (idleTime === TIME_TO_WARNING) {
+                document.getElementById('timeout-overlay').style.display = 'flex';
+            }
+            if (idleTime >= TIME_TO_RESET) {
+                fullReset();
+            }
+        }
+
+        function resetTimer() {
+            idleTime = 0;
+            document.getElementById('timeout-overlay').style.display = 'none';
+        }
+
+        function fullReset() {
+            closeAll(); // Schließt alle Fenster
+            resetTimer();
+            // Optional: Hier könnte man noch zu einem "Screensaver" Div wechseln
+        }
+
+        // Bei Interaktion Timer zurücksetzen
+        window.onload = function() {
+            document.body.onclick = resetTimer;
+            document.body.ontouchstart = resetTimer;
+            document.body.onmousemove = resetTimer;
+            document.body.onkeypress = resetTimer;
+        }
+
+        // --- MODAL LOGIC ---
         function openModal(id) {
             document.getElementById(id).classList.add('active');
-            log(`Opening Module: ${id}`);
-            resetIdleTimer();
+            resetTimer();
         }
 
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
-            log(`Closing Module: ${id}`);
-            resetIdleTimer();
-        }
-
-        function log(msg) {
-            const logDiv = document.getElementById('console-log');
-            const entry = document.createElement('div');
-            entry.innerText = `> [${new Date().toLocaleTimeString()}] ${msg}`;
-            logDiv.appendChild(entry);
-            logDiv.scrollTop = logDiv.scrollHeight;
-        }
-
-        // --- SECRET TRICK ---
-        function handleSecretClick() {
-            secretClicks++;
-            
-            // Reset clicks if user is too slow
-            clearTimeout(secretTimer);
-            secretTimer = setTimeout(() => { secretClicks = 0; }, 500);
-
-            if (secretClicks === 5) {
-                const con = document.getElementById('secret-console');
-                con.classList.toggle('visible');
-                log('*** DEVELOPER CONSOLE TOGGLED ***');
-                secretClicks = 0;
+        function closeAll() {
+            document.querySelectorAll('.modal').forEach(el => el.classList.remove('active'));
+            // Stoppe Videos beim Schließen (durch Reload des iframe src)
+            const frames = document.getElementsByTagName('iframe');
+            for (let i = 0; i < frames.length; i++) {
+                let src = frames[i].src;
+                frames[i].src = src; 
             }
+            resetTimer();
         }
-
-        // --- SCREENSAVER / INACTIVITY ---
-        function resetIdleTimer() {
-            const saver = document.getElementById('screensaver');
-            if (saver.classList.contains('active')) {
-                saver.classList.remove('active');
-                log('User activity detected. Waking up.');
-            }
-
-            clearTimeout(idleTimer);
-            idleTimer = setTimeout(() => {
-                // Schließe alle Modals
-                document.querySelectorAll('.modal-overlay').forEach(el => el.classList.remove('active'));
-                // Zeige Screensaver
-                saver.classList.add('active');
-                log('System idle. Screensaver activated.');
-            }, INACTIVITY_LIMIT_MS);
-        }
-
-        // Init Events
-        window.onload = () => {
-            document.body.addEventListener('click', resetIdleTimer);
-            document.body.addEventListener('touchstart', resetIdleTimer);
-            document.body.addEventListener('mousemove', resetIdleTimer);
-            
-            resetIdleTimer();
-            log('System Boot Complete.');
-        };
 
     </script>
 </body>
