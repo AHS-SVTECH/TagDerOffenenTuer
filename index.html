@@ -12,18 +12,18 @@
         :root {
             --primary: #007aff;
             --secondary: #5856d6;
-            --neon-blue: #00f2ff;
+            --neon-blue: #00f2ff; /* Neon für Animationen */
             --verified: #1d9bf0;
             --bg-grad: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
             --glass: rgba(255, 255, 255, 0.95);
             --shadow: 0 20px 50px rgba(0,0,0,0.1);
             
-            /* Untis Farben gemäß Screenshot */
+            /* Untis Farben (Exakt nach Screenshot) */
             --u-red: #ff3b30;    /* Entfall */
-            --u-orange: #ff9500; /* Info/Prüfung */
-            --u-green: #d1f2eb;  /* Veranstaltung Hintergrund */
-            --u-green-border: #2ecc71;
-            --u-grey: #f0f0f0;
+            --u-orange: #ff9500; /* Info */
+            --u-green: #2ecc71;  /* Event/Vertretung */
+            --u-grey: #bdc3c7;   /* Normal */
+            --u-bg: #fdfdfd;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; user-select: none; }
@@ -85,31 +85,29 @@
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             position: relative;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            border: 3px solid transparent;
+            border: 3px solid transparent; /* Für Neon Effekt */
             overflow: hidden;
         }
         
         .card:hover { transform: translateY(-10px) scale(1.02); }
         .card:active { transform: scale(0.98); }
 
-        /* Animation Classes (JS triggered) */
-        .anim-flash { animation: neonFlash 1.5s ease; }
+        /* NEON ANIMATIONS (Attract Mode) */
+        .anim-neon { animation: neonFlash 2s ease; }
         .anim-shake { animation: shake 0.8s ease; }
-        .anim-pulse { animation: deepPulse 2s ease; }
-
+        
         @keyframes neonFlash {
-            0% { border-color: transparent; box-shadow: none; }
-            50% { border-color: var(--neon-blue); box-shadow: 0 0 40px var(--neon-blue); }
-            100% { border-color: transparent; box-shadow: none; }
+            0% { border-color: transparent; box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
+            50% { border-color: var(--neon-blue); box-shadow: 0 0 50px var(--neon-blue), inset 0 0 20px rgba(0, 242, 255, 0.2); }
+            100% { border-color: transparent; box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
         }
         @keyframes shake {
             0%, 100% { transform: rotate(0deg); }
             25% { transform: rotate(2deg); }
             75% { transform: rotate(-2deg); }
         }
-        @keyframes deepPulse { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
 
-        /* Logo Container Centering */
+        /* Logo Container */
         .logo-box {
             height: 100px; width: 100%;
             display: flex; align-items: center; justify-content: center;
@@ -133,7 +131,7 @@
         /* --- MODALS --- */
         .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(240, 242, 245, 0.95); backdrop-filter: blur(20px);
+            background: rgba(240, 242, 245, 0.98); backdrop-filter: blur(20px);
             z-index: 100;
             display: none; flex-direction: column;
             opacity: 0; transition: opacity 0.4s;
@@ -169,49 +167,46 @@
         .explain-box ul { margin-left: 20px; margin-bottom: 15px; }
         .explain-box li { margin-bottom: 8px; color: #555; }
 
-        /* UNTIS TABLE (6 Stunden, Mo-Fr) */
-        .untis-wrapper { width: 100%; max-width: 1200px; overflow-x: auto; background: white; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); padding: 5px; }
-        .untis-table { width: 100%; border-collapse: separate; border-spacing: 4px; min-width: 900px; }
+        /* UNTIS TABLE (Replicated from Screenshot) */
+        .untis-wrapper { width: 100%; max-width: 1200px; overflow-x: auto; background: white; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); padding: 10px; }
+        .untis-table { width: 100%; border-collapse: separate; border-spacing: 6px; min-width: 900px; }
         
-        .untis-table th { background: #34495e; color: white; padding: 15px; font-size: 1.1rem; border-radius: 8px; }
-        .untis-table td { vertical-align: top; height: 110px; width: 18%; background: #fafafa; border-radius: 8px; padding: 5px; position: relative; }
-        .td-time { width: 8% !important; background: #eef2f3 !important; color: #7f8c8d; font-weight: bold; text-align: center; vertical-align: middle !important; font-size: 0.9rem; }
+        .untis-table th { background: #f1f3f5; color: #555; padding: 15px; font-size: 1.2rem; border-radius: 8px; font-weight: 800; text-align: center; }
+        .untis-table td { vertical-align: top; height: 120px; width: 18%; background: #fff; border-radius: 4px; padding: 0; }
+        .td-time { width: 8% !important; background: transparent !important; color: #999; font-weight: bold; text-align: center; vertical-align: top !important; padding-top: 10px !important; font-size: 0.9rem; }
 
-        /* Untis Blocks */
-        .u-card {
-            border-radius: 6px; padding: 6px; margin-bottom: 4px; font-size: 0.85rem;
-            display: flex; flex-direction: column; height: 100%; justify-content: center;
-            border-left: 6px solid transparent; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        /* Untis Card Blocks */
+        .u-block {
+            border-radius: 6px; padding: 8px; margin-bottom: 4px; font-size: 0.9rem;
+            display: flex; flex-direction: column; justify-content: center;
+            border-left-width: 5px; border-left-style: solid;
+            background: #fdfdfd; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            height: 100%;
         }
         
-        /* Styles based on Screenshot */
-        .type-std { background: white; border-left-color: #bdc3c7; } /* Normal */
-        .type-red { background: white; border-left-color: var(--u-red); } /* Entfall */
-        .type-orange { background: white; border-left-color: var(--u-orange); } /* Info/Exam */
+        /* Status Colors */
+        .st-norm { border-left-color: var(--u-grey); }
+        .st-red { border-left-color: var(--u-red); background: #fff5f5; }
+        .st-orange { border-left-color: var(--u-orange); background: #fffaf0; }
+        .st-green { border-left-color: var(--u-green); background: #f0fff4; }
+
+        .u-subj { font-weight: 800; font-size: 1.1rem; color: #2c3e50; display: block; }
+        .u-info { font-size: 0.85rem; color: #7f8c8d; margin-top: 2px; }
+        .u-room { font-weight: bold; color: #444; font-size: 0.9rem; margin-top: 4px; }
         
-        /* Event spanning full height */
-        .type-event { 
-            background: var(--u-green); 
-            border-left: 6px solid var(--u-green-border);
-            height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; font-weight: bold; color: #27ae60;
-        }
+        /* Cancelled Text style */
+        .txt-canc { text-decoration: line-through; opacity: 0.7; }
 
-        .u-subj { font-weight: 900; font-size: 1rem; color: #2c3e50; }
-        .u-info { font-size: 0.8rem; color: #7f8c8d; }
-        .u-room { font-weight: bold; color: #333; float: right; }
-
-        /* SLIDESHOW */
-        .slideshow-container { width: 100%; max-width: 800px; height: 400px; position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin: 0 auto; background: #000; }
-        .slide { width: 100%; height: 100%; display: none; position: relative; }
-        .slide img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; }
-        .slide-text { position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.7); color: white; padding: 20px; text-align: left; }
-        .slide-text h3 { color: var(--primary); margin-bottom: 5px; }
-
-        /* QR Grid */
-        .qr-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; width: 100%; margin-top: 30px; }
-        .qr-item { background: white; padding: 20px; border-radius: 20px; text-align: center; transition: 0.3s; }
-        .qr-item:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .qr-item img { width: 100%; max-width: 160px; mix-blend-mode: multiply; }
+        /* RSS & SOCIAL GRID */
+        .social-layout { display: flex; flex-wrap: wrap; gap: 30px; width: 100%; max-width: 1200px; }
+        .rss-container { flex: 2; min-width: 300px; height: 600px; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 2px solid #eee; }
+        .qr-sidebar { flex: 1; min-width: 250px; display: flex; flex-direction: column; gap: 20px; }
+        
+        .qr-card { background: white; padding: 15px; border-radius: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05); cursor: pointer; transition: 0.3s; }
+        .qr-card:hover { transform: translateY(-5px); border: 2px solid var(--primary); }
+        .qr-card img { width: 120px; mix-blend-mode: multiply; }
+        .qr-card h4 { margin-top: 10px; color: #333; }
+        .link-btn { display: block; margin-top: 5px; background: #eee; padding: 5px 10px; border-radius: 20px; font-size: 0.8rem; text-decoration: none; color: #333; font-weight: bold; }
 
         /* TIMEOUT OVERLAY */
         .timeout-overlay {
@@ -221,7 +216,7 @@
             text-align: center;
         }
         .timeout-overlay.visible { display: flex; animation: fadeIn 0.4s; }
-        .timeout-circle { width: 100px; height: 100px; border: 5px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin-bottom: 20px; animation: pulse 1s infinite; }
+        .timeout-circle { width: 120px; height: 120px; border: 6px solid var(--neon-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 3rem; margin-bottom: 30px; animation: pulse 1s infinite; box-shadow: 0 0 30px var(--neon-blue); }
 
         @keyframes fadeIn { from {opacity:0} to {opacity:1} }
         @keyframes pulse { 0% {transform: scale(1);} 50% {transform: scale(1.1);} 100% {transform: scale(1);} }
@@ -237,7 +232,7 @@
             <img id="logo-header" src="" alt="AHS Logo">
             <div>
                 <h1 data-i18n="header_title">Tag der offenen Tür</h1>
-                <small data-i18n="header_sub">AHS Interactive Terminal</small>
+                <small data-i18n="header_sub">AHS Interaktives Terminal</small>
             </div>
         </div>
         <div class="lang-switch">
@@ -272,8 +267,7 @@
                 <p data-i18n="card_fabi_desc">Content Creator & SV</p>
                 <div style="margin-top:10px;">
                     <span class="tag" data-i18n="tag_sv">Stellv. Schülersprecher</span>
-                    <span class="tag" data-i18n="tag_media">Social Media</span>
-                    <span class="tag">Podcast</span>
+                    <span class="tag" data-i18n="tag_media">Podcast & YouTube</span>
                 </div>
             </div>
             <div class="logo-box" style="width: auto; height: 120px;">
@@ -284,7 +278,7 @@
         <div class="card" onclick="openModal('social')">
             <div class="logo-box"><img id="logo-insta" src="" alt="Social"></div>
             <h3 data-i18n="card_soc_title">Social Media</h3>
-            <p data-i18n="card_soc_desc">YouTube, Spotify & News</p>
+            <p data-i18n="card_soc_desc">Feed, YouTube, Spotify</p>
         </div>
 
         <div class="card" onclick="openModal('schoolweb')">
@@ -301,22 +295,16 @@
         </div>
         <div class="modal-content">
             <div class="explain-box">
-                <h3 data-i18n="untis_exp_h">Das digitale Klassenbuch</h3>
-                <p data-i18n="untis_exp_t1">Stell dir vor, dein Stundenplan ist immer aktuell. Kein Zettelchaos mehr.</p>
-                <p data-i18n="untis_exp_t2">Mit WebUntis siehst du Vertretungen (grün) und Entfall (rot) sofort auf dem Handy. Auch Hausaufgaben stehen hier.</p>
-                <ul>
-                    <li data-i18n="untis_li_1">🔴 Rot = Entfall (Stunde findet nicht statt)</li>
-                    <li data-i18n="untis_li_2">🟢 Grün = Veranstaltung oder Vertretung</li>
-                    <li data-i18n="untis_li_3">🟠 Orange = Wichtige Info oder Prüfung</li>
-                </ul>
+                <h3 data-i18n="untis_exp_h">Dein digitaler Planer</h3>
+                <p data-i18n="untis_exp_t1">Keine Zettelwirtschaft mehr! WebUntis zeigt dir genau, wann du wo sein musst.</p>
+                <p data-i18n="untis_exp_t2">Achte auf die Farben: Rot bedeutet, die Stunde entfällt. Grün sind Veranstaltungen oder Vertretungen.</p>
             </div>
 
             <div class="untis-wrapper">
                 <table class="untis-table">
                     <thead>
                         <tr>
-                            <th class="td-time">Zeit</th>
-                            <th>Mo 19.</th>
+                            <th></th> <th>Mo 19.</th>
                             <th>Di 20.</th>
                             <th>Mi 21.</th>
                             <th>Do 22.</th>
@@ -326,52 +314,51 @@
                     <tbody>
                         <tr>
                             <td class="td-time">07:55</td>
-                            <td><div class="u-card type-red"><span class="u-subj">LZ</span><span class="u-room">2.34</span><span class="u-info">Entfall</span></div></td>
-                            <td><div class="u-card type-red"><span class="u-subj">LZ</span><span class="u-room">2.34</span><span class="u-info">Entfall</span></div></td>
-                            <td rowspan="6" class="type-event">
-                                <div>
-                                    <span style="font-size:1.5rem;">PROJEKTTAGE</span><br>
-                                    <span>Klasse 10a</span><br>
-                                    <i class="fa-solid fa-location-dot"></i> Berlin
-                                </div>
-                            </td>
-                            <td rowspan="6" class="type-event">
-                                <div>
-                                    <span style="font-size:1.5rem;">PROJEKTTAGE</span><br>
-                                    <span>Klasse 10a</span>
-                                </div>
-                            </td>
-                            <td rowspan="6" class="type-event">
-                                <div>
-                                    <span style="font-size:1.5rem;">PROJEKTTAGE</span><br>
-                                    <span>Klasse 10a</span>
-                                </div>
-                            </td>
+                            <td><div class="u-block st-red"><span class="u-subj txt-canc">LZ</span><span class="u-info">Entfall</span><span class="u-room txt-canc">2.34</span></div></td>
+                            <td><div class="u-block st-red"><span class="u-subj txt-canc">LZ</span><span class="u-info">Entfall</span><span class="u-room txt-canc">2.34</span></div></td>
+                            <td><div class="u-block st-green"><span class="u-subj">LZ</span><span class="u-info">Vertretung</span><span class="u-room">2.34</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">LZ</span><span class="u-info">Regulär</span><span class="u-room">2.34</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">LZ</span><span class="u-info">Regulär</span><span class="u-room">2.34</span></div></td>
                         </tr>
                         <tr>
                             <td class="td-time">08:40</td>
-                            <td><div class="u-card type-std"><span class="u-subj">EnEA</span><span class="u-room">2.33</span><span class="u-info">9a 9c</span></div></td>
-                            <td><div class="u-card type-std"><span class="u-subj">Mu</span><span class="u-room">Musik</span><span class="u-info">Hr. Kemp</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">EnEA</span><span class="u-info">fish</span><span class="u-room">2.33</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">Mu</span><span class="u-info">kemp</span><span class="u-room">Musik</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">DeEA</span><span class="u-info">zimm</span><span class="u-room">2.32</span></div></td>
+                            <td><div class="u-block st-green"><span class="u-subj">Rel</span><span class="u-info">Verlegung</span><span class="u-room">2.32</span></div></td>
+                            <td><div class="u-block st-orange"><span class="u-subj">Bio</span><span class="u-info">Info!</span><span class="u-room">Bio 0.45</span></div></td>
                         </tr>
                         <tr>
                             <td class="td-time">09:45</td>
-                            <td><div class="u-card type-orange"><span class="u-subj">GW</span><span class="u-room">2.34</span><span class="u-info">Info!</span></div></td>
-                            <td><div class="u-card type-orange"><span class="u-subj">BK</span><span class="u-room">2.34</span><span class="u-info">Material!</span></div></td>
+                            <td><div class="u-block st-red"><span class="u-subj txt-canc">GW</span><span class="u-info">Entfall</span><span class="u-room txt-canc">2.34</span></div></td>
+                            <td><div class="u-block st-orange"><span class="u-subj">BK</span><span class="u-info">Material</span><span class="u-room">2.34</span></div></td>
+                            <td><div class="u-block st-red"><span class="u-subj txt-canc">GW</span><span class="u-info">Entfall</span><span class="u-room txt-canc">2.34</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">Profil</span><span class="u-info">gies</span><span class="u-room">Holz</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">PhEA</span><span class="u-info">zims</span><span class="u-room">Phy</span></div></td>
                         </tr>
                         <tr>
-                            <td class="td-time">10:35</td>
-                            <td><div class="u-card type-orange"><span class="u-subj">Info</span><span class="u-room">PC 1.75</span><span class="u-info">Test</span></div></td>
-                            <td><div class="u-card type-std"><span class="u-subj">PhEA</span><span class="u-room">Phy</span><span class="u-info">9a 9c</span></div></td>
+                            <td class="td-time">10:30</td>
+                            <td><div class="u-block st-orange"><span class="u-subj">Info</span><span class="u-info">PC Raum</span><span class="u-room">1.75</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">MaEA</span><span class="u-info">zims</span><span class="u-room">2.34</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">Sp</span><span class="u-info">birr</span><span class="u-room">1.44</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">Profil</span><span class="u-info">gies</span><span class="u-room">Holz</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">MaEA</span><span class="u-info">zims</span><span class="u-room">2.34</span></div></td>
                         </tr>
                         <tr>
                             <td class="td-time">11:35</td>
-                            <td><div class="u-card type-std"><span class="u-subj">DeEA</span><span class="u-room">2.32</span><span class="u-info">9a 9c</span></div></td>
-                            <td><div class="u-card type-std"><span class="u-subj">ChEA</span><span class="u-room">Che</span><span class="u-info">9a 9c</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">DeEA</span><span class="u-info">zimm</span><span class="u-room">2.32</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">ChEA</span><span class="u-info">scyl</span><span class="u-room">Chemi</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">Sp</span><span class="u-info">birr</span><span class="u-room">1.44</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">EnEA</span><span class="u-info">fish</span><span class="u-room">2.33</span></div></td>
+                            <td><div class="u-block st-norm"><span class="u-subj">ChEA</span><span class="u-info">scyl</span><span class="u-room">Chemi</span></div></td>
                         </tr>
                         <tr>
                             <td class="td-time">12:20</td>
-                            <td><div class="u-card type-red"><span class="u-subj">LZ</span><span class="u-room">2.34</span><span class="u-info">Entfall</span></div></td>
-                            <td><div class="u-card type-red"><span class="u-subj">LZ</span><span class="u-room">2.34</span><span class="u-info">Entfall</span></div></td>
+                            <td><div class="u-block st-red"><span class="u-subj txt-canc">LZ</span><span class="u-info">Entfall</span><span class="u-room txt-canc">2.34</span></div></td>
+                            <td><div class="u-block st-red"><span class="u-subj txt-canc">LZ</span><span class="u-info">Entfall</span><span class="u-room txt-canc">2.34</span></div></td>
+                            <td><div class="u-block st-red"><span class="u-subj txt-canc">LZ</span><span class="u-info">Entfall</span><span class="u-room txt-canc">2.34</span></div></td>
+                            <td><div class="u-block st-red"><span class="u-subj txt-canc">LZ</span><span class="u-info">Entfall</span><span class="u-room txt-canc">2.34</span></div></td>
+                            <td><div class="u-block st-green"><span class="u-subj">LZ</span><span class="u-info">Vertretung</span><span class="u-room">2.34</span></div></td>
                         </tr>
                     </tbody>
                 </table>
@@ -386,13 +373,9 @@
         </div>
         <div class="modal-content">
             <div class="explain-box">
-                <h3 data-i18n="tc_exp_h">Deine digitale Pinnwand</h3>
-                <p data-i18n="tc_exp_t1">TaskCards ist wie eine große Tafel in deinem Zimmer, nur digital. Hier hängen wir Aufgaben, Bilder und Videos auf.</p>
-                <ul>
-                    <li data-i18n="tc_li_1">Überall verfügbar: Egal ob Handy, Tablet oder PC.</li>
-                    <li data-i18n="tc_li_2">Datenschutz: Sicher und DSGVO-konform.</li>
-                    <li data-i18n="tc_li_3">Lernzeit: Jeden Montag gibt es hier neue Aufgaben für die Woche.</li>
-                </ul>
+                <h3 data-i18n="tc_exp_h">Unsere Lernzeit</h3>
+                <p data-i18n="tc_exp_t1">An der AHS gibt es keine klassischen Hausaufgaben. Stattdessen nutzen wir die Lernzeit (LZ).</p>
+                <p data-i18n="tc_exp_t2">Aufgaben für die Woche findest du jeden Montag digital auf TaskCards oder im OSS. TaskCards ist wie eine digitale Pinnwand.</p>
             </div>
             <iframe id="frame-taskcards" src="" style="width:100%; height:600px; border:none; border-radius:15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);"></iframe>
         </div>
@@ -405,12 +388,11 @@
         </div>
         <div class="modal-content">
             <div class="explain-box">
-                <h3 data-i18n="sdui_exp_h">Sicher kommunizieren</h3>
-                <p data-i18n="sdui_exp_t1">Sdui ersetzt WhatsApp-Gruppen. Es ist unser offizieller Kanal für Eltern, Lehrer und Schüler.</p>
+                <h3 data-i18n="sdui_exp_h">Direkter Draht zur Schule</h3>
+                <p data-i18n="sdui_exp_t1">Sdui ist unser sicherer Messenger für Eltern, Schüler und Lehrer. Er ersetzt WhatsApp-Gruppen.</p>
                 <ul>
-                    <li data-i18n="sdui_li_1">Übersetzt Nachrichten automatisch in deine Sprache.</li>
-                    <li data-i18n="sdui_li_2">Keine privaten Telefonnummern nötig.</li>
-                    <li data-i18n="sdui_li_3">Krankmeldungen direkt per App senden.</li>
+                    <li data-i18n="sdui_li_1">Übersetzt Nachrichten automatisch.</li>
+                    <li data-i18n="sdui_li_2">Keine privaten Handynummern nötig.</li>
                 </ul>
             </div>
             <div style="width:100%; max-width:900px; height:500px; border-radius:15px; overflow:hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
@@ -424,8 +406,19 @@
             <h2>Fabi & Leon <i class="fa-solid fa-circle-check" style="color:var(--verified);"></i></h2>
             <button class="close-btn" onclick="closeAll()"><span data-i18n="btn_close">Schließen</span> <i class="fa-solid fa-xmark"></i></button>
         </div>
-        <div class="modal-content" style="padding:0;">
-             <iframe id="frame-fabi" src="" style="width:100%; height:100%; border:none;"></iframe>
+        <div class="modal-content">
+            <div class="explain-box">
+                <h3 data-i18n="fabi_head">Über uns</h3>
+                <p data-i18n="fabi_text">Wir sind Fabi & Leon, Content Creator der Schule. Wir produzieren den Podcast und die YouTube-Videos der AHS und engagieren uns in der SV.</p>
+            </div>
+            
+            <div style="text-align:center; margin-top:30px;">
+                <div style="background:white; padding:20px; display:inline-block; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.1);">
+                    <img id="qr-fabi" src="" style="width:200px; height:200px; object-fit:cover;">
+                    <br>
+                    <a id="link-fabi" href="#" target="_blank" class="link-btn" style="margin-top:10px; display:inline-block;">Seite öffnen</a>
+                 </div>
+            </div>
         </div>
     </div>
 
@@ -445,40 +438,27 @@
             <button class="close-btn" onclick="closeAll()"><span data-i18n="btn_close">Schließen</span> <i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="modal-content">
-            
-            <div class="explain-box">
-                <h3 data-i18n="soc_exp_h">Folgt uns!</h3>
-                <p data-i18n="soc_exp_t1">Hier sind die Links zu unseren Kanälen. Scanne den QR-Code, um die Links mitzunehmen.</p>
-                <p><b>RSS Feed:</b> <span style="color:var(--primary);">ahs-rss.fabiundleon.de</span></p>
-            </div>
+            <div class="social-layout">
+                <div class="rss-container">
+                    <iframe id="frame-rss" src="" style="width:100%; height:100%; border:none;"></iframe>
+                </div>
 
-            <div class="slideshow-container">
-                <div class="slide" style="display:block;">
-                    <img src="https://source.unsplash.com/random/800x400/?school,student" alt="Post 1">
-                    <div class="slide-text"><h3>NEWS: Tag der offenen Tür</h3><p>Wir freuen uns auf euch!</p></div>
-                </div>
-                <div class="slide">
-                    <img src="https://source.unsplash.com/random/800x400/?technology,learning" alt="Post 2">
-                    <div class="slide-text"><h3>Digitalisierung</h3><p>Tablets für alle Klassenstufen.</p></div>
-                </div>
-                <div class="slide">
-                    <img src="https://source.unsplash.com/random/800x400/?podcast,microphone" alt="Post 3">
-                    <div class="slide-text"><h3>Schul-Podcast</h3><p>Neue Folge jetzt auf Spotify!</p></div>
-                </div>
-            </div>
-
-            <div class="qr-grid">
-                <div class="qr-item">
-                    <img id="qr-insta" src="" alt="Insta">
-                    <h3>Instagram</h3>
-                </div>
-                <div class="qr-item">
-                    <img id="qr-youtube" src="" alt="YouTube">
-                    <h3>YouTube</h3>
-                </div>
-                <div class="qr-item">
-                    <img id="qr-fabi" src="" alt="FabiLeon">
-                    <h3>Fabi & Leon</h3>
+                <div class="qr-sidebar">
+                    <div class="qr-card" onclick="openLink(imgConfig.link_youtube)">
+                        <img id="qr-youtube" src="" alt="YouTube">
+                        <h4>YouTube</h4>
+                        <span class="link-btn">Zum Kanal</span>
+                    </div>
+                    <div class="qr-card" onclick="openLink(imgConfig.link_spotify)">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?data=https://open.spotify.com/show/ahs-podcast" alt="Spotify" style="border-radius:50%;">
+                        <h4>Spotify</h4>
+                        <span class="link-btn">Podcast hören</span>
+                    </div>
+                    <div class="qr-card" onclick="openLink(imgConfig.link_insta)">
+                        <img id="qr-insta" src="" alt="Insta">
+                        <h4>Instagram</h4>
+                        <span class="link-btn">AHS News</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -499,7 +479,7 @@
             logo_ahs: "https://www.anton-hansen-schule.de/fileadmin/anton_hansen/lay/logo_ahs.png",
             
             // Icons für die Kacheln
-            icon_untis: "../images/Untis-Logo.svg", // Falls lokal nicht da, nutzt er Fallback
+            icon_untis: "../images/Untis-Logo.svg",
             icon_taskcards: "../images/taskcardslogo.png",
             icon_sdui: "../images/Sduilogo.png",
             icon_insta: "../images/InstaLogo.png",
@@ -507,20 +487,25 @@
             // Fabi & Leon
             logo_fabi_rounded: "https://www.fabiundleon.de/images/Logo_rounded.png",
             
-            // QR Codes (Bitte Pfade anpassen!)
+            // QR Codes
             qr_insta: "../images/InstaQR.jpg",
             qr_youtube: "../images/SchuleQR.jpg",
-            qr_fabi: "../images/FabiUndLeonQR.jpg", // Dies sollte auf /Social-Media/ zeigen
+            qr_fabi: "../images/FabiUndLeonQR.jpg", // Zeigt auf /Social-Media/
 
-            // Links (für Iframes)
+            // Links (für Iframes & Buttons)
             link_taskcards: "https://lk-nk.taskcards.app/#/board/f4c46a53-4fc9-4146-9dcb-6eb3d81da2a4/view?token=90d399d5-4e3b-4ef3-a763-40cf6c18c262",
             link_sdui_video: "https://www.youtube.com/embed/npTVuzEj42o?enablejsapi=1&rel=0",
-            link_fabi_site: "https://www.fabiundleon.de",
-            link_school_site: "https://www.anton-hansen-schule.de"
+            link_school_site: "https://www.anton-hansen-schule.de",
+            link_rss_feed: "https://ahs-rss.fabiundleon.de", // Hier wird die Liste der Videos geladen
+            
+            link_youtube: "https://youtube.com/ahs", // Echter Link hier
+            link_spotify: "https://spotify.com/ahs", // Echter Link hier
+            link_insta: "https://instagram.com/ahs", // Echter Link hier
+            link_fabi: "https://www.fabiundleon.de/Social-Media/"
         };
 
         /* =========================================
-           2. ÜBERSETZUNGEN (Jedes Wort!)
+           2. ÜBERSETZUNGEN (Vollständig)
            ========================================= */
         const translations = {
             de: {
@@ -534,38 +519,33 @@
                 card_sdui_desc: "Messenger & News",
                 card_fabi_desc: "Content Creator & SV",
                 tag_sv: "Stellv. Schülersprecher",
-                tag_media: "Social Media Team",
+                tag_media: "Podcast & YouTube",
                 card_soc_title: "Social Media",
-                card_soc_desc: "YouTube, Spotify & News",
+                card_soc_desc: "Feed, YouTube, Spotify",
                 card_web_title: "Homepage",
                 card_web_desc: "anton-hansen-schule.de",
                 
                 modal_untis_head: "📅 WebUntis",
-                untis_exp_h: "Das digitale Klassenbuch",
-                untis_exp_t1: "Stell dir vor, dein Stundenplan ist immer aktuell. Kein Zettelchaos mehr.",
-                untis_exp_t2: "Mit WebUntis siehst du Vertretungen (grün) und Entfall (rot) sofort auf dem Handy. Auch Hausaufgaben stehen hier.",
-                untis_li_1: "🔴 Rot = Entfall (Stunde findet nicht statt)",
-                untis_li_2: "🟢 Grün = Veranstaltung oder Vertretung",
-                untis_li_3: "🟠 Orange = Wichtige Info oder Prüfung",
+                untis_exp_h: "Dein digitaler Planer",
+                untis_exp_t1: "Keine Zettelwirtschaft mehr! WebUntis zeigt dir genau, wann du wo sein musst.",
+                untis_exp_t2: "Achte auf die Farben: Rot bedeutet, die Stunde entfällt. Grün sind Veranstaltungen oder Vertretungen.",
                 
                 modal_tc_head: "📌 TaskCards",
-                tc_exp_h: "Deine digitale Pinnwand",
-                tc_exp_t1: "TaskCards ist wie eine große Tafel in deinem Zimmer, nur digital. Hier hängen wir Aufgaben, Bilder und Videos auf.",
-                tc_li_1: "Überall verfügbar: Egal ob Handy, Tablet oder PC.",
-                tc_li_2: "Datenschutz: Sicher und DSGVO-konform.",
-                tc_li_3: "Lernzeit: Jeden Montag gibt es hier neue Aufgaben für die Woche.",
+                tc_exp_h: "Unsere Lernzeit",
+                tc_exp_t1: "An der AHS gibt es keine klassischen Hausaufgaben. Stattdessen nutzen wir die Lernzeit (LZ).",
+                tc_exp_t2: "Aufgaben für die Woche findest du jeden Montag digital auf TaskCards oder im OSS. TaskCards ist wie eine digitale Pinnwand.",
                 
                 modal_sdui_head: "💬 Sdui Messenger",
-                sdui_exp_h: "Sicher kommunizieren",
-                sdui_exp_t1: "Sdui ersetzt WhatsApp-Gruppen. Es ist unser offizieller Kanal für Eltern, Lehrer und Schüler.",
-                sdui_li_1: "Übersetzt Nachrichten automatisch in deine Sprache.",
-                sdui_li_2: "Keine privaten Telefonnummern nötig.",
-                sdui_li_3: "Krankmeldungen direkt per App senden.",
+                sdui_exp_h: "Direkter Draht zur Schule",
+                sdui_exp_t1: "Sdui ist unser sicherer Messenger für Eltern, Schüler und Lehrer. Er ersetzt WhatsApp-Gruppen.",
+                sdui_li_1: "Übersetzt Nachrichten automatisch.",
+                sdui_li_2: "Keine privaten Handynummern nötig.",
+
+                fabi_head: "Über uns",
+                fabi_text: "Wir sind Fabi & Leon, Content Creator der Schule. Wir produzieren den Podcast und die YouTube-Videos der AHS und engagieren uns in der SV.",
 
                 modal_web_head: "Schul-Webseite",
                 modal_soc_head: "Social Media & RSS",
-                soc_exp_h: "Folgt uns!",
-                soc_exp_t1: "Hier sind die Links zu unseren Kanälen. Scanne den QR-Code, um die Links mitzunehmen.",
                 
                 timeout_title: "Bist du noch da?",
                 timeout_desc: "Der Bildschirm wird gleich zurückgesetzt.",
@@ -582,41 +562,36 @@
                 card_sdui_desc: "Messenger & News",
                 card_fabi_desc: "Content Creators & Council",
                 tag_sv: "Deputy Head Students",
-                tag_media: "Social Media Team",
+                tag_media: "Podcast & YouTube",
                 card_soc_title: "Social Media",
-                card_soc_desc: "YouTube, Spotify & News",
+                card_soc_desc: "Feed, YouTube, Spotify",
                 card_web_title: "Website",
                 card_web_desc: "anton-hansen-schule.de",
                 
                 modal_untis_head: "📅 WebUntis",
-                untis_exp_h: "The Digital Class Register",
-                untis_exp_t1: "Imagine your timetable is always up to date. No more paper chaos.",
-                untis_exp_t2: "With WebUntis you see substitutions (green) and cancellations (red) instantly on your phone.",
-                untis_li_1: "🔴 Red = Cancelled (Lesson does not take place)",
-                untis_li_2: "🟢 Green = Event or Substitution",
-                untis_li_3: "🟠 Orange = Important Info or Exam",
+                untis_exp_h: "Your Digital Planner",
+                untis_exp_t1: "No more paper chaos! WebUntis shows you exactly when and where you need to be.",
+                untis_exp_t2: "Watch the colors: Red means cancelled. Green means events or substitutions.",
                 
                 modal_tc_head: "📌 TaskCards",
-                tc_exp_h: "Your Digital Pinboard",
-                tc_exp_t1: "TaskCards is like a big board in your room, but digital. We post tasks, pictures, and videos here.",
-                tc_li_1: "Available everywhere: Mobile, Tablet, or PC.",
-                tc_li_2: "Privacy: Secure and GDPR compliant.",
-                tc_li_3: "Study Time: New tasks are uploaded every Monday.",
+                tc_exp_h: "Study Time (LZ)",
+                tc_exp_t1: "At AHS, we don't have traditional homework. Instead, we use Study Time (LZ).",
+                tc_exp_t2: "Tasks for the week are uploaded every Monday on TaskCards or OSS. It's like a digital pinboard.",
                 
                 modal_sdui_head: "💬 Sdui Messenger",
-                sdui_exp_h: "Secure Communication",
-                sdui_exp_t1: "Sdui replaces WhatsApp groups. It is our official channel for parents, teachers, and students.",
-                sdui_li_1: "Translates messages automatically into your language.",
+                sdui_exp_h: "Direct Line to School",
+                sdui_exp_t1: "Sdui is our secure messenger for parents, students, and teachers. It replaces WhatsApp groups.",
+                sdui_li_1: "Translates messages automatically.",
                 sdui_li_2: "No private phone numbers needed.",
-                sdui_li_3: "Send sick notes directly via the app.",
+
+                fabi_head: "About Us",
+                fabi_text: "We are Fabi & Leon, the school's Content Creators. We produce the podcast and YouTube videos and serve on the Student Council.",
 
                 modal_web_head: "School Website",
                 modal_soc_head: "Social Media & RSS",
-                soc_exp_h: "Follow us!",
-                soc_exp_t1: "Here are the links to our channels. Scan the QR code to take them with you.",
                 
                 timeout_title: "Are you still there?",
-                timeout_desc: "The screen will reset shortly.",
+                timeout_desc: "Screen will reset shortly.",
                 btn_close: "Close"
             },
             fr: {
@@ -630,38 +605,33 @@
                 card_sdui_desc: "Messagerie & Infos",
                 card_fabi_desc: "Créateurs & Conseil",
                 tag_sv: "Délégués Adjoints",
-                tag_media: "Équipe Réseaux Sociaux",
+                tag_media: "Podcast & YouTube",
                 card_soc_title: "Réseaux Sociaux",
-                card_soc_desc: "YouTube, Spotify & Actu",
+                card_soc_desc: "Flux, YouTube, Spotify",
                 card_web_title: "Site Web",
                 card_web_desc: "anton-hansen-schule.de",
                 
                 modal_untis_head: "📅 WebUntis",
-                untis_exp_h: "Le Cahier de Textes Numérique",
-                untis_exp_t1: "Imaginez que votre emploi du temps soit toujours à jour. Fini le chaos des papiers.",
-                untis_exp_t2: "Avec WebUntis, vous voyez les remplacements (vert) et annulations (rouge) instantanément.",
-                untis_li_1: "🔴 Rouge = Annulé (Le cours n'a pas lieu)",
-                untis_li_2: "🟢 Vert = Événement ou Remplacement",
-                untis_li_3: "🟠 Orange = Info importante ou Examen",
+                untis_exp_h: "Votre Planificateur Numérique",
+                untis_exp_t1: "Fini le chaos des papiers ! WebUntis vous montre exactement où aller.",
+                untis_exp_t2: "Attention aux couleurs : Rouge signifie annulé. Vert signifie événements ou remplacements.",
                 
                 modal_tc_head: "📌 TaskCards",
-                tc_exp_h: "Votre Tableau Numérique",
-                tc_exp_t1: "TaskCards est comme un grand tableau, mais numérique. Nous y affichons des tâches et vidéos.",
-                tc_li_1: "Disponible partout : Mobile, Tablette ou PC.",
-                tc_li_2: "Confidentialité : Sécurisé et conforme RGPD.",
-                tc_li_3: "Temps d'étude : De nouvelles tâches chaque lundi.",
+                tc_exp_h: "Temps d'étude (LZ)",
+                tc_exp_t1: "À l'AHS, pas de devoirs classiques. Nous utilisons le Temps d'étude (LZ).",
+                tc_exp_t2: "Les tâches de la semaine sont mises en ligne chaque lundi sur TaskCards. C'est un tableau numérique.",
                 
                 modal_sdui_head: "💬 Messagerie Sdui",
-                sdui_exp_h: "Communication Sécurisée",
-                sdui_exp_t1: "Sdui remplace les groupes WhatsApp. C'est notre canal officiel.",
+                sdui_exp_h: "Ligne directe avec l'école",
+                sdui_exp_t1: "Sdui est notre messagerie sécurisée. Elle remplace les groupes WhatsApp.",
                 sdui_li_1: "Traduit automatiquement les messages.",
-                sdui_li_2: "Pas de numéros de téléphone privés nécessaires.",
-                sdui_li_3: "Envoyez les avis de maladie via l'application.",
+                sdui_li_2: "Pas de numéros privés nécessaires.",
+
+                fabi_head: "À propos de nous",
+                fabi_text: "Nous sommes Fabi & Leon, créateurs de contenu de l'école. Nous produisons le podcast et les vidéos YouTube.",
 
                 modal_web_head: "Site de l'école",
                 modal_soc_head: "Réseaux Sociaux & RSS",
-                soc_exp_h: "Suivez-nous !",
-                soc_exp_t1: "Voici les liens vers nos chaînes. Scannez le code QR.",
                 
                 timeout_title: "Êtes-vous toujours là ?",
                 timeout_desc: "L'écran va se réinitialiser.",
@@ -670,10 +640,10 @@
         };
 
         /* =========================================
-           3. LOGIC & INITIALIZATION
+           3. INIT & LOGIC
            ========================================= */
         
-        // Bilder setzen
+        // Bilder Init
         document.getElementById('logo-header').src = imgConfig.logo_ahs;
         document.getElementById('logo-untis').src = imgConfig.icon_untis;
         document.getElementById('logo-taskcards').src = imgConfig.icon_taskcards;
@@ -685,34 +655,24 @@
         document.getElementById('qr-insta').src = imgConfig.qr_insta;
         document.getElementById('qr-youtube').src = imgConfig.qr_youtube;
         document.getElementById('qr-fabi').src = imgConfig.qr_fabi;
+        document.getElementById('link-fabi').href = imgConfig.link_fabi;
 
-        // Iframe Links setzen (werden beim Öffnen geladen)
-        const iframeLinks = {
-            taskcards: imgConfig.link_taskcards,
-            sdui: imgConfig.link_sdui_video,
-            fabi: imgConfig.link_fabi_site,
-            school: imgConfig.link_school_site
-        };
-
-        // State Variables
+        // State
         let idleTime = 0;
         let isModalOpen = false;
         let currentLang = 'de';
 
-        /* --- ATTRACT MODE (Animation Loop) --- */
+        /* --- ATTRACT MODE (NEON BLINKEN) --- */
         setInterval(() => {
             if (!isModalOpen) {
                 const cards = document.querySelectorAll('.card');
                 const randomCard = cards[Math.floor(Math.random() * cards.length)];
                 
-                // Zufällige Animation wählen
-                const anims = ['anim-flash', 'anim-shake', 'anim-pulse'];
-                const chosenAnim = anims[Math.floor(Math.random() * anims.length)];
-                
-                randomCard.classList.add(chosenAnim);
-                setTimeout(() => randomCard.classList.remove(chosenAnim), 2000);
+                // Neon Flash Animation hinzufügen
+                randomCard.classList.add('anim-neon');
+                setTimeout(() => randomCard.classList.remove('anim-neon'), 2000);
             }
-        }, 3500); // Alle 3.5 Sekunden passiert etwas
+        }, 3000); // Alle 3 Sek blinkt was
 
         /* --- IDLE TIMER --- */
         setInterval(() => {
@@ -721,7 +681,7 @@
                 if (idleTime === 60) document.getElementById('timeout-alert').classList.add('visible');
                 if (idleTime >= 75) resetSystem();
             } else {
-                idleTime = 0; // Auf Startseite kein Timeout
+                idleTime = 0; 
             }
         }, 1000);
 
@@ -736,17 +696,21 @@
             resetIdleTimer();
         }
 
+        function openLink(url) {
+            window.open(url, '_blank');
+        }
+
         /* --- MODAL CONTROL --- */
         function openModal(id) {
             resetIdleTimer();
             isModalOpen = true;
             document.getElementById('modal-' + id).classList.add('open');
             
-            // Iframes laden (Performance sparen)
-            if(id === 'taskcards') document.getElementById('frame-taskcards').src = iframeLinks.taskcards;
-            if(id === 'sdui') document.getElementById('frame-sdui').src = iframeLinks.sdui;
-            if(id === 'fabi') document.getElementById('frame-fabi').src = iframeLinks.fabi;
-            if(id === 'schoolweb') document.getElementById('frame-school').src = iframeLinks.school;
+            // Lazy Load Iframes
+            if(id === 'taskcards') document.getElementById('frame-taskcards').src = imgConfig.link_taskcards;
+            if(id === 'sdui') document.getElementById('frame-sdui').src = imgConfig.link_sdui_video;
+            if(id === 'schoolweb') document.getElementById('frame-school').src = imgConfig.link_school_site;
+            if(id === 'social') document.getElementById('frame-rss').src = imgConfig.link_rss_feed;
         }
 
         function closeAll() {
@@ -754,11 +718,11 @@
             document.querySelectorAll('.modal').forEach(el => el.classList.remove('open'));
             resetIdleTimer();
             
-            // Iframes entladen (Video stopp)
+            // Iframes unload to stop video/audio
             document.getElementById('frame-taskcards').src = "";
             document.getElementById('frame-sdui').src = "";
-            document.getElementById('frame-fabi').src = "";
             document.getElementById('frame-school').src = "";
+            document.getElementById('frame-rss').src = "";
         }
 
         /* --- LANGUAGE CONTROL --- */
@@ -766,11 +730,9 @@
             currentLang = lang;
             resetIdleTimer();
             
-            // Buttons updaten
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`button[onclick="setLang('${lang}')"]`).classList.add('active');
 
-            // Texte tauschen
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if(translations[lang][key]) {
@@ -779,22 +741,6 @@
             });
         }
 
-        /* --- SLIDESHOW LOGIC --- */
-        let slideIndex = 0;
-        function showSlides() {
-            let i;
-            let slides = document.getElementsByClassName("slide");
-            for (i = 0; i < slides.length; i++) {
-                slides[i].style.display = "none";  
-            }
-            slideIndex++;
-            if (slideIndex > slides.length) {slideIndex = 1}    
-            slides[slideIndex-1].style.display = "block";  
-            setTimeout(showSlides, 4000); // Bildwechsel alle 4 Sek
-        }
-        showSlides(); // Start
-
-        /* --- EVENT LISTENERS --- */
         ['click', 'touchstart', 'mousemove'].forEach(evt => window.addEventListener(evt, resetIdleTimer));
 
     </script>
