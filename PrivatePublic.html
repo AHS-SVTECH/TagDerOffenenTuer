@@ -10,11 +10,9 @@
 
     <style>
         :root {
-            /* --- ZOOM-EINSTELLUNG --- */
-            /* 1.0 = Normal */
-            /* 0.5 = 50% Zoom (Man sieht doppelt so viel Inhalt) */
-            /* 0.45 = Perfekt für Riesen-TVs um Webseiten komplett zu sehen */
-            --scale-factor: 0.45; 
+            /* Wir brauchen keinen extremen Scale-Faktor mehr, da das Layout jetzt den Platz nutzt */
+            /* 0.85 sorgt dafür, dass alles schön kompakt wirkt */
+            --scale-factor: 0.85; 
 
             --primary: #007aff;
             --secondary: #5856d6;
@@ -41,7 +39,6 @@
             display: flex; flex-direction: column;
         }
 
-        /* Hintergrund */
         .ambient {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
             background: radial-gradient(circle at 50% 50%, rgba(0,122,255,0.08), transparent 60%);
@@ -81,7 +78,6 @@
             gap: 3vh;
         }
 
-        /* CARD STYLING */
         .card {
             background: var(--glass);
             border-radius: 2vh;
@@ -114,10 +110,10 @@
         .anim-neon { animation: neonFlash 2s ease; }
         @keyframes neonFlash { 50% { border-color: var(--neon-blue); box-shadow: 0 0 4vh var(--neon-blue); } }
 
-        /* --- MODALS --- */
+        /* --- MODALS (NEUES LAYOUT) --- */
         .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(240, 242, 245, 0.95); backdrop-filter: blur(20px);
+            background: rgba(240, 242, 245, 0.98); backdrop-filter: blur(20px);
             z-index: 100;
             display: none; 
             flex-direction: column;
@@ -126,8 +122,8 @@
         .modal.open { display: flex; opacity: 1; }
 
         .modal-header {
-            flex: 0 0 10vh; 
-            padding: 0 5vw; background: white; border-bottom: 1px solid #ddd;
+            flex: 0 0 10vh; /* Feste Header Höhe */
+            padding: 0 3vw; background: white; border-bottom: 1px solid #ddd;
             display: flex; justify-content: space-between; align-items: center;
         }
         .modal-header h2 { font-size: 3vh; color: var(--primary); font-weight: 800; display: flex; align-items: center; gap: 1vw; }
@@ -136,114 +132,119 @@
             border-radius: 50px; font-weight: 800; cursor: pointer; font-size: 2vh;
         }
 
-        /* INHALT: Hier wird gezoomt! */
+        /* Modal Inhalt: Nutzt den Rest der Höhe */
         .modal-content { 
             flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center;
-            /* WICHTIG: Overflow hidden im Container, Scrolling im Wrapper */
-            overflow: hidden; 
-            padding: 0; /* Padding im Wrapper */
+            width: 100%;
+            height: 90vh; /* Restliche Höhe */
+            padding: 3vh 3vw;
+            overflow: hidden; /* KEIN SCROLLEN IM CONTAINER */
         }
 
-        .scale-wrapper {
-            /* 1. Zoomt alles raus */
+        /* --- SPLIT LAYOUT (Links Text, Rechts Inhalt) --- */
+        .split-layout {
+            display: grid;
+            grid-template-columns: 35% 65%; /* Links 35% Text, Rechts 65% Inhalt */
+            gap: 3vw;
+            width: 100%;
+            height: 100%;
+            /* Leichter Zoom-Out Effekt auf alles */
             transform: scale(var(--scale-factor));
-            /* 2. Setzt den Ankerpunkt oben mittig */
-            transform-origin: top center;
-            
-            /* 3. Erweitert die Breite massiv, damit der Inhalt Platz hat */
-            width: calc(100% / var(--scale-factor)); 
-            
-            /* 4. Erlaubt Scrolling und füllt die Höhe */
+            transform-origin: center center;
+            width: calc(100% / var(--scale-factor));
             height: calc(100% / var(--scale-factor));
-            overflow-y: auto; 
-            
-            display: flex; 
-            flex-direction: column; 
-            align-items: center;
-            padding: 50px 10%; /* Innenabstand */
+            /* Zentrieren */
+            margin-left: calc((100% - (100% / var(--scale-factor))) / 2);
+            margin-top: calc((100% - (100% / var(--scale-factor))) / 2);
         }
 
-        /* INFO BOX */
+        /* Linke Spalte (Text) */
+        .left-col {
+            display: flex; flex-direction: column; justify-content: center;
+        }
+
         .explain-box {
-            background: white; padding: 40px; border-radius: 30px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.06); margin-bottom: 40px;
-            width: 100%; max-width: 1600px; /* Breiter, da rausgezoomt */
-            text-align: left;
-            border-left: 15px solid var(--primary);
+            background: white; padding: 3vh 2vw; border-radius: 2vh;
+            box-shadow: 0 1vh 3vh rgba(0,0,0,0.06);
+            border-left: 0.8vw solid var(--primary);
+            height: auto;
+            max-height: 100%;
+            overflow-y: auto; /* Nur der Text scrollt, falls er zu lang ist */
         }
-        .explain-box h3 { margin-bottom: 20px; color: var(--primary); font-size: 2.5rem; }
-        .explain-box p { color: #444; line-height: 1.6; margin-bottom: 15px; font-size: 1.8rem; }
+        .explain-box h3 { margin-bottom: 2vh; color: var(--primary); font-size: 3vh; line-height: 1.2; }
+        .explain-box p { color: #444; line-height: 1.6; margin-bottom: 1.5vh; font-size: 2vh; }
 
-        /* UNTIS TABLE */
+        /* Rechte Spalte (Inhalt/Video/Tabelle) */
+        .right-col {
+            background: white;
+            border-radius: 2vh;
+            box-shadow: 0 1vh 4vh rgba(0,0,0,0.1);
+            overflow: hidden;
+            border: 0.3vh solid #eee;
+            display: flex; align-items: center; justify-content: center;
+            height: 100%; /* Volle Höhe */
+        }
+
+        /* Spezialanpassung für Untis Tabelle: Volle Höhe! */
         .untis-wrapper { 
-            width: 100%; max-width: 1800px; 
-            background: white; border-radius: 30px; 
-            box-shadow: 0 20px 60px rgba(0,0,0,0.1); padding: 30px;
+            width: 100%; height: 100%; 
+            padding: 2vh; 
+            display: flex; flex-direction: column; 
         }
         .untis-table { 
-            width: 100%; border-collapse: separate; border-spacing: 10px; 
+            width: 100%; height: 100%; 
+            border-collapse: separate; border-spacing: 0.5vw; 
             table-layout: fixed; 
         }
-        .untis-table th { background: #34495e; color: white; padding: 20px; font-size: 1.5rem; border-radius: 10px; font-weight: 800; }
-        .untis-table td { vertical-align: top; padding: 0; height: 150px; }
-        .td-time { width: 100px !important; background: transparent !important; color: #999; font-weight: 800; font-size: 1.5rem; padding-top: 25px !important; }
-
+        .untis-table th { background: #34495e; color: white; padding: 1vh; font-size: 1.8vh; border-radius: 1vh; }
+        .untis-table td { vertical-align: middle; padding: 0; height: auto; } /* Middle align */
+        
         .u-block {
-            border-radius: 8px; padding: 15px; margin-bottom: 8px; font-size: 1.2rem;
-            display: flex; flex-direction: column; justify-content: center;
-            border-left-width: 8px; border-left-style: solid;
-            background: #fdfdfd; box-shadow: 0 3px 8px rgba(0,0,0,0.05); height: 100%;
+            border-radius: 0.8vh; padding: 0; margin: 0;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            border-left-width: 0.6vh; border-left-style: solid;
+            background: #fdfdfd; box-shadow: 0 0.2vh 0.5vh rgba(0,0,0,0.05); 
+            height: 100%; width: 100%; /* Block füllt die Zelle */
         }
+        
+        .u-subj { font-weight: 800; font-size: 2.2vh; color: #2c3e50; }
+        .u-info { font-size: 1.5vh; color: #7f8c8d; }
+        .td-time { font-size: 2vh; color: #888; font-weight: 800; text-align: center; vertical-align: middle !important; padding:0 !important; }
+
         .st-norm { border-left-color: var(--u-gray); }
         .st-red { border-left-color: var(--u-red); background: #fff5f5; }
-        .st-orange { border-left-color: var(--u-orange); background: #fffaf0; }
         .st-green { border-left-color: var(--u-green); background: #f0fff4; }
+        .st-orange { border-left-color: var(--u-orange); background: #fffaf0; }
 
-        .u-subj { font-weight: 800; font-size: 1.6rem; color: #2c3e50; }
-        .u-info { font-size: 1.2rem; color: #7f8c8d; }
-        .u-room { font-weight: bold; color: #444; font-size: 1.1rem; margin-top: 5px; float: right; }
-        .cancelled { text-decoration: line-through; opacity: 0.6; }
-
-        /* SOCIAL & FABI LAYOUTS */
-        .social-layout { display: flex; gap: 50px; width: 100%; max-width: 2000px; height: 1000px; }
-        .rss-frame { flex: 3; background: white; border-radius: 30px; border: 3px solid #eee; overflow: hidden; }
+        /* Iframes füllen den Platz komplett */
+        .full-iframe { width: 100%; height: 100%; border: none; display: block; }
         
-        .qr-sidebar { flex: 1; display: flex; flex-direction: column; gap: 30px; min-width: 400px; }
-        .qr-card { 
-            background: white; border-radius: 30px; padding: 30px; text-align: center; 
-            flex: 1; display: flex; align-items: center; justify-content: center; gap: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 3px solid transparent; cursor: pointer;
+        /* QR Code Layout (Rechts) */
+        .qr-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 2vh;
+            width: 100%; height: 100%;
+            padding: 2vh;
         }
-        .qr-card img { height: 140px; width: 140px; object-fit: contain; }
-        .qr-text { text-align: left; }
-        .qr-text h4 { font-size: 2rem; color: #333; margin-bottom: 10px; }
-        .qr-text span { font-size: 1.5rem; background: #eee; padding: 5px 15px; border-radius: 10px; }
-
-        .fabi-container { text-align: center; width: 100%; max-width: 1200px; }
-        .fabi-qr-box { background: white; padding: 50px; border-radius: 40px; display: inline-block; box-shadow: 0 30px 60px rgba(0,0,0,0.1); margin-bottom: 40px; }
-        .fabi-qr-box img { width: 450px; height: 450px; } 
-        
-        .fabi-toggle-btn {
-            background: var(--primary); color: white; border: none; padding: 30px 70px;
-            font-size: 2rem; font-weight: bold; border-radius: 60px; cursor: pointer;
-            box-shadow: 0 15px 40px rgba(0,122,255,0.3);
+        .qr-item {
+            background: #f8f9fa; border-radius: 2vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border: 2px solid transparent; transition: 0.3s;
         }
+        .qr-item:hover { border-color: var(--primary); background: white; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+        .qr-item img { height: 15vh; width: 15vh; object-fit: contain; margin-bottom: 1vh; }
+        .qr-item h4 { font-size: 2.5vh; color: #333; }
 
-        .full-iframe { width: 100%; height: 100%; border: none; }
-        /* Container extra hoch machen, damit beim Rauszoomen viel zu sehen ist */
-        .embed-container { width: 100%; height: 1200px; border-radius: 30px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.15); margin-top: 30px; border: 3px solid #eee; }
-
-        /* TIMEOUT */
+        /* Timeout */
         .timeout-layer {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.95); z-index: 2000;
             display: none; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center;
         }
         .timeout-layer.visible { display: flex; animation: fadeIn 0.4s; }
-        .timer-circle { width: 200px; height: 200px; border: 10px solid var(--neon-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 5rem; margin-bottom: 40px; animation: pulse 1s infinite; }
+        .timer-circle { width: 15vh; height: 15vh; border: 1vh solid var(--neon-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 5vh; margin-bottom: 2vh; animation: pulse 1s infinite; }
 
         @keyframes fadeIn { from {opacity:0} to {opacity:1} }
         @keyframes pulse { 0% {transform: scale(1);} 50% {transform: scale(1.1);} 100% {transform: scale(1);} }
@@ -296,13 +297,13 @@
             <div style="flex:1;">
                 <h3>Fabi & Leon <i class="fa-solid fa-circle-check" style="color:var(--verified);"></i></h3>
                 <p data-i18n="d_fabi">Content Creator & SV</p>
-                <div style="margin-top:15px;">
+                <div style="margin-top:1vh;">
                     <span class="tag" data-i18n="tag_sv">Stellv. Schülersprecher</span>
                     <span class="tag" data-i18n="tag_media">Podcast & YouTube</span>
                 </div>
             </div>
             <div class="logo-box" style="width: auto;">
-                <img id="icon-fabi" src="" style="border-radius: 15px;">
+                <img id="icon-fabi" src="" style="border-radius: 1vh;">
             </div>
         </div>
 
@@ -325,46 +326,57 @@
             <button class="close-btn" onclick="closeAll()"><span data-i18n="btn_close">Schließen</span> <i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="modal-content">
-            <div class="scale-wrapper">
-                <div class="explain-box">
-                    <h3 data-i18n="exp_untis_h">Dein digitaler Planer</h3>
-                    <p data-i18n="exp_untis_t1">An der AHS gibt es keine Zettelwirtschaft mehr. WebUntis zeigt dir in Echtzeit, wann und wo dein Unterricht stattfindet. So bist du immer perfekt organisiert.</p>
-                    <p data-i18n="exp_untis_t2">Die Farben helfen dir sofort zu verstehen, was los ist: <b style="color:var(--u-red)">Rot</b> bedeutet Entfall, <b style="color:var(--u-green)">Grün</b> zeigt Vertretungen oder Events an.</p>
+            <div class="split-layout">
+                <div class="left-col">
+                    <div class="explain-box">
+                        <h3 data-i18n="exp_untis_h">Dein digitaler Planer</h3>
+                        <p data-i18n="exp_untis_t1">An der AHS gibt es keine Zettelwirtschaft mehr. WebUntis zeigt dir in Echtzeit, wann und wo dein Unterricht stattfindet.</p>
+                        <p data-i18n="exp_untis_t2">Die Farben helfen dir sofort: <b style="color:var(--u-red)">Rot</b> bedeutet Entfall, <b style="color:var(--u-green)">Grün</b> Vertretung.</p>
+                    </div>
                 </div>
-                <div class="untis-wrapper">
-                    <table class="untis-table">
-                        <thead><tr><th style="width:100px;"></th><th>Mo</th><th>Di</th><th>Mi</th><th>Do</th><th>Fr</th></tr></thead>
-                        <tbody>
-                            <tr><td class="td-time">1.</td>
-                                <td><div class="u-block st-red"><span class="u-subj cancelled">LZ</span><span class="u-info">Entfall</span></div></td>
-                                <td><div class="u-block st-red"><span class="u-subj cancelled">LZ</span><span class="u-info">Entfall</span></div></td>
-                                <td><div class="u-block st-green"><span class="u-subj">LZ</span><span class="u-info">Vertretung</span></div></td>
-                                <td><div class="u-block st-norm"><span class="u-subj">LZ</span><span class="u-info">Regulär</span></div></td>
-                                <td><div class="u-block st-norm"><span class="u-subj">LZ</span><span class="u-info">Regulär</span></div></td>
-                            </tr>
-                            <tr><td class="td-time">2.</td>
-                                <td><div class="u-block st-norm"><span class="u-subj">EnEA</span><span class="u-info">R2.33</span></div></td>
-                                <td><div class="u-block st-norm"><span class="u-subj">Mu</span><span class="u-info">Musik</span></div></td>
-                                <td><div class="u-block st-norm"><span class="u-subj">DeEA</span><span class="u-info">R2.32</span></div></td>
-                                <td><div class="u-block st-green"><span class="u-subj">Rel</span><span class="u-info">Verlegung</span></div></td>
-                                <td><div class="u-block st-orange"><span class="u-subj">Bio</span><span class="u-info">Info!</span></div></td>
-                            </tr>
-                            <tr><td class="td-time">3.</td>
-                                <td><div class="u-block st-norm"><span class="u-subj">GW</span><span class="u-info">R2.34</span></div></td>
-                                <td><div class="u-block st-norm"><span class="u-subj">BK</span><span class="u-info">R2.34</span></div></td>
-                                <td><div class="u-block st-norm"><span class="u-subj">GW</span><span class="u-info">R2.34</span></div></td>
-                                <td><div class="u-block st-norm"><span class="u-subj">Pro</span><span class="u-info">Holz</span></div></td>
-                                <td><div class="u-block st-norm"><span class="u-subj">PhEA</span><span class="u-info">Phy</span></div></td>
-                            </tr>
-                            <tr><td class="td-time">4.</td>
-                                <td><div class="u-block st-norm"><span class="u-subj">Info</span><span class="u-info">PC</span></div></td>
-                                <td><div class="u-block st-norm"><span class="u-subj">MaEA</span><span class="u-info">R2.34</span></div></td>
-                                <td><div class="u-block st-norm"><span class="u-subj">Sp</span><span class="u-info">Halle</span></div></td>
-                                <td><div class="u-block st-norm"><span class="u-subj">Pro</span><span class="u-info">Holz</span></div></td>
-                                <td><div class="u-block st-norm"><span class="u-subj">MaEA</span><span class="u-info">R2.34</span></div></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="right-col">
+                    <div class="untis-wrapper">
+                        <table class="untis-table">
+                            <thead><tr><th style="width:10%;"></th><th>Mo</th><th>Di</th><th>Mi</th><th>Do</th><th>Fr</th></tr></thead>
+                            <tbody>
+                                <tr><td class="td-time">1.</td>
+                                    <td><div class="u-block st-red"><span class="u-subj cancelled">LZ</span></div></td>
+                                    <td><div class="u-block st-red"><span class="u-subj cancelled">LZ</span></div></td>
+                                    <td><div class="u-block st-green"><span class="u-subj">LZ</span></div></td>
+                                    <td><div class="u-block st-norm"><span class="u-subj">LZ</span></div></td>
+                                    <td><div class="u-block st-norm"><span class="u-subj">LZ</span></div></td>
+                                </tr>
+                                <tr><td class="td-time">2.</td>
+                                    <td><div class="u-block st-norm"><span class="u-subj">En</span><span class="u-info">R233</span></div></td>
+                                    <td><div class="u-block st-norm"><span class="u-subj">Mu</span><span class="u-info">Musik</span></div></td>
+                                    <td><div class="u-block st-norm"><span class="u-subj">De</span><span class="u-info">R232</span></div></td>
+                                    <td><div class="u-block st-green"><span class="u-subj">Rel</span><span class="u-info">Vrtl</span></div></td>
+                                    <td><div class="u-block st-orange"><span class="u-subj">Bio</span><span class="u-info">Info!</span></div></td>
+                                </tr>
+                                <tr><td class="td-time">3.</td>
+                                    <td><div class="u-block st-norm"><span class="u-subj">GW</span><span class="u-info">R234</span></div></td>
+                                    <td><div class="u-block st-norm"><span class="u-subj">BK</span><span class="u-info">R234</span></div></td>
+                                    <td><div class="u-block st-norm"><span class="u-subj">GW</span><span class="u-info">R234</span></div></td>
+                                    <td><div class="u-block st-norm"><span class="u-subj">Pro</span><span class="u-info">Holz</span></div></td>
+                                    <td><div class="u-block st-norm"><span class="u-subj">Ph</span><span class="u-info">Phy</span></div></td>
+                                </tr>
+                                <tr><td class="td-time">4.</td>
+                                    <td><div class="u-block st-norm"><span class="u-subj">Inf</span><span class="u-info">PC</span></div></td>
+                                    <td><div class="u-block st-norm"><span class="u-subj">Ma</span><span class="u-info">R234</span></div></td>
+                                    <td><div class="u-block st-norm"><span class="u-subj">Sp</span><span class="u-info">Halle</span></div></td>
+                                    <td><div class="u-block st-norm"><span class="u-subj">Pro</span><span class="u-info">Holz</span></div></td>
+                                    <td><div class="u-block st-norm"><span class="u-subj">Ma</span><span class="u-info">R234</span></div></td>
+                                </tr>
+                                <tr><td class="td-time">5.</td>
+                                    <td><div class="u-block st-norm"><span class="u-subj">De</span><span class="u-info">R232</span></div></td>
+                                    <td><div class="u-block st-norm"><span class="u-subj">Ch</span><span class="u-info">Chem</span></div></td>
+                                    <td><div class="u-block st-norm"><span class="u-subj">Sp</span><span class="u-info">Halle</span></div></td>
+                                    <td><div class="u-block st-norm"><span class="u-subj">En</span><span class="u-info">R233</span></div></td>
+                                    <td><div class="u-block st-norm"><span class="u-subj">Ch</span><span class="u-info">Chem</span></div></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -376,12 +388,15 @@
             <button class="close-btn" onclick="closeAll()"><span data-i18n="btn_close">Schließen</span> <i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="modal-content">
-            <div class="scale-wrapper">
-                <div class="explain-box">
-                    <h3 data-i18n="exp_tc_h">Moderne Lernzeit (LZ)</h3>
-                    <p data-i18n="exp_tc_t1">An der AHS setzen wir auf selbstständiges Lernen. Wir haben keine klassischen Hausaufgaben! Alle Aufgaben für die Woche findest du jeden Montag digital auf TaskCards.</p>
+            <div class="split-layout">
+                <div class="left-col">
+                    <div class="explain-box">
+                        <h3 data-i18n="exp_tc_h">Moderne Lernzeit (LZ)</h3>
+                        <p data-i18n="exp_tc_t1">An der AHS setzen wir auf selbstständiges Lernen. Wir haben keine klassischen Hausaufgaben! Alle Aufgaben findest du jeden Montag digital auf TaskCards.</p>
+                        <p data-i18n="exp_tc_t2">Sicher, DSGVO-konform und einfach wie eine digitale Pinnwand.</p>
+                    </div>
                 </div>
-                <div class="embed-container">
+                <div class="right-col">
                     <iframe id="iframe-taskcards" class="full-iframe" src=""></iframe>
                 </div>
             </div>
@@ -394,13 +409,16 @@
             <button class="close-btn" onclick="closeAll()"><span data-i18n="btn_close">Schließen</span> <i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="modal-content">
-            <div class="scale-wrapper">
-                <div class="explain-box">
-                    <h3 data-i18n="exp_sdui_h">Sichere Kommunikation</h3>
-                    <p data-i18n="exp_sdui_t1">Wir verzichten auf WhatsApp-Gruppen. Sdui ist unser offizieller Messenger für Eltern, Schüler und Lehrer. Hierüber laufen Elternbriefe, Krankmeldungen und wichtige Infos.</p>
+            <div class="split-layout">
+                <div class="left-col">
+                    <div class="explain-box">
+                        <h3 data-i18n="exp_sdui_h">Sichere Kommunikation</h3>
+                        <p data-i18n="exp_sdui_t1">Sdui ist unser offizieller Messenger für Eltern, Schüler und Lehrer. Keine WhatsApp-Gruppen mehr!</p>
+                        <p data-i18n="exp_sdui_t2">Übersetzt Nachrichten automatisch in deine Muttersprache. Keine privaten Nummern sichtbar.</p>
+                    </div>
                 </div>
-                <div class="embed-container" style="height:800px; max-width:1400px;">
-                    <iframe id="iframe-sdui" class="full-iframe" src=""></iframe>
+                <div class="right-col" style="background:black;">
+                    <iframe id="iframe-sdui" class="full-iframe" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                 </div>
             </div>
         </div>
@@ -412,20 +430,22 @@
             <button class="close-btn" onclick="closeAll()"><span data-i18n="btn_close">Schließen</span> <i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="modal-content">
-            <div class="scale-wrapper">
-                <div class="explain-box">
-                    <h3 data-i18n="fabi_about_h">Über uns</h3>
-                    <p data-i18n="fabi_about_t">Wir sind Fabi & Leon. Wir engagieren uns als stellvertretende Schülersprecher in der SV und produzieren als Content Creator den Podcast und die YouTube-Videos der AHS.</p>
-                </div>
-                <div class="fabi-container">
-                    <div class="fabi-qr-box">
-                        <img id="img-fabi-modal-qr" src="">
-                        <h3 style="margin-top:20px; color:#333;" data-i18n="fabi_scan_h">Scanne unsere Kanäle</h3>
+            <div class="split-layout">
+                <div class="left-col">
+                    <div class="explain-box">
+                        <h3 data-i18n="fabi_about_h">Über uns</h3>
+                        <p data-i18n="fabi_about_t">Wir sind Fabi & Leon, stellvertretende Schülersprecher und Content Creator der AHS (Podcast & YouTube).</p>
+                        <br>
+                        <button class="lang-btn active" style="font-size:2.5vh; padding:1.5vh 3vw;" onclick="openFabiFullscreen()">
+                             <span data-i18n="btn_open_web">Webseite öffnen</span>
+                        </button>
                     </div>
-                    <br>
-                    <button class="fabi-toggle-btn" onclick="openFabiFullscreen()">
-                        <i class="fa-solid fa-globe"></i> <span data-i18n="btn_open_web">Webseite öffnen</span>
-                    </button>
+                </div>
+                <div class="right-col" style="background:transparent; box-shadow:none; border:none;">
+                    <div class="qr-item" style="height:100%; width:80%; margin:0 auto; background:white; border-radius:3vh; padding:4vh;">
+                        <img id="img-fabi-modal-qr" src="" style="height:40vh; width:40vh;">
+                        <h3 style="margin-top:2vh;" data-i18n="fabi_scan_h">Scanne unsere Kanäle</h3>
+                    </div>
                 </div>
             </div>
         </div>
@@ -447,15 +467,19 @@
             <button class="close-btn" onclick="closeAll()"><span data-i18n="btn_close">Schließen</span> <i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="modal-content">
-             <div class="scale-wrapper">
-                 <div class="explain-box">
-                    <h3 data-i18n="sor_info_h">Schule mit Courage</h3>
-                    <p data-i18n="sor_info_t">Wir setzen uns aktiv gegen Rassismus ein. Hier findest du Videos und Projekte zu unserem Engagement.</p>
-                </div>
-                <div style="background:white; padding:40px; border-radius:30px; text-align:center; box-shadow:0 10px 40px rgba(0,0,0,0.1);">
-                    <h3 style="margin-bottom:20px;" data-i18n="sor_scan">Videos mitnehmen (Scan)</h3>
-                    <img id="img-sor-qr" src="" style="width:300px; height:300px;">
-                </div>
+             <div class="split-layout">
+                 <div class="left-col">
+                    <div class="explain-box">
+                        <h3 data-i18n="sor_info_h">Schule mit Courage</h3>
+                        <p data-i18n="sor_info_t">Wir setzen uns aktiv gegen Rassismus ein. Hier findest du Videos und Projekte zu unserem Engagement.</p>
+                    </div>
+                 </div>
+                 <div class="right-col" style="background:transparent; box-shadow:none; border:none;">
+                    <div class="qr-item" style="height:100%; width:80%; margin:0 auto; background:white; border-radius:3vh; padding:4vh;">
+                        <img id="img-sor-qr" src="" style="height:40vh; width:40vh;">
+                        <h3 style="margin-top:2vh;" data-i18n="sor_scan">Videos mitnehmen</h3>
+                    </div>
+                 </div>
             </div>
         </div>
     </div>
@@ -476,24 +500,24 @@
             <button class="close-btn" onclick="closeAll()"><span data-i18n="btn_close">Schließen</span> <i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="modal-content">
-            <div class="scale-wrapper">
-                <div class="social-layout">
-                    <div class="rss-frame">
-                        <iframe id="iframe-rss" class="full-iframe" src=""></iframe>
+            <div class="split-layout">
+                <div class="left-col" style="flex:2;"> <div style="background:white; border-radius:2vh; height:100%; overflow:hidden;">
+                         <iframe id="iframe-rss" class="full-iframe" src=""></iframe>
                     </div>
-                    
-                    <div class="qr-sidebar">
-                        <div class="qr-card">
+                </div>
+                <div class="right-col" style="flex:1; background:transparent; box-shadow:none; border:none;">
+                    <div class="qr-grid">
+                        <div class="qr-item">
                             <img id="img-qr-youtube" src="">
-                            <div class="qr-text"><h4>YouTube</h4><span data-i18n="sub_yt">Videos</span></div>
+                            <h4>YouTube</h4>
                         </div>
-                        <div class="qr-card">
+                        <div class="qr-item">
                             <img id="img-qr-insta" src="">
-                            <div class="qr-text"><h4>Instagram</h4><span data-i18n="sub_insta">Fotos</span></div>
+                            <h4>Instagram</h4>
                         </div>
-                        <div class="qr-card">
+                        <div class="qr-item" style="grid-column:span 2;">
                             <img id="img-qr-spotify" src="">
-                            <div class="qr-text"><h4>Spotify</h4><span data-i18n="sub_spot">Podcast</span></div>
+                            <h4>Spotify</h4>
                         </div>
                     </div>
                 </div>
@@ -505,7 +529,7 @@
         <div class="timer-circle">👋</div>
         <h2 data-i18n="time_h">Bist du noch da?</h2>
         <p data-i18n="time_t">Der Bildschirm wird gleich zurückgesetzt.</p>
-        <button onclick="resetIdleTimer()" style="margin-top:30px; padding:15px 40px; border:none; border-radius:50px; background:white; color:black; font-weight:bold; font-size:1.5rem; cursor:pointer;" data-i18n="btn_yes">JA</button>
+        <button onclick="resetIdleTimer()" style="margin-top:3vh; padding:1.5vh 4vw; border:none; border-radius:50px; background:white; color:black; font-weight:bold; font-size:2vh; cursor:pointer;" data-i18n="btn_yes">JA</button>
     </div>
 
     <script>
@@ -541,11 +565,11 @@
                 c_soc: "Social Media", d_soc: "Feed, YouTube, Spotify", 
                 c_web: "Homepage", d_web: "anton-hansen-schule.de", 
                 m_untis_h: "WebUntis", exp_untis_h: "Dein digitaler Planer", 
-                exp_untis_t1: "An der AHS gibt es keine Zettelwirtschaft mehr. WebUntis zeigt dir in Echtzeit, wann und wo dein Unterricht stattfindet. So bist du immer perfekt organisiert.", 
-                exp_untis_t2: "Die Farben helfen dir sofort zu verstehen, was los ist: Rot bedeutet Entfall, Grün zeigt Vertretungen oder Events an.", 
+                exp_untis_t1: "An der AHS gibt es keine Zettelwirtschaft mehr. WebUntis zeigt dir in Echtzeit, wann und wo dein Unterricht stattfindet.", 
+                exp_untis_t2: "Die Farben helfen dir sofort: Rot bedeutet Entfall, Grün Vertretung.", 
                 m_tc_h: "TaskCards", exp_tc_h: "Moderne Lernzeit (LZ)", 
-                exp_tc_t1: "An der AHS setzen wir auf selbstständiges Lernen. Wir haben keine klassischen Hausaufgaben! Alle Aufgaben für die Woche findest du jeden Montag digital auf TaskCards.", 
-                exp_tc_t2: "TaskCards ist DSGVO-konform, sicher und kinderleicht zu bedienen. Es funktioniert wie eine digitale Pinnwand.", 
+                exp_tc_t1: "An der AHS setzen wir auf selbstständiges Lernen. Wir haben keine klassischen Hausaufgaben! Alle Aufgaben findest du jeden Montag digital auf TaskCards.", 
+                exp_tc_t2: "TaskCards ist DSGVO-konform, sicher und kinderleicht zu bedienen.", 
                 m_sdui_h: "Sdui", exp_sdui_h: "Sichere Kommunikation", 
                 exp_sdui_t1: "Wir verzichten auf WhatsApp-Gruppen. Sdui ist unser offizieller Messenger für Eltern, Schüler und Lehrer. Hierüber laufen Elternbriefe, Krankmeldungen und wichtige Infos.", 
                 exp_sdui_t2: "Besonders toll: Nachrichten werden automatisch in Ihre Muttersprache übersetzt!", 
@@ -554,7 +578,7 @@
                 btn_open_web: "Webseite öffnen", 
                 m_sor_h: "Schule ohne Rassismus", sor_info_h: "Schule mit Courage", 
                 sor_info_t: "Wir setzen uns aktiv gegen Rassismus ein. Hier findest du Videos und Projekte zu unserem Engagement.", 
-                sor_scan: "Videos mitnehmen (Scan)", 
+                sor_scan: "Videos mitnehmen", 
                 m_web_h: "Homepage", m_soc_h: "Social Media & News", 
                 sub_yt: "Videos", sub_insta: "Fotos", sub_spot: "Podcast", 
                 time_h: "Bist du noch da?", time_t: "Der Bildschirm wird gleich zurückgesetzt.", 
@@ -571,8 +595,8 @@
                 c_soc: "Social Media", d_soc: "Feed, YouTube, Spotify", 
                 c_web: "Website", d_web: "anton-hansen-schule.de", 
                 m_untis_h: "WebUntis", exp_untis_h: "Your Digital Planner", 
-                exp_untis_t1: "At AHS, there is no more paper chaos. WebUntis shows you exactly when and where your lessons take place in real-time. You are always perfectly organized.", 
-                exp_untis_t2: "Colors help you understand immediately: Red means cancellation, Green shows substitutions or events.", 
+                exp_untis_t1: "At AHS, there is no more paper chaos. WebUntis shows you exactly when and where your lessons take place in real-time.", 
+                exp_untis_t2: "Colors help you understand immediately: Red means cancellation, Green shows substitutions.", 
                 m_tc_h: "TaskCards", exp_tc_h: "Modern Study Time (LZ)", 
                 exp_tc_t1: "At AHS, we rely on independent learning. We have no traditional homework! You can find all tasks for the week digitally on TaskCards every Monday.", 
                 exp_tc_t2: "TaskCards is GDPR-compliant, secure, and very easy to use.", 
@@ -584,7 +608,7 @@
                 btn_open_web: "Open Website", 
                 m_sor_h: "School w/o Racism", sor_info_h: "School with Courage", 
                 sor_info_t: "We actively stand against racism. Here you can find videos and projects about our commitment.", 
-                sor_scan: "Take videos with you (Scan)", 
+                sor_scan: "Take videos with you", 
                 m_web_h: "Website", m_soc_h: "Social Media & News", 
                 sub_yt: "Videos", sub_insta: "Photos", sub_spot: "Podcast", 
                 time_h: "Are you still there?", time_t: "The screen will reset shortly.", 
