@@ -82,9 +82,7 @@
 
         /* --- MAIN GRID (KOMPAKT & VIEL PLATZ UNTEN) --- */
         main {
-            /* WICHTIG: Nur 60% der Höhe nutzen. */
-            /* Header (12%) + Main (60%) + MarginTop (3%) = 75% genutzt. */
-            /* Bleiben 25% UNTEN FREI (RIESIG!) */
+            /* WICHTIG: Nur 60% der Höhe nutzen -> VIEL PLATZ UNTEN */
             height: 60vh; 
             width: 100vw;
             
@@ -111,7 +109,6 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             border: 0.3vh solid transparent; 
             height: 100%;
-            /* Inhalt wird kleiner dargestellt, damit er in die kleineren Boxen passt */
         }
         .card:hover { transform: translateY(-0.5vh) scale(1.02); }
         .card:active { transform: scale(0.98); }
@@ -122,12 +119,16 @@
         .card h3 { font-size: 2.2vh; margin-bottom: 0.5vh; color: #222; font-weight: 800; }
         .card p { font-size: 1.6vh; color: #666; line-height: 1.2; font-weight: 500; }
 
+        /* FABI CARD angepasst: Jetzt 1 Spalte breit, damit Projektprüfung Platz hat */
         .card-fabi {
-            grid-column: span 2;
             background: linear-gradient(120deg, #ffffff 0%, #f0f7ff 100%);
-            flex-direction: row; text-align: left; padding: 0 3vh;
-            justify-content: space-between;
         }
+        
+        .card-proj {
+            background: linear-gradient(135deg, #fff 0%, #fef9e7 100%);
+            border: 0.2vh solid #f1c40f;
+        }
+
         .tag { background: rgba(0,122,255,0.1); color: var(--primary); padding: 0.6vh 1.5vh; border-radius: 1vh; font-size: 1.3vh; font-weight: 700; display: inline-block; margin: 0.5vh 0.5vh 0 0; text-transform: uppercase; }
 
         .anim-neon { animation: neonFlash 2s ease; }
@@ -161,8 +162,8 @@
             width: 100%;
             height: 100%;
             display: flex;
-            gap: 4vh; /* Etwas Luft zwischen Links und Rechts */
-            padding: 4vh; /* Randabstand */
+            gap: 4vh;
+            padding: 4vh;
             overflow: hidden;
         }
 
@@ -192,6 +193,15 @@
         .info-tip { background: #f0f7ff; padding: 2vh; border-radius: 2vh; margin-top: 2vh; border: 0.2vh solid #cce5ff; font-size: 1.6vh; }
         .info-tip strong { color: var(--primary); display: block; margin-bottom: 0.5vh; font-size: 1.8vh;}
 
+        /* PARTICIPANT LIST */
+        .part-list { margin-top: 2vh; list-style: none; }
+        .part-list li { 
+            display: flex; align-items: center; gap: 1vh; 
+            font-size: 2vh; color: #333; margin-bottom: 1vh; 
+            padding: 1vh; background: #f9f9f9; border-radius: 1vh;
+        }
+        .part-list li i { color: var(--verified); }
+
         /* TABLE */
         .untis-container {
             width: 100%; height: 100%;
@@ -219,13 +229,10 @@
         .st-green { border-left-color: var(--u-green); background: #f0fff4; }
         .st-orange { border-left-color: var(--u-orange); background: #fffaf0; }
 
-        /* VIDEO 16:9 - Skaliert mit */
+        /* VIDEO 16:9 */
         .video-wrapper {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            background: black;
-            border-radius: 2.5vh;
-            overflow: hidden;
+            width: 100%; aspect-ratio: 16 / 9;
+            background: black; border-radius: 2.5vh; overflow: hidden;
             box-shadow: 0 3vh 8vh rgba(0,0,0,0.25);
         }
         .video-wrapper iframe { width: 100%; height: 100%; border: none; }
@@ -303,17 +310,15 @@
         </div>
 
         <div class="card card-fabi" onclick="openModal('fabi')">
-            <div style="flex:1;">
-                <h3>Fabi & Leon <i class="fa-solid fa-circle-check" style="color:var(--verified);"></i></h3>
-                <p data-i18n="d_fabi">Content Creator & SV</p>
-                <div style="margin-top:1vh;">
-                    <span class="tag" data-i18n="tag_sv">Stellv. Schülersprecher</span>
-                    <span class="tag" data-i18n="tag_media">Podcast & YouTube</span>
-                </div>
-            </div>
-            <div class="logo-box" style="width: auto;">
-                <img id="icon-fabi" src="" style="border-radius: 1vh;">
-            </div>
+             <div class="logo-box"><img id="icon-fabi" src="" style="border-radius: 1vh;"></div>
+             <h3>Fabi & Leon <i class="fa-solid fa-circle-check" style="color:var(--verified);"></i></h3>
+             <p data-i18n="d_fabi">Content Creator & SV</p>
+        </div>
+
+        <div class="card card-proj" onclick="openModal('projekt')">
+            <div class="logo-box"><i class="fa-solid fa-laptop-code" style="font-size:6vh; color:#f39c12;"></i></div>
+            <h3 data-i18n="c_proj">Projektprüfung</h3>
+            <p data-i18n="d_proj">Informatik 9b</p>
         </div>
 
         <div class="card" onclick="openModal('sor')">
@@ -441,6 +446,34 @@
         </div>
     </div>
 
+    <div id="modal-projekt" class="modal">
+        <div class="modal-header">
+            <h2><i class="fa-solid fa-laptop-code" style="color:#f39c12; margin-right:1vh;"></i> <span data-i18n="m_proj_h">Projektprüfung</span></h2>
+            <button class="close-btn" onclick="closeAll()"><span data-i18n="btn_close">Schließen</span> <i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="col-left">
+                <h3 data-i18n="exp_proj_h">Schulhomepage Informatik</h3>
+                <p data-i18n="exp_proj_t">Hier präsentieren wir unsere Projektprüfung im Fach Informatik.</p>
+                
+                <h4 style="margin-top:2vh; color:var(--primary);" data-i18n="lbl_participants">Teilnehmer:</h4>
+                <ul class="part-list">
+                    <li>Fabi & Leon (9b) <i class="fa-solid fa-circle-check" style="margin-left:0.5vh;"></i></li>
+                    <li>Leonie Schamper (9b)</li>
+                </ul>
+
+                <div class="info-tip" style="background:#fff9db; border-color:#f1c40f;">
+                    <strong><i class="fa-solid fa-location-dot"></i> <span data-i18n="lbl_location">Infos:</span></strong>
+                    PC Saal Raum 1.75
+                </div>
+            </div>
+            <div class="col-right">
+                <iframe id="iframe-projekt" src="" style="width:100%; height:100%; border:none; border-radius:3vh; box-shadow:0 1vh 4vh rgba(0,0,0,0.1);"></iframe>
+            </div>
+        </div>
+    </div>
+
+
     <div id="modal-fabi" class="modal">
         <div class="modal-header">
             <h2>Fabi & Leon <i class="fa-solid fa-circle-check" style="color:var(--verified);"></i></h2>
@@ -557,7 +590,8 @@
             LINK_SDUI_VIDEO: "https://www.youtube.com/embed/npTVuzEj42o?enablejsapi=1&rel=0", 
             LINK_FABI_WEB: "https://www.fabiundleon.de", 
             LINK_SCHOOL_WEB: "https://www.anton-hansen-schule.de", 
-            LINK_RSS_FEED: "https://ahs-rss.fabiundleon.de" 
+            LINK_RSS_FEED: "https://ahs-rss.fabiundleon.de",
+            LINK_PROJEKT: "https://projektpruefung.fabiundleon.de/"
         }; 
 
         const DICT = { 
@@ -568,6 +602,7 @@
                 c_sdui: "Sdui", d_sdui: "Messenger & News", 
                 c_sor: "Schule ohne Rassismus", d_sor: "Videos mitnehmen", 
                 d_fabi: "Content Creator & SV", 
+                c_proj: "Projektprüfung", d_proj: "Informatik 9b",
                 tag_sv: "Stellv. Schülersprecher", tag_media: "Podcast & YouTube", 
                 c_soc: "Social Media", d_soc: "Feed, YouTube, Spotify", 
                 c_web: "Homepage", d_web: "anton-hansen-schule.de", 
@@ -582,6 +617,8 @@
                 tip_trans: "Auto-Translate:", tip_trans_text: "Sdui übersetzt Nachrichten automatisch in über 40 Sprachen!",
                 fabi_about_h: "Über uns", fabi_about_t: "Wir sind Fabi & Leon. Wir engagieren uns als stellvertretende Schülersprecher in der SV und produzieren als Content Creator den Podcast und die YouTube-Videos der AHS.", 
                 fabi_scan_h: "Scan uns!", 
+                m_proj_h: "Projektprüfung", exp_proj_h: "Schulhomepage Informatik", exp_proj_t: "Hier präsentieren wir unsere Projektprüfung im Fach Informatik.",
+                lbl_participants: "Teilnehmer:", lbl_location: "Infos:",
                 btn_open_web: "Webseite öffnen", 
                 m_sor_h: "Schule ohne Rassismus", sor_info_h: "Schule mit Courage", 
                 sor_info_t: "Wir setzen uns aktiv gegen Rassismus ein. Hier findest du Videos und Projekte zu unserem Engagement.", 
@@ -598,6 +635,7 @@
                 c_sdui: "Sdui", d_sdui: "Messenger & News", 
                 c_sor: "School w/o Racism", d_sor: "Take videos with you", 
                 d_fabi: "Content Creators & SV", 
+                c_proj: "Project Exam", d_proj: "Informatics 9b",
                 tag_sv: "Deputy Head Students", tag_media: "Podcast & YouTube", 
                 c_soc: "Social Media", d_soc: "Feed, YouTube, Spotify", 
                 c_web: "Website", d_web: "anton-hansen-schule.de", 
@@ -612,6 +650,8 @@
                 tip_trans: "Auto-Translate:", tip_trans_text: "Sdui translates messages into over 40 languages!",
                 fabi_about_h: "About Us", fabi_about_t: "We are Fabi & Leon. We are committed as deputy head students in the SV and produce the podcast and YouTube videos of AHS as Content Creators.", 
                 fabi_scan_h: "Scan us!", 
+                m_proj_h: "Project Exam", exp_proj_h: "School Website IT", exp_proj_t: "Here we present our project exam in Computer Science.",
+                lbl_participants: "Participants:", lbl_location: "Info:",
                 btn_open_web: "Open Website", 
                 m_sor_h: "School w/o Racism", sor_info_h: "School with Courage", 
                 sor_info_t: "We actively stand against racism. Here you can find videos and projects about our commitment.", 
@@ -713,6 +753,7 @@
             if(id === 'sdui') document.getElementById('iframe-sdui').src = CONFIG.LINK_SDUI_VIDEO; 
             if(id === 'website') document.getElementById('iframe-school').src = CONFIG.LINK_SCHOOL_WEB; 
             if(id === 'social') document.getElementById('iframe-rss').src = CONFIG.LINK_RSS_FEED; 
+            if(id === 'projekt') document.getElementById('iframe-projekt').src = CONFIG.LINK_PROJEKT;
         } 
 
         function openFabiFullscreen() { 
@@ -725,7 +766,7 @@
             isModalOpen = false; 
             document.querySelectorAll('.modal').forEach(el => el.classList.remove('open')); 
             resetIdleTimer(); 
-            const frames = ['iframe-taskcards', 'iframe-sdui', 'iframe-school', 'iframe-rss', 'iframe-fabi-full']; 
+            const frames = ['iframe-taskcards', 'iframe-sdui', 'iframe-school', 'iframe-rss', 'iframe-fabi-full', 'iframe-projekt']; 
             frames.forEach(id => document.getElementById(id).src = ""); 
         } 
 
