@@ -10,20 +10,17 @@
 
     <style>
         :root {
-            /* --- DESIGN CONFIG --- */
-            /* Hier ist der "Pudding": Großer Abstand zwischen den Boxen */
-            --gap: 50px; 
+            /* --- DYNAMISCHE WERTE --- */
+            /* Gap ist jetzt 4% der Bildschirmhöhe -> Passt sich immer an */
+            --gap: 4vh; 
             
-            /* Zoom im Modal, damit alles drauf passt */
-            --modal-zoom: 0.8;
-
             --primary: #007aff;
             --secondary: #5856d6;
             --neon-blue: #00f2ff;
             --verified: #1d9bf0;
             --bg-grad: linear-gradient(135deg, #eef2f3 0%, #8e9eab 100%);
             --glass: rgba(255, 255, 255, 0.95);
-            --shadow: 0 15px 50px rgba(0,0,0,0.15);
+            --shadow: 0 1vh 4vh rgba(0,0,0,0.15);
             
             /* Untis Farben */
             --u-red: #ff3b30;
@@ -40,6 +37,8 @@
             height: 100vh;
             overflow: hidden; 
             display: flex; flex-direction: column;
+            /* Grundschriftgröße basiert auf Höhe -> Automatischer Zoom-Effekt auf flachen Screens */
+            font-size: 2vh; 
         }
 
         .ambient {
@@ -49,88 +48,87 @@
         }
         @keyframes pulseBg { 0% { transform: scale(1); } 100% { transform: scale(1.2); } }
 
+        /* --- LAYOUT BERECHNUNG --- */
+        /* Header: 12vh */
+        /* Main: 78vh */
+        /* UNTEN FREI: 10vh (Das sind die erzwungenen 10%) */
+
         /* --- HEADER --- */
         header {
-            /* 15% Höhe für den Header */
-            height: 15vh; 
+            height: 12vh;
             padding: 0 var(--gap);
             display: flex; justify-content: space-between; align-items: center;
             background: rgba(255,255,255,0.9); backdrop-filter: blur(15px);
-            border-bottom: 2px solid rgba(255,255,255,0.5);
+            border-bottom: 0.2vh solid rgba(255,255,255,0.5);
             z-index: 50;
         }
-        .brand { display: flex; align-items: center; gap: 20px; }
-        .brand img { height: 9vh; width: auto; object-fit: contain; }
+        .brand { display: flex; align-items: center; gap: 2vh; }
+        .brand img { height: 8vh; width: auto; object-fit: contain; }
         .brand h1 { font-size: 3.5vh; color: #222; font-weight: 900; text-transform: uppercase; }
-        .brand small { display: block; font-weight: 600; color: var(--primary); font-size: 1.8vh; letter-spacing: 1px; }
+        .brand small { display: block; font-weight: 600; color: var(--primary); font-size: 1.5vh; letter-spacing: 1px; }
         
-        .header-controls { display: flex; gap: 20px; align-items: center; }
+        .header-controls { display: flex; gap: 2vh; align-items: center; }
 
-        .lang-switch { display: flex; gap: 5px; background: rgba(0,0,0,0.05); padding: 5px; border-radius: 50px; }
+        .lang-switch { display: flex; gap: 0.5vh; background: rgba(0,0,0,0.05); padding: 0.5vh; border-radius: 50px; }
         .lang-btn {
-            border: none; background: transparent; padding: 10px 25px; border-radius: 40px;
-            font-weight: 800; color: #888; cursor: pointer; transition: 0.3s; font-size: 2vh;
+            border: none; background: transparent; padding: 1vh 2vh; border-radius: 40px;
+            font-weight: 800; color: #888; cursor: pointer; transition: 0.3s; font-size: 1.8vh;
         }
         .lang-btn.active { background: var(--primary); color: white; transform: scale(1.05); }
 
         .fs-btn {
-            background: white; border: 1px solid #ddd; color: #333;
-            width: 6vh; height: 6vh; border-radius: 50%;
+            background: white; border: 0.1vh solid #ddd; color: #333;
+            width: 5vh; height: 5vh; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             cursor: pointer; font-size: 2.5vh; transition: 0.3s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 0.5vh 1vh rgba(0,0,0,0.1);
         }
         .fs-btn:hover { background: var(--primary); color: white; transform: scale(1.1); }
 
         /* --- MAIN GRID --- */
         main {
-            /* NUR 50% der Höhe nutzen! Das lässt unten massig Platz (ca. 35% Rest) */
-            height: 50vh; 
+            height: 78vh; /* 100 - 12 (Header) - 10 (Unten Frei) = 78vh */
             width: 100vw;
-            
-            /* Viel Padding ringsrum */
             padding: var(--gap);
-            
-            /* Abstand zum Header */
-            margin-top: 5vh; 
+            margin-top: 0; /* Direkt unter Header */
             
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             grid-template-rows: repeat(2, 1fr); 
-            gap: var(--gap); /* Der große Abstand zwischen den Boxen */
+            gap: var(--gap);
         }
 
         .card {
             background: var(--glass);
-            border-radius: 25px; /* Runder */
-            padding: 20px;
+            border-radius: 3vh; /* Responsive Ecken */
+            padding: 2vh;
             text-align: center;
             box-shadow: var(--shadow);
             cursor: pointer;
             transition: transform 0.3s;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            border: 3px solid transparent; 
+            border: 0.4vh solid transparent; 
             height: 100%;
         }
-        .card:hover { transform: translateY(-8px) scale(1.02); }
+        .card:hover { transform: translateY(-0.5vh) scale(1.02); }
         .card:active { transform: scale(0.98); }
 
-        .logo-box { height: 45%; width: 100%; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
-        .logo-box img { max-height: 100%; max-width: 85%; object-fit: contain; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1)); }
+        .logo-box { height: 45%; width: 100%; display: flex; align-items: center; justify-content: center; margin-bottom: 1vh; }
+        .logo-box img { max-height: 100%; max-width: 85%; object-fit: contain; filter: drop-shadow(0 0.5vh 1vh rgba(0,0,0,0.1)); }
 
-        .card h3 { font-size: 2.8vh; margin-bottom: 5px; color: #222; font-weight: 800; }
-        .card p { font-size: 2vh; color: #666; line-height: 1.2; font-weight: 500; }
+        .card h3 { font-size: 2.5vh; margin-bottom: 0.5vh; color: #222; font-weight: 800; }
+        .card p { font-size: 1.8vh; color: #666; line-height: 1.2; font-weight: 500; }
 
         .card-fabi {
             grid-column: span 2;
             background: linear-gradient(120deg, #ffffff 0%, #f0f7ff 100%);
-            flex-direction: row; text-align: left; padding: 0 50px;
+            flex-direction: row; text-align: left; padding: 0 4vh;
             justify-content: space-between;
         }
-        .tag { background: rgba(0,122,255,0.1); color: var(--primary); padding: 8px 20px; border-radius: 10px; font-size: 1.6vh; font-weight: 700; display: inline-block; margin: 5px 5px 0 0; text-transform: uppercase; }
+        .tag { background: rgba(0,122,255,0.1); color: var(--primary); padding: 0.8vh 2vh; border-radius: 1vh; font-size: 1.5vh; font-weight: 700; display: inline-block; margin: 0.5vh 0.5vh 0 0; text-transform: uppercase; }
 
         .anim-neon { animation: neonFlash 2s ease; }
-        @keyframes neonFlash { 50% { border-color: var(--neon-blue); box-shadow: 0 0 50px var(--neon-blue); } }
+        @keyframes neonFlash { 50% { border-color: var(--neon-blue); box-shadow: 0 0 5vh var(--neon-blue); } }
 
         /* --- MODALS --- */
         .modal {
@@ -144,15 +142,15 @@
         .modal.open { display: flex; opacity: 1; }
 
         .modal-header {
-            flex: 0 0 15vh; 
-            padding: 0 var(--gap); background: white; border-bottom: 1px solid #ddd;
+            flex: 0 0 12vh; 
+            padding: 0 var(--gap); background: white; border-bottom: 0.1vh solid #ddd;
             display: flex; justify-content: space-between; align-items: center;
         }
-        .modal-header h2 { font-size: 4vh; color: var(--primary); font-weight: 800; display: flex; align-items: center; gap: 20px; }
+        .modal-header h2 { font-size: 3.5vh; color: var(--primary); font-weight: 800; display: flex; align-items: center; gap: 2vh; }
         .close-btn {
-            background: var(--u-red); color: white; border: none; padding: 15px 50px;
-            border-radius: 60px; font-weight: 800; cursor: pointer; font-size: 2.5vh;
-            box-shadow: 0 5px 20px rgba(255, 59, 48, 0.3);
+            background: var(--u-red); color: white; border: none; padding: 1.5vh 4vh;
+            border-radius: 10vh; font-weight: 800; cursor: pointer; font-size: 2.2vh;
+            box-shadow: 0 0.5vh 2vh rgba(255, 59, 48, 0.3);
         }
 
         .modal-body {
@@ -168,17 +166,17 @@
         .col-left {
             flex: 3.5; 
             background: white;
-            border-radius: 35px;
-            padding: 40px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
-            border-left: 15px solid var(--primary);
+            border-radius: 3vh;
+            padding: 4vh;
+            box-shadow: 0 1vh 4vh rgba(0,0,0,0.05);
+            border-left: 1.5vh solid var(--primary);
             overflow-y: auto;
             display: flex; flex-direction: column; justify-content: center; 
         }
 
         .col-right {
             flex: 6.5; 
-            border-radius: 35px;
+            border-radius: 3vh;
             display: flex; 
             align-items: center; 
             justify-content: center; 
@@ -186,61 +184,61 @@
         }
 
         .col-left h3 { font-size: 4vh; color: var(--primary); margin-bottom: 2vh; line-height: 1.1; }
-        .col-left p { font-size: 2.2vh; color: #444; line-height: 1.5; margin-bottom: 2.5vh; }
+        .col-left p { font-size: 2.2vh; color: #444; line-height: 1.5; margin-bottom: 3vh; }
         
-        .info-tip { background: #f0f7ff; padding: 25px; border-radius: 20px; margin-top: 15px; border: 2px solid #cce5ff; font-size: 2vh; }
-        .info-tip strong { color: var(--primary); display: block; margin-bottom: 10px; font-size: 2.2vh;}
+        .info-tip { background: #f0f7ff; padding: 2vh; border-radius: 2vh; margin-top: 2vh; border: 0.2vh solid #cce5ff; font-size: 1.8vh; }
+        .info-tip strong { color: var(--primary); display: block; margin-bottom: 1vh; font-size: 2vh;}
 
         /* TABLE */
         .untis-container {
             width: 100%; height: 100%;
-            background: white; border-radius: 35px;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.1);
-            padding: 30px;
+            background: white; border-radius: 3vh;
+            box-shadow: 0 2vh 5vh rgba(0,0,0,0.1);
+            padding: 3vh;
             overflow-y: auto; 
         }
-        .untis-table { width: 100%; border-collapse: separate; border-spacing: 10px; table-layout: fixed; }
-        .untis-table th { background: #34495e; color: white; padding: 15px; font-size: 2.2vh; border-radius: 12px; }
-        .untis-table td { vertical-align: top; padding: 0; height: 12vh; }
-        .td-time { font-size: 2.2vh; color: #999; font-weight: 800; padding-top: 20px !important; text-align: center; }
+        .untis-table { width: 100%; border-collapse: separate; border-spacing: 1vh; table-layout: fixed; }
+        .untis-table th { background: #34495e; color: white; padding: 1.5vh; font-size: 2.2vh; border-radius: 1vh; }
+        .untis-table td { vertical-align: top; padding: 0; height: 10vh; }
+        .td-time { font-size: 2.2vh; color: #999; font-weight: 800; padding-top: 2vh !important; text-align: center; }
 
         .u-block {
-            border-radius: 10px; padding: 10px; margin-bottom: 5px; 
+            border-radius: 1vh; padding: 1vh; margin-bottom: 0.5vh; 
             display: flex; flex-direction: column; justify-content: center;
-            border-left-width: 8px; border-left-style: solid;
-            background: #fdfdfd; box-shadow: 0 4px 10px rgba(0,0,0,0.05); height: 100%;
+            border-left-width: 0.8vh; border-left-style: solid;
+            background: #fdfdfd; box-shadow: 0 0.5vh 1vh rgba(0,0,0,0.05); height: 100%;
         }
-        .u-subj { font-weight: 800; font-size: 2.5vh; color: #2c3e50; }
-        .u-info { font-size: 1.8vh; color: #7f8c8d; }
+        .u-subj { font-weight: 800; font-size: 2.2vh; color: #2c3e50; }
+        .u-info { font-size: 1.6vh; color: #7f8c8d; }
         
         .st-norm { border-left-color: var(--u-gray); }
         .st-red { border-left-color: var(--u-red); background: #fff5f5; }
         .st-green { border-left-color: var(--u-green); background: #f0fff4; }
         .st-orange { border-left-color: var(--u-orange); background: #fffaf0; }
 
-        /* VIDEO 16:9 */
+        /* VIDEO 16:9 - Skaliert mit */
         .video-wrapper {
             width: 100%;
             aspect-ratio: 16 / 9;
             background: black;
-            border-radius: 25px;
+            border-radius: 3vh;
             overflow: hidden;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.25);
+            box-shadow: 0 3vh 8vh rgba(0,0,0,0.25);
         }
         .video-wrapper iframe { width: 100%; height: 100%; border: none; }
 
         /* QR */
         .qr-display {
-            background: white; padding: 50px; border-radius: 50px;
-            text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.1);
+            background: white; padding: 5vh; border-radius: 5vh;
+            text-align: center; box-shadow: 0 3vh 6vh rgba(0,0,0,0.1);
         }
         .qr-display img { width: 35vh; height: 35vh; object-fit: contain; }
-        .qr-display h3 { font-size: 4vh; margin-top: 30px; color: #333; }
+        .qr-display h3 { font-size: 4vh; margin-top: 3vh; color: #333; }
 
-        .qr-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; width: 100%; }
-        .qr-card { background: white; padding: 25px; border-radius: 30px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .qr-card img { width: 12vh; height: 12vh; margin-bottom: 15px; }
-        .qr-card h4 { font-size: 2.5vh; }
+        .qr-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3vh; width: 100%; }
+        .qr-card { background: white; padding: 2vh; border-radius: 3vh; text-align: center; box-shadow: 0 1vh 3vh rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .qr-card img { width: 12vh; height: 12vh; margin-bottom: 1vh; }
+        .qr-card h4 { font-size: 2.2vh; }
 
         /* TIMEOUT */
         .timeout-layer {
@@ -413,7 +411,7 @@
                 </div>
             </div>
             <div class="col-right">
-                <iframe id="iframe-taskcards" src="" style="width:100%; height:100%; border:none; border-radius:30px; box-shadow:0 10px 40px rgba(0,0,0,0.1);"></iframe>
+                <iframe id="iframe-taskcards" src="" style="width:100%; height:100%; border:none; border-radius:3vh; box-shadow:0 1vh 4vh rgba(0,0,0,0.1);"></iframe>
             </div>
         </div>
     </div>
@@ -426,7 +424,7 @@
         <div class="modal-body">
             <div class="col-left">
                 <h3 data-i18n="exp_sdui_h">Sichere Kommunikation</h3>
-                <p data-i18n="exp_sdui_t1">Wir verzichten auf WhatsApp-Gruppen. Sdui ist unser offizieller Messenger für Eltern, Schüler und Lehrer.</p>
+                <p data-i18n="exp_sdui_t1">Wir verzichten auf WhatsApp-Gruppen. Sdui ist unser offizieller Messenger für Eltern, Schüler und Lehrer. Hierüber laufen Elternbriefe, Krankmeldungen und wichtige Infos.</p>
                 <div class="info-tip">
                     <strong data-i18n="tip_trans">Auto-Translate:</strong>
                     <span data-i18n="tip_trans_text">Sdui übersetzt Nachrichten automatisch in über 40 Sprachen!</span>
@@ -449,7 +447,7 @@
             <div class="col-left">
                 <h3 data-i18n="fabi_about_h">Über uns</h3>
                 <p data-i18n="fabi_about_t">Wir sind Fabi & Leon. Wir engagieren uns als stellvertretende Schülersprecher in der SV und produzieren als Content Creator den Podcast und die YouTube-Videos der AHS.</p>
-                <div style="margin-top:30px;">
+                <div style="margin-top:3vh;">
                     <button class="lang-btn active" style="width:100%; text-align:center; font-size:2.5vh;" onclick="openFabiFullscreen()">
                         <i class="fa-solid fa-globe"></i> <span data-i18n="btn_open_web">Webseite öffnen</span>
                     </button>
@@ -509,7 +507,7 @@
             <button class="close-btn" onclick="closeAll()"><span data-i18n="btn_close">Schließen</span> <i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="modal-body">
-            <div class="col-left" style="padding:0; overflow:hidden; border-radius:30px; border:2px solid #eee;">
+            <div class="col-left" style="padding:0; overflow:hidden; border-radius:3vh; border:0.2vh solid #eee;">
                 <iframe id="iframe-rss" src="" style="width:100%; height:100%; border:none;"></iframe>
             </div>
             <div class="col-right">
